@@ -1,0 +1,22 @@
+# 운영체제
+.DS_Store
+Thumbs.db
+
+# 편집기
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 로그 및 임시 파일
+*.log
+*.tmp
+*.temp
+*~
+
+# 압축·백업 파일
+*.zip
+*.bak
+
+# 의존성 폴더가 생길 경우
+node_modules/

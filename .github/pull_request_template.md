@@ -15,6 +15,13 @@
 |---|---:|---:|---|
 |  |  |  |  |
 
+## 자동 검사
+
+- [ ] `Validate Living Hospital` GitHub Actions 통과
+- [ ] 최신 빌드와 `index.html` 참조 일치
+- [ ] 최신 빌드와 `playtest.html` 참조 일치
+- [ ] README, AGENTS, PROJECT_STATUS의 기준 파일 일치
+
 ## 검증
 
 - [ ] 요청한 기능이 실제로 작동함
@@ -23,6 +30,7 @@
 - [ ] iPhone 가로 화면 UI를 확인함
 - [ ] 프레임·발열·객체 누적 위험을 검토함
 - [ ] 사운드 중첩과 파티클 과밀을 확인함
+- [ ] 계측 플레이 보고서를 확보함
 - [ ] `docs/CHANGELOG.md`를 갱신함
 - [ ] `docs/PROJECT_STATUS.md`를 갱신함
 
@@ -30,6 +38,8 @@
 
 - 테스트 기기:
 - 플레이 구간:
+- 평균 / 최저 FPS:
+- JavaScript 오류:
 - 확인 결과:
 - 남은 문제:
 

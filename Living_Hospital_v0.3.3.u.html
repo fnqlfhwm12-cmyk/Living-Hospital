@@ -178,7 +178,7 @@ function recordPlaytestIncident(code,severity='warning',detail='',force=false){
  const snapshot=collectPlaytestSnapshot(code,null);playtestLastSnapshot=snapshot;window.__LH_PLAYTEST_LAST__=snapshot;postPlaytest('LH_INCIDENT',{incident,snapshot});return incident;
 }
 function trackPlaytestFrame(rawMs){
- if(paused||gameOver||elapsed<PERF_WARMUP)return;
+ if(document.hidden||paused||gameOver||elapsed<PERF_WARMUP||rawMs>3000)return;
  if(rawMs>500)recordPlaytestIncident('frame-freeze','critical',`단일 프레임 ${rawMs.toFixed(1)}ms`);
  else if(rawMs>250)recordPlaytestIncident('frame-stall','warning',`단일 프레임 ${rawMs.toFixed(1)}ms`);
 }

@@ -71,15 +71,25 @@
 <div id="dialogueBox" class="dialogueBox"><div id="dialogueName" class="dialogueName"></div><div id="dialogueText" class="dialogueText"></div><div class="dialogueHint">화면을 눌러 계속</div></div>
 <div class="cinematicShade"></div>
 
-
 <div id="bootLoading" style="position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:#100d0d;color:#fff;font:700 14px -apple-system,sans-serif">병동을 복구하는 중입니다.</div>
 <div id="bootFailure" style="position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:#100d0d;color:#fff;text-align:center;padding:24px;box-sizing:border-box"><div><h2>복구가 중단되었습니다.</h2><p></p><button onclick="location.reload()" style="border:1px solid #fff;background:#251d1d;color:#fff;border-radius:10px;padding:10px 16px">다시 시도</button></div></div>
 <script>
 (() => {
- const parts=["v034/game.part01.txt", "v034/game.part02.txt", "v034/game.part03.txt", "v034/game.part04.txt", "v034/game.part05.txt", "v034/game.part06.txt", "v034/game.part07.txt", "v034/game.part08.txt", "v034/game.part09.txt", "v034/game.part10.txt", "v034/game.part11.txt", "v034/game.part12.txt", "v034/game.part13.txt"];
+ const parts=["v034/game.gz.part01.txt","v034/game.gz.part02.txt","v034/game.gz.part03.txt","v034/game.gz.part04.txt"];
  const fail=(message)=>{const el=document.getElementById('bootFailure');if(el){el.style.display='flex';el.querySelector('p').textContent=message;}};
  Promise.all(parts.map(async path=>{const response=await fetch(path,{cache:'no-store'});if(!response.ok)throw new Error(`${path} · HTTP ${response.status}`);return response.text();}))
-  .then(source=>{const blob=new Blob(source,{type:'text/javascript'}),script=document.createElement('script'),url=URL.createObjectURL(blob);script.src=url;script.onload=()=>{URL.revokeObjectURL(url);document.getElementById('bootLoading')?.remove();};script.onerror=()=>fail('게임 스크립트를 시작하지 못했습니다.');document.body.appendChild(script);})
+  .then(async chunks=>{
+   if(!('DecompressionStream' in window))throw new Error('이 브라우저는 압축 해제를 지원하지 않습니다.');
+   const binary=atob(chunks.join('').replace(/\s+/g,''));
+   const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+   const source=await new Response(stream).text();
+   const blob=new Blob([source],{type:'text/javascript'}),script=document.createElement('script'),url=URL.createObjectURL(blob);
+   script.src=url;
+   script.onload=()=>{URL.revokeObjectURL(url);document.getElementById('bootLoading')?.remove();};
+   script.onerror=()=>fail('게임 스크립트를 시작하지 못했습니다.');
+   document.body.appendChild(script);
+  })
   .catch(error=>fail(`업데이트 파일을 불러오지 못했습니다. ${error.message}`));
 })();
 </script>

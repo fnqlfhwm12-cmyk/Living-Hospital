@@ -1,0 +1,99 @@
+
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const ui={};['hud','hpFill','xpFill','timer','debug','organHud','pause','overlay','panel','overlayTitle','cards','selectionFooter','selectionCancelBtn','confirmSelectionBtn','pauseMenu','pauseSummary','audioToggleBtn','resumeBtn','restartBtn','startScreen','startBtn','recordBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zones=[],events=[],hazards=[],clotFields=[],clotCritFx=[],clotReleaseFx=[],corpses=[],deathFx=[],breaches=[],navGates=[],stitchFx=[],incisionFx=[],unlockActors=[],bossHazards=[];
+let eventClock=125,eventCount=0,broadcastTimer=0,broadcastText='',broadcastMode='normal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHospital=null,growthCount=0,currentAction=null;
+const joystick={active:false,id:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
+const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
+const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
+const MINIMAP={w:124,h:88,pad:5,minX:-2050,maxX:2050,minY:-1150,maxY:1150,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false;
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거운 근접 방사형 넉백, 혈전증은 이동 잔흔과 정지 응고를 이용한 지속 제어다.
+// v0.3.3.t: 심장박동은 확률적으로 최대 두 번 연쇄되며, 치명 박동은 120%·치명 추가 박동은 80% 피해를 준다. 골편은 순수 연출이다.
+
+
+function storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const DEFAULT_META={version:1,specimens:0,selectedCharacter:'specimen',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');return raw?{...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}}:JSON.parse(JSON.stringify(DEFAULT_META));}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'실험체',glyph:'●',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 공격 주기가 조금씩 짧아진다. 복구할수록 적응 폭이 커진다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:'봉합사',ability:'잔류 기억',abilityText:'같은 대상을 반복해서 봉합하면 강하게 조여진다. 1단계에서 고정이 빨라지고, 2단계에서 죽은 대상의 기억이 가까운 적에게 옮겨간다.'},
+ attendant:{name:'당직자',glyph:'▣',quote:'중지 명령이 전달되지 않았다.',weapon:'incision',weaponName:'절개선',ability:'처치 순서',abilityText:'가장 체력이 높은 대상을 먼저 분류한다. 복구할수록 절개 예고가 짧아지고 강한 개체에 대한 절차가 강화된다.'}
+};
+function hideMetaScreens(){for(const id of ['startScreen','characterScreen','lobbyScreen','recordScreen','settingsScreen'])ui[id]?.classList.remove('active');}
+function showMetaScreen(id){hideMetaScreens();ui[id]?.classList.add('active');ui.hud.style.display='none';}
+function abilityCost(level){return level===0?6:level===1?14:null;}
+function renderCharacterSelect(){ui.characterGrid.innerHTML='';for(const [key,d] of Object.entries(CHARACTER_DEFS)){const unlocked=!!meta.unlockedCharacters[key],b=document.createElement('button');b.className='card characterCard'+(unlocked?'':' locked')+(selectedCharacter===key?' selected':'');b.disabled=!unlocked;b.innerHTML=`<div class="characterGlyph">${unlocked?d.glyph:'?'}</div><small>${unlocked?d.weaponName:'기록 없음'}</small><h3>${unlocked?d.name:'미등록 개체'}</h3><p>${unlocked?d.quote:(key==='residual'?'비어 있지 않은 침대가 있다.':'근무자가 확인되지 않는다.')}</p>`;b.onclick=()=>{selectedCharacter=key;renderCharacterSelect();};ui.characterGrid.appendChild(b);}ui.characterConfirmBtn.disabled=!meta.unlockedCharacters[selectedCharacter];}
+function renderLobby(){const d=CHARACTER_DEFS[selectedCharacter],lv=meta.abilityLevels[selectedCharacter]||0,cost=abilityCost(lv);ui.lobbyCharacter.innerHTML=`<div class="characterGlyph">${d.glyph}</div><small>수용 개체</small><h2>${d.name}</h2><p>${d.quote}</p><span class="metaTag">기본 무기 · ${d.weaponName}</span><span class="metaTag">개인능력 · ${d.ability}</span><hr><div class="currency">회수된 검체 ${meta.specimens}</div>`;ui.lobbyAbility.innerHTML=`<small>개인능력</small><h2>${d.ability}</h2><p>${d.abilityText}</p><p class="muted">강화 단계 ${lv}/2</p><div class="abilityRow"><div>${cost===null?'현재 복구 가능한 단계가 모두 열렸습니다.':`다음 단계 복구 · 검체 ${cost}`}</div>${cost===null?'':`<button class="btn" id="abilityUpgradeBtn" ${meta.specimens<cost?'disabled':''}>복구</button>`}</div>`;const btn=document.getElementById('abilityUpgradeBtn');if(btn)btn.onclick=()=>{if(meta.specimens<cost)return;meta.specimens-=cost;meta.abilityLevels[selectedCharacter]=lv+1;saveMeta();renderLobby();};}
+function openCharacterSelect(from='title'){characterReturn=from;renderCharacterSelect();showMetaScreen('characterScreen');}
+function openLobby(){renderLobby();showMetaScreen('lobbyScreen');}
+function renderRecords(){const chars=Object.entries(CHARACTER_DEFS).filter(([k])=>meta.unlockedCharacters[k]).map(([,d])=>`<div class="recordItem"><b>${d.name}</b><p>${d.weaponName} · ${d.ability}</p></div>`).join('');const weapons=Object.entries(weapons).filter(([k])=>meta.unlockedWeapons[k]).map(([,w])=>`<span class="metaTag">${w.name}</span>`).join('');const evolutions=(meta.discoveredEvolutions||[]).length?meta.discoveredEvolutions.map(x=>`<span class="metaTag">${x}</span>`).join(''):'<p class="muted">발견된 진화가 없습니다.</p>';ui.recordContent.innerHTML=`<p>최고 생존 기록 · ${fmt(best)}</p><p>회수자 처치 · ${meta.bossKills}회</p><h3>개체</h3><div class="recordList">${chars}</div><h3 style="margin-top:14px">무기</h3><div>${weapons}</div><h3 style="margin-top:14px">발견된 진화</h3>${evolutions}`;}
+function openRecords(from='title'){renderRecords();ui.recordScreen.dataset.from=from;showMetaScreen('recordScreen');}
+function syncMetaAudio(){ui.metaAudioBtn.textContent=soundEnabled?'켜짐':'꺼짐';}
+function showSettings(){syncMetaAudio();showMetaScreen('settingsScreen');}
+function startChapterRun(){initAudio();startChapterBgm(false);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});hideMetaScreens();ui.hud.style.display='block';reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:50,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:13,radius:95,echoChance:.25,maxEchoes:2,lore:'박동이 살갗 밖으로 번지고, 때때로 제 리듬을 잊습니다.'},
+ autophagy:{name:'혈전증',icon:'◉',level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52,lore:'지나온 자리에 병든 피가 남고, 멈춘 자리에서 세 번 응고합니다.'},
+ stitch:{name:'봉합사',icon:'⌁',level:0,cd:1.48,timer:0,damage:18,range:430,lore:'살아 있는 실이 한 대상을 반복해서 닫습니다.'},
+ incision:{name:'절개선',icon:'╱',level:0,cd:2.85,timer:0,damage:42,range:390,width:18,delay:.58,lore:'가느다란 지시선 뒤로 공간이 늦게 벌어집니다.'}
+};
+
+const passives={
+ flow:{name:'순환 촉진',icon:'💧',level:0,desc:'피가 재촉합니다. 공격이 빨라집니다.'},
+ density:{name:'골밀도',icon:'🦴',level:0,desc:'뼈가 몸을 붙듭니다. 체력과 방어가 증가합니다.'},
+ sensory:{name:'감각 과민',icon:'👁️',level:0,desc:'신경이 날카로워집니다. 치명타 확률이 증가합니다.'},
+ necrosis:{name:'괴사 내성',icon:'☣️',level:0,desc:'죽은 살이 고통을 늦춥니다. 피격 무적시간이 증가합니다.'},
+ overload:{name:'신경 과부하',icon:'⚡',level:0,desc:'신경이 폭주합니다. 이동·공격 속도가 오르지만 피해에 취약해집니다.'}
+};
+
+const ORGAN_SLOTS=['heart','brain','stomach'];
+const ORGAN_DEFS={
+ heart:{name:'심장',short:'심',icon:'🫀',color:'#d94d5b',effect:'과부하 · 공격·이동 속도와 피해량 증가, 지속 회복',lore:'당신의 박동 사이에, 이름 없는 심장이 기도를 시작합니다.',quote:'두 번째 고동은 오래전부터 당신을 기다리고 있었습니다.',activation:'심장이 폭주합니다.',ritual:'박동 동기화'},
+ brain:{name:'뇌',short:'뇌',icon:'🧠',color:'#b58ad2',effect:'정신침식 · 주기적으로 적 일부가 서로를 공격',lore:'낯선 주름이 당신의 침묵을 생각하기 시작합니다.',quote:'서로 다른 머릿속에서 하나의 속삭임이 자랍니다.',activation:'그들의 사고가 하나로 겹칩니다.',ritual:'신경 침식'},
+ stomach:{name:'위',short:'위',icon:'◉',color:'#d1b45f',effect:'폭식 · 일정 시간마다 전장의 경험치와 아이템을 흡수',lore:'비어 있는 기관은 이미 전장의 끝을 맛보았습니다.',quote:'굶주림이 눈을 뜨자, 흩어진 것들이 길을 잃습니다.',activation:'굶주림이 깨어납니다.',ritual:'포식 개방'}
+};
+const EVOLUTION_RECIPES=[];
+const AWAKENING_RECIPES=[];
+function registerEvolutionRecipe(recipe){if(recipe&&recipe.id)EVOLUTION_RECIPES.push(recipe);}
+function registerAwakeningRecipe(recipe){if(recipe&&recipe.id)AWAKENING_RECIPES.push(recipe);}
+// v0.3.3.l 기반 연결: 실제 진화는 비활성 상태로 예약한다.
+registerEvolutionRecipe({id:'blood-circulation',weapon:'blood',passive:'flow',result:null,enabled:false});
+const organMods={attackSpeed:1,damage:1,moveSpeed:1,pickup:1,damageTaken:1,xp:1,crit:0,regen:0,maxHp:0};
+function shuffledCopy(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+function clearOrganState(){stopCinematicAudio();activeOrgan=null;organStored={};Object.assign(organMods,{attackSpeed:1,damage:1,moveSpeed:1,pickup:1,damageTaken:1,xp:1,crit:0,regen:0,maxHp:0});organDropSequence=shuffledCopy(ORGAN_SLOTS);organSerial=0;transplantInside=false;transplantNear=false;transplantReady=false;transplantCooldown=0;transplantOpen=false;brainClock=8;stomachClock=20;heartBeatClock=4;globalMagnet=0;organFx=0;organCinematicTimer=0;organCinematicSlot=null;organCinematicPreview=false;organPreviewElapsed=0;organPulse=0;organPulseSlot=null;organRings.length=0;document.body.classList.remove('organ-cinematic');ui.overlay?.classList.remove('organPreview');syncActionButton();}
+let organDropSequence=[...ORGAN_SLOTS];
+function organCount(obj){return obj?Object.keys(obj).length:0;}
+function nextOrganSlot(preferMissing=true){if(preferMissing){const missing=ORGAN_SLOTS.filter(k=>k!==activeOrgan&&!organStored[k]);if(missing.length)return missing[Math.floor(Math.random()*missing.length)];}return ORGAN_SLOTS[Math.floor(Math.random()*ORGAN_SLOTS.length)];}
+function recalcOrganEffects(){Object.assign(organMods,{attackSpeed:1,damage:1,moveSpeed:1,pickup:1,damageTaken:1,xp:1,crit:0,regen:0,maxHp:0});if(activeOrgan==='heart'){organMods.attackSpeed=1.20;organMods.damage=1.15;organMods.moveSpeed=1.08;organMods.regen=.35;}if(activeOrgan==='brain'){organMods.crit=.05;brainClock=Math.min(brainClock,3);}if(activeOrgan==='stomach'){organMod

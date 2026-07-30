@@ -2,8 +2,8 @@
 
 모바일 가로 화면을 기준으로 제작 중인 싱글 파일 HTML 액션 로그라이크 프로토타입입니다.
 
-- 현재 저장소 기준 빌드: **v0.3.3.u**
-- 현재 실행 파일: [`Living_Hospital_v0.3.3.u.html`](./Living_Hospital_v0.3.3.u.html)
+- 현재 저장소 기준 빌드: **v0.3.4**
+- 현재 실행 파일: [`Living_Hospital_v0.3.4.html`](./Living_Hospital_v0.3.4.html)
 - 일반 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/`
 - 계측 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html`
 - 주 테스트 환경: **iPhone / Safari 계열 웹뷰 / 가로 화면**
@@ -13,7 +13,7 @@
 ## 저장소 운영 원칙
 
 1. 기존 버전 파일은 덮어쓰지 않고 보존합니다.
-2. 수정본은 `Living_Hospital_v0.3.3.u.html`처럼 다음 알파벳 버전으로 생성합니다.
+2. 수정본은 `Living_Hospital_v0.3.4.html`처럼 새 버전 파일로 생성합니다.
 3. 실제 작업 시작 전 가장 최신 HTML과 문서를 먼저 확인합니다.
 4. 코드 변경과 함께 `docs/CHANGELOG.md`와 `docs/PROJECT_STATUS.md`를 갱신합니다.
 5. iPhone 가로 화면, 프레임 유지, 발열 억제를 기능 추가보다 우선합니다.

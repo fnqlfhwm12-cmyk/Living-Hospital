@@ -8,7 +8,19 @@
 - 기준 파일: `Living_Hospital_v0.3.3.t.html`
 - 기본 브랜치: `main`
 - 개발 브랜치: `develop`
+- 일반 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/`
+- 계측 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html`
 - 주 테스트 환경: iPhone 가로 화면
+
+## 개발·검증 인프라
+
+- GitHub Pages로 고정 플레이 주소 운영
+- `playtest.html`에서 게임 코드와 분리된 브라우저 계측 제공
+- FPS 근사값, Long Task, 터치 횟수, 화면 변경, JavaScript 오류, `#debug` 내용 기록
+- `보고서 복사`와 iOS 공유 메뉴 지원
+- 측정값은 서버에 자동 전송하지 않음
+- `Validate Living Hospital` GitHub Actions로 저장소와 최신 빌드 자동 검사
+- 버그 제보, 플레이테스트 보고, Pull Request 템플릿 사용
 
 ## 현재 개발 단계
 
@@ -34,12 +46,16 @@ v0.3.3 계열은 신규 대형 콘텐츠보다 기존 전투 구조, 연출, UI,
 - 치명타·추가타 연쇄가 과도해지지 않도록 발생 규칙 검증
 - 모바일 실제 플레이 기준으로 화면 흔들림, 타격음, 파티클 밀도 재검토
 - 변경 전후 최대 치명타 확률과 DPS 비교
+- 계측 플레이 보고서로 변경 전후 FPS와 오류 비교
 
 ## 작업 완료 조건
 
 - 새 버전 HTML 파일 생성
 - 기존 파일 보존
+- `index.html`과 `playtest.html`의 최신 빌드 참조 갱신
+- GitHub Actions 자동 검사 통과
 - 주요 기능 회귀 검토
-- iPhone 가로 화면 확인
+- iPhone 가로 화면 계측 플레이 확인
+- 플레이테스트 보고서 확보
 - 변경 내역 기록
 - 다음 검토 포인트 명시

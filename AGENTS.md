@@ -5,7 +5,7 @@
 ## 작업 시작 전 필수 확인
 
 1. `README.md`를 읽습니다.
-2. `docs/PROJECT_STATUS.md`, `docs/PROJECT_RULES.md`, `docs/CHANGELOG.md`, `docs/ROADMAP.md`를 읽습니다.
+2. `docs/PROJECT_STATUS.md`, `docs/PROJECT_RULES.md`, `docs/CHANGELOG.md`, `docs/ROADMAP.md`, `docs/PLAYTESTING.md`를 읽습니다.
 3. 저장소에서 가장 최신 버전의 `Living_Hospital_*.html`을 확인합니다.
 4. 사용자가 요청한 변경과 현재 코드가 충돌하는지 먼저 분석합니다.
 5. 요청 범위를 임의로 넓히지 않습니다.
@@ -26,6 +26,44 @@
 - `main`은 검토가 끝난 기준 버전과 문서를 보관합니다.
 - 기능 변경은 가능하면 Pull Request로 검토한 뒤 `main`에 반영합니다.
 - 긴급한 문서 정리 외에는 검증되지 않은 게임 코드를 바로 `main`에 덮어쓰지 않습니다.
+- Pull Request를 합치기 전에 `Validate Living Hospital` GitHub Actions 결과를 확인합니다.
+
+## 배포 연결
+
+새 안정 빌드를 배포할 때 다음 참조를 모두 같은 최신 HTML 파일로 갱신합니다.
+
+- `index.html`의 meta refresh, JavaScript redirect, 본문 링크
+- `playtest.html`의 iframe `src`, `GAME_FILE`, 일반 플레이 링크
+- `README.md`의 현재 실행 파일
+- `docs/PROJECT_STATUS.md`의 기준 파일
+- 이 문서의 현재 기준선
+
+하나라도 갱신하지 않으면 자동 검사가 실패해야 합니다.
+
+## 플레이테스트 운영
+
+- 일반 플레이 주소에는 계측 UI를 넣지 않습니다.
+- 계측은 `playtest.html`에서 외부 wrapper 방식으로 수행합니다.
+- 계측 페이지는 FPS 근사값, Long Task, 입력 횟수, 화면 변경, 브라우저 오류, `#debug` 내용을 기록합니다.
+- 계측값은 서버에 자동 전송하지 않습니다.
+- 사용자가 복사하거나 공유한 보고서와 영상만 분석 자료로 사용합니다.
+- 전문 프로파일러가 아닌 브라우저 기반 근사 계측이므로 절대값보다 버전 간 비교를 중시합니다.
+- 실제 iPhone Safari의 조작감, 발열, 진동, 사운드는 수동 테스트로 최종 확인합니다.
+
+## 자동 검사
+
+`scripts/validate_repo.mjs`와 `.github/workflows/validate.yml`을 유지합니다.
+
+자동 검사는 최소한 다음을 확인해야 합니다.
+
+- 최신 버전 파일 자동 탐색
+- 최신 버전과 README, AGENTS, PROJECT_STATUS, index, playtest 참조 일치
+- 최신 게임 HTML과 `playtest.html`의 JavaScript 문법
+- 중복 HTML `id`
+- 병합 충돌 표시
+- 존재하지 않는 실행 대상 참조
+
+검사를 우회하기 위해 파일명이나 문서 참조를 임의로 왜곡하지 않습니다.
 
 ## 기술 제약
 
@@ -35,7 +73,7 @@
 - 매 프레임 생성되는 객체, 파티클, 오디오 노드, 타이머를 불필요하게 늘리지 않습니다.
 - 기능 추가 전후에 프레임 저하, 발열, 객체 누수 가능성을 검토합니다.
 - 디버그 코드와 테스트용 수치는 출시 기준 코드와 구분합니다.
-- GitHub Pages 설정이나 배포 워크플로는 사용자의 명시적 요청 없이 추가하지 않습니다.
+- 공개 HTML에 API 키, 토큰, 계정 인증정보를 넣지 않습니다.
 
 ## 고정된 디자인 방향
 
@@ -56,6 +94,8 @@
 - iPhone 가로 화면에서 UI가 잘리지 않는가
 - 적, 투사체, 파티클이 누적되지 않는가
 - 사운드가 중첩되거나 과도하게 재생되지 않는가
+- `node scripts/validate_repo.mjs`가 통과하는가
+- 계측 플레이 보고서를 확보했는가
 - `docs/CHANGELOG.md`가 갱신되었는가
 - `docs/PROJECT_STATUS.md`의 현재 버전이 갱신되었는가
 
@@ -66,3 +106,4 @@
 - 테스트하지 않은 대규모 리팩터링과 기능 추가를 한 번에 결합
 - 설명 문구를 친절한 튜토리얼 형태로 과도하게 확장
 - 성능 비용을 검토하지 않은 대량 파티클·다중 루프 추가
+- 공개 저장소에 비밀키 또는 개인정보 저장

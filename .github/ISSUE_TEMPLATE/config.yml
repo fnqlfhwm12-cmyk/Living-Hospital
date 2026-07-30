@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 일반 플레이
+    url: https://fnqlfhwm12-cmyk.github.io/Living-Hospital/
+    about: 현재 main 기준 안정 빌드를 실행합니다.
+  - name: 계측 플레이
+    url: https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html
+    about: FPS 근사값과 브라우저 오류가 포함된 플레이테스트 보고서를 생성합니다.

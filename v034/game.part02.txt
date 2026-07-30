@@ -1,0 +1,119 @@
+s.attackSpeed=1.20;organMods.damage=1.15;organMods.moveSpeed=1.08;organMods.regen=.35;}if(activeOrgan==='brain'){organMods.crit=.05;brainClock=Math.min(brainClock,3);}if(activeOrgan==='stomach'){organMods.pickup=1.25;stomachClock=Math.min(stomachClock,8);}renderOrganHud();updateHudDom(true);}
+function renderOrganHud(){
+ ui.organHud.innerHTML='';const d=document.createElement('div');
+ if(activeOrgan){const def=ORGAN_DEFS[activeOrgan];d.className='organSlot equipped';d.style.borderColor=def.color;d.style.color=def.color;d.style.boxShadow=`0 0 13px ${def.color}70`;d.innerHTML=`<span class="organSigil">${def.icon}</span><span class="organDot"></span>`;d.title=`${def.name} · ${def.lore}`;}
+ else{d.className='organSlot empty';d.innerHTML='<span style="font-size:14px;opacity:.6">◇</span>';d.title='메인 장기 없음';}
+ ui.organHud.appendChild(d);
+}
+function triggerOrganActivation(slot,announce=true,playSound=true){
+ const def=ORGAN_DEFS[slot];organPulse=1;organPulseSlot=slot;organFx=Math.max(organFx,.55);organFlash=def.color;cameraShake=Math.max(cameraShake,slot==='heart'?5:slot==='brain'?4:6);
+ organRings.push({x:player.x,y:player.y,r:slot==='stomach'?235:8,max:slot==='heart'?190:slot==='brain'?215:24,life:slot==='stomach'?1.05:.85,maxLife:slot==='stomach'?1.05:.85,color:def.color,slot});
+ const count=qualityLevel===2?10:18;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=55+Math.random()*150;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.45,2+Math.random()*3,def.color);}
+ if(playSound){if(slot==='heart')sfx('organHeart');else if(slot==='brain')sfx('organBrain');else sfx('organStomach');}
+ if(announce)broadcast(def.activation,'organ');
+}
+function triggerOrganCinematic(slot){
+ const def=ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShake=slot==='heart'?10:slot==='brain'?7:8;broadcastTimer=0;toastTimer=0;ui.toast.style.opacity='0';document.body.classList.add('organ-cinematic');syncActionButton();
+ const count=qualityLevel===2?22:36;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=70+Math.random()*210;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.75,2+Math.random()*4,def.color);}
+ if(slot==='brain')applyBrainInfluence(true);
+ triggerOrganActivation(slot,false,false);playOrganCinematicSfx(slot);
+}
+
+const HOSPITAL_DEFS=[
+ {id:'supportRecovery',name:'회복실',short:'회복',zoneId:'supportRecovery',color:'#79b58b',role:'support'},
+ {id:'supportTransfusion',name:'수혈실',short:'수혈',zoneId:'supportTransfusion',color:'#d15b68',role:'support'},
+ {id:'organHeart',name:'격리실',short:'심장',zoneId:'organHeart',color:'#d94d5b',role:'organ',organSlot:'heart',eventLabel:'정지된 심장 회수'},
+ {id:'organBrain',name:'관찰실',short:'신경',zoneId:'organBrain',color:'#b58ad2',role:'organ',organSlot:'brain',eventLabel:'침식된 뇌 표본 회수'},
+ {id:'organStomach',name:'처치실',short:'소화',zoneId:'organStomach',color:'#d1b45f',role:'organ',organSlot:'stomach',eventLabel:'포식 기관 회수'},
+ {id:'organLockedA',name:'보관실',short:'봉인',zoneId:'organLockedA',color:'#55545b',role:'organ',available:false},
+ {id:'organLockedB',name:'준비실',short:'봉인',zoneId:'organLockedB',color:'#55545b',role:'organ',available:false},
+ {id:'organLockedC',name:'폐쇄실',short:'봉인',zoneId:'organLockedC',color:'#55545b',role:'organ',available:false}
+];
+let hospitals=[],activeHospitalIds=[];
+const BREAKABLE_PROP_TYPES=new Set(['medicalCart','wasteBin','smallCabinet']);
+const TARGET_OBJECT_TYPES=new Set(['medicine','transfusionPump','eventOrganHeart','eventOrganBrain','eventOrganStomach',...BREAKABLE_PROP_TYPES]);
+function isBreakableProp(o){return !!(o&&BREAKABLE_PROP_TYPES.has(o.type));}
+function isTargetObject(o){return !!(o&&o.active&&TARGET_OBJECT_TYPES.has(o.type));}
+function hospitalById(id){return hospitals.find(h=>h.id===id)||null;}
+
+let best=Number(storageGet('lh_best_v034')||storageGet('lh_best_v033t')||storageGet('lh_best_v033q')||storageGet('lh_best_v033p')||storageGet('lh_best_v033o')||storageGet('lh_best_v033m')||storageGet('lh_best_v033l')||storageGet('lh_best_v033k')||storageGet('lh_best_v033j')||storageGet('lh_best_v033i')||storageGet('lh_best_v033h')||storageGet('lh_best_v033g')||storageGet('lh_best_v033f')||storageGet('lh_best_v033e')||storageGet('lh_best_v033d')||storageGet('lh_best_v033c')||storageGet('lh_best_v033b')||storageGet('lh_best_v033a')||storageGet('lh_best_v033')||storageGet('lh_best_v032')||storageGet('lh_best_v031')||storageGet('lh_best_v030')||storageGet('lh_best_v029')||storageGet('lh_best_v028')||storageGet('lh_best_v027')||storageGet('lh_best_v025')||storageGet('lh_best_v024')||storageGet('lh_best_v023')||storageGet('lh_best_v022')||storageGet('lh_best_v021')||storageGet('lh_best_v020')||storageGet('lh_best_v015')||storageGet('lh_best_v014')||storageGet('lh_best_v013')||storageGet('lh_best_v012')||0);
+
+function initAudio(){
+ try{
+  if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audioCtx=new AC();}
+  if(audioCtx&&!audioMaster){audioMaster=audioCtx.createGain();audioCompressor=audioCtx.createDynamicsCompressor();audioMaster.gain.value=3.15;audioCompressor.threshold.value=-7;audioCompressor.knee.value=5;audioCompressor.ratio.value=2.2;audioCompressor.attack.value=.0015;audioCompressor.release.value=.11;audioMaster.connect(audioCompressor);audioCompressor.connect(audioCtx.destination);}
+  if(audioCtx?.state==='suspended')audioCtx.resume();
+ }catch(_){audioCtx=null;audioMaster=null;audioCompressor=null;}
+}
+function trackCinematicNode(node){cinematicAudioNodes.push(node);node.onended=()=>{const i=cinematicAudioNodes.indexOf(node);if(i>=0)cinematicAudioNodes.splice(i,1);};return node;}
+function stopCinematicAudio(){for(const node of cinematicAudioNodes.splice(0)){try{node.stop();}catch(_){}}}
+function toneAt(freq=440,start=.0,dur=.07,type='sine',vol=.025,endFreq=freq,track=false){
+ if(!soundEnabled)return;initAudio();if(!audioCtx)return;
+ const now=audioCtx.currentTime+Math.max(0,start),o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(Math.max(40,freq),now);o.frequency.exponentialRampToValueAtTime(Math.max(40,endFreq),now+dur);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+.008);g.gain.exponentialRampToValueAtTime(.0001,now+dur);o.connect(g);g.connect(audioMaster||audioCtx.destination);if(track)trackCinematicNode(o);o.start(now);o.stop(now+dur+.015);
+}
+function tone(freq=440,dur=.07,type='sine',vol=.025,endFreq=freq){toneAt(freq,0,dur,type,vol,endFreq,false);}
+function noiseAt(start,dur,vol=.012,filterFreq=1200,filterType='lowpass',track=true){
+ if(!soundEnabled)return;initAudio();if(!audioCtx)return;const frames=Math.max(1,Math.floor(audioCtx.sampleRate*dur)),buffer=audioCtx.createBuffer(1,frames,audioCtx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<frames;i++)data[i]=(Math.random()*2-1)*(1-i/frames*.35);const source=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),g=audioCtx.createGain(),now=audioCtx.currentTime+Math.max(0,start);source.buffer=buffer;filter.type=filterType;filter.frequency.setValueAtTime(filterFreq,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+.025);g.gain.exponentialRampToValueAtTime(.0001,now+dur);source.connect(filter);filter.connect(g);g.connect(audioMaster||audioCtx.destination);if(track)trackCinematicNode(source);source.start(now);source.stop(now+dur+.02);
+}
+// 혈전증 전용 점성음: 타격성 고역 대신 저역의 젖은 마찰과 흡착감을 겹친다.
+function wetClotSfx(step=2){
+ if(!soundEnabled)return;initAudio();if(!audioCtx)return;
+ const now=audioCtx.currentTime,dur=(step===3?.24:.19)+(Math.random()-.5)*.018;
+ const vol=(step===3?.0175:step===2?.0155:.014)*(0.92+Math.random()*.16);
+ const frames=Math.max(1,Math.floor(audioCtx.sampleRate*dur)),buffer=audioCtx.createBuffer(1,frames,audioCtx.sampleRate),data=buffer.getChannelData(0);
+ let brown=0,slow=0;
+ for(let i=0;i<frames;i++){
+  const t=i/frames,white=Math.random()*2-1;
+  brown=(brown+white*.105)*.925;
+  slow=slow*.985+brown*.015;
+  const body=(brown*.76+slow*1.45),surface=Math.sin(t*Math.PI*2*(10+step*1.4)+Math.sin(t*17)*.6)*.035;
+  data[i]=Math.max(-1,Math.min(1,body+surface));
+ }
+ const source=audioCtx.createBufferSource(),high=audioCtx.createBiquadFilter(),low=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+ source.buffer=buffer;high.type='highpass';high.frequency.setValueAtTime(42,now);low.type='lowpass';low.Q.value=.72;low.frequency.setValueAtTime((step===2?235:step===3?165:195)*(0.96+Math.random()*.08),now);
+ g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(vol,now+.038);g.gain.setValueAtTime(vol*.84,now+dur*.52);g.gain.exponentialRampToValueAtTime(.0001,now+dur);
+ source.connect(high);high.connect(low);low.connect(g);g.connect(audioMaster||audioCtx.destination);source.start(now);source.stop(now+dur+.02);
+ const bodyOsc=audioCtx.createOscillator(),bodyGain=audioCtx.createGain(),pitch=1+(Math.random()-.5)*.07;
+ bodyOsc.type='sine';bodyOsc.frequency.setValueAtTime((step===2?74:step===3?58:66)*pitch,now);bodyOsc.frequency.exponentialRampToValueAtTime((step===2?43:step===3?34:39)*pitch,now+dur);
+ bodyGain.gain.setValueAtTime(.0001,now);bodyGain.gain.exponentialRampToValueAtTime(vol*.46,now+.046);bodyGain.gain.exponentialRampToValueAtTime(.0001,now+dur);
+ bodyOsc.connect(bodyGain);bodyGain.connect(audioMaster||audioCtx.destination);bodyOsc.start(now);bodyOsc.stop(now+dur+.02);
+ if(step!==1){
+  const bubble=audioCtx.createOscillator(),bubbleGain=audioCtx.createGain(),start=now+.045+Math.random()*.025;
+  bubble.type='sine';bubble.frequency.setValueAtTime((step===3?91:108)*pitch,start);bubble.frequency.exponentialRampToValueAtTime((step===3?49:61)*pitch,start+.085);
+  bubbleGain.gain.setValueAtTime(.0001,start);bubbleGain.gain.exponentialRampToValueAtTime(vol*.18,start+.028);bubbleGain.gain.exponentialRampToValueAtTime(.0001,start+.09);
+  bubble.connect(bubbleGain);bubbleGain.connect(audioMaster||audioCtx.destination);bubble.start(start);bubble.stop(start+.105);
+ }
+}
+function playOrganCinematicSfx(slot){
+ if(!soundEnabled)return;stopCinematicAudio();initAudio();if(!audioCtx)return;
+ if(slot==='heart'){
+  toneAt(42,.02,3.55,'sine',.014,34,true);for(const b of [.16,.90,1.64,2.38,3.10]){toneAt(82,b,.16,'sine',.074,49,true);toneAt(50,b+.15,.23,'sine',.066,36,true);toneAt(190,b,.055,'square',.012,82,true);}
+ }else if(slot==='brain'){
+  noiseAt(.02,3.46,.011,1850,'bandpass',true);toneAt(235,.02,3.45,'triangle',.009,285,true);for(const [t,hi,lo] of [[.08,1280,180],[.72,970,210],[1.35,1540,260],[2.05,860,150],[2.72,1320,230],[3.20,720,190]]){toneAt(hi,t,.34,'sawtooth',.019,lo,true);toneAt(lo,t+.12,.28,'triangle',.016,hi*.72,true);}
+ }else{
+  noiseAt(.02,3.48,.018,330,'lowpass',true);toneAt(86,.02,3.52,'sine',.032,38,true);toneAt(48,.34,2.95,'triangle',.013,215,true);for(const [t,f] of [[.22,112],[.66,78],[1.05,126],[1.55,70],[2.02,118],[2.48,74],[2.92,104]]){toneAt(f,t,.34,'sine',.034,43,true);toneAt(46,t+.19,.25,'triangle',.018,f*.88,true);}
+ }
+}
+function sfx(kind){
+ if(!soundEnabled)return;
+ if(kind==='hit'){const now=performance.now();if(now-lastPlayerHitTone<65)return;lastPlayerHitTone=now;const v=Math.random();noiseAt(0,.060,.052,v<.5?1850:2250,'bandpass',false);tone(v<.5?940:1120,.052,'square',.030,430);toneAt(330,.012,.080,'triangle',.030,128,false);}
+ else if(kind==='hitHeavy'){const now=performance.now();if(now-lastPlayerHitTone<75)return;lastPlayerHitTone=now;noiseAt(0,.085,.068,1700,'bandpass',false);noiseAt(.025,.145,.050,310,'lowpass',false);tone(780,.075,'square',.038,260);toneAt(150,.018,.145,'triangle',.055,48,false);}
+ else if(kind==='crit'){tone(210,.045,'triangle',.018,115);}
+ else if(kind==='pickup'){const now=performance.now();if(now-lastPickupTone<55)return;lastPickupTone=now;tone(680,.045,'sine',.018,900);}
+ else if(kind==='growth'){tone(420,.12,'triangle',.038,760);setTimeout(()=>tone(680,.12,'triangle',.034,1020),75);}
+ else if(kind==='eventStart'){tone(240,.15,'sawtooth',.034,360);setTimeout(()=>tone(360,.16,'triangle',.032,520),100);}
+ else if(kind==='eventDone'){tone(520,.13,'triangle',.038,760);setTimeout(()=>tone(760,.15,'sine',.034,1050),95);}
+ else if(kind==='object'){tone(110,.07,'triangle',.030,70);noiseAt(0,.07,.018,430,'lowpass',false);}
+ else if(kind==='organ'){tone(310,.11,'triangle',.036,520);setTimeout(()=>tone(520,.13,'sine',.032,760),80);}
+ else if(kind==='organHeart'){tone(92,.16,'sine',.070,70);setTimeout(()=>tone(76,.22,'sine',.075,52),155);}
+ else if(kind==='heartBeat'){tone(86,.105,'sine',.048,57);toneAt(54,.070,.145,'sine',.045,36,false);}
+ else if(kind==='heartBeatCrit'){tone(94,.12,'triangle',.058,54);toneAt(58,.065,.18,'sine',.058,32,false);toneAt(178,.018,.055,'square',.010,88,false);}
+ else if(kind==='heartEcho1'){tone(103,.070,'sine',.035,68);toneAt(62,.040,.095,'sine',.031,42,false);}
+ else if(kind==='heartEcho2'){tone(116,.058,'sine',.032,76);toneAt(69,.030,.078,'sine',.028,47,false);}
+ else if(kind==='organBrain'){tone(760,.12,'sawtooth',.032,180);setTimeout(()=>tone(230,.22,'triangle',.040,980),95);}
+ else if(kind==='organStomach'){tone(135,.30,'sine',.055,44);setTimeout(()=>tone(245,.20,'triangle',.033,82),125);}
+ else if(kind==='bloodFire'){noiseAt(0,.085,.022,360,'lowpass',false);tone(118,.075,'sine',.030,68);toneAt(64,.018,.090,'triangle',.021,46,false);}
+ else if(kind==='bloodHit'){const now=performance.now();if(now-lastBloodHitTone<52)return;lastBloodHitTone=now;noiseAt(0,.070,.025,430,'lowpass',false);tone(92,.090,'sine',.028,48);}
+ else if(kind==='bloodBranch'){noiseAt(0,.105,.028,510,'lowpass',false);tone(126,.11,'sine',.034,58);toneAt(82,.035,.14,'triangle',.022,45,false);}
+ else if(kind==='boneFire'){noiseAt(0,.18,.030,430,'lowpass',false);toneAt(72,.015,.18,'triangle',.030,43,false);toneAt(46,.085,.16,'sine',.020,34,false);}
+ else if(kind==='boneHit'){const now=performance.now();if(now-lastBoneHitTone<95)return;lastBoneHitTone=now;noiseAt(0,.115,.042,520,'lowpass',false);noiseAt(.010,.055,.020,1180,'bandpass

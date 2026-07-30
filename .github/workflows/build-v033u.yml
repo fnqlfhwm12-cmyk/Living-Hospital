@@ -10,6 +10,13 @@ on:
       - scripts/v033u_playtest.html
       - .github/workflows/build-v033u.yml
       - .github/v033u-trigger
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: write
@@ -49,4 +56,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Living_Hospital_v0.3.3.u.html playtest.html index.html README.md AGENTS.md docs/PROJECT_STATUS.md docs/CHANGELOG.md docs/PLAYTESTING.md
           git commit -m "v0.3.3.u: 자동 플레이 종료 및 오류 기록"
-          git push
+          git push origin HEAD:feature/v033u-auto-report

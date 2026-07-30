@@ -18,8 +18,9 @@ function insertBefore(text, marker, addition, label) {
 
 function replaceFileRef(file, from, to) {
   let text = read(file);
-  if (!text.includes(from)) throw new Error(`${file}에 ${from} 참조 없음`);
-  write(file, text.split(from).join(to));
+  if (text.includes(from)) text = text.split(from).join(to);
+  else if (!text.includes(to)) throw new Error(`${file}에 ${from} 또는 ${to} 참조 없음`);
+  write(file, text);
 }
 
 const sourceFile = 'Living_Hospital_v0.3.3.t.html';

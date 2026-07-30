@@ -42,7 +42,10 @@ game = replaceOnce(game, 'if(delta<frameMs*.92)return;loopClock=now;', 'trackPla
 game = insertBefore(game, "ui.confirmSelectionBtn.onclick=", "addEventListener('error',event=>{recordPlaytestIncident('javascript-error','fatal',`${event.message||event.error||'알 수 없는 오류'} @ ${event.filename||'unknown'}:${event.lineno||0}`,true);});\naddEventListener('unhandledrejection',event=>{const reason=event.reason?.stack||event.reason?.message||event.reason||'알 수 없는 Promise 오류';recordPlaytestIncident('unhandled-promise','fatal',reason,true);});", '런타임 오류 감지');
 
 write(targetFile, game);
-write('playtest.html', read('scripts/v033u_playtest.html'));
+let playtest = read('scripts/v033u_playtest.html');
+playtest = replaceOnce(playtest, "function incidentLines(d){const all=[...(d.gameTelemetry?.incidents||[]),...(d.incidents||[])];return all.length?all.map((x,i)=>`${i+1}. [${x.severity||'warning'}] ${x.code||'incident'} · ${x.detail||''} · ${x.gameTimeText||''}`).join('\\n'):'없음'}", "function allIncidents(d){const unique=new Map();for(const x of [...(d.gameTelemetry?.incidents||[]),...(d.incidents||[])])unique.set(`${x.code||'incident'}|${x.at||''}|${x.detail||''}`,x);return [...unique.values()]}\nfunction incidentLines(d){const all=allIncidents(d);return all.length?all.map((x,i)=>`${i+1}. [${x.severity||'warning'}] ${x.code||'incident'} · ${x.detail||''} · ${x.gameTimeText||''}`).join('\\n'):'없음'}", '이상 기록 중복 제거');
+playtest = replaceOnce(playtest, "`이상  ${[...(g.incidents||[]),...d.incidents].length}건 · JS ${d.errors.length}건 · Promise ${d.unhandledRejections.length}건`", "`이상  ${allIncidents(d).length}건 · JS ${d.errors.length}건 · Promise ${d.unhandledRejections.length}건`", '이상 기록 개수');
+write('playtest.html', playtest);
 replaceFileRef('index.html', sourceFile, targetFile);
 for (const file of ['README.md', 'AGENTS.md', 'docs/PROJECT_STATUS.md']) replaceFileRef(file, sourceFile, targetFile);
 

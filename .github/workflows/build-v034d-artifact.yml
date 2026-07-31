@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: "22"
       - name: Patch build script
-        run: node scripts/patch_build_v034d.mjs
+        run: |
+          node scripts/patch_build_v034d.mjs
+          node scripts/patch_build_v034d_validation.mjs
       - name: Generate v0.3.4.d
         run: node scripts/build_v034d.mjs
       - name: Validate generated build

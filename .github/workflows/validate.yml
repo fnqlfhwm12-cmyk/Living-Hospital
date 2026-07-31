@@ -14,24 +14,45 @@ on:
       - develop
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: validate-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  build-v034d:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[build-v034d]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate v0.3.4.d
+        run: node scripts/build_v034d.mjs
+      - name: Validate generated build
+        run: node scripts/validate_repo.mjs
+      - name: Commit generated build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Living_Hospital_v0.3.4.d.html v034d index.html stable-v034d.html playtest.html README.md AGENTS.md docs/PROJECT_STATUS.md docs/CHANGELOG.md UPDATE_v0.3.4.d.md
+          git diff --cached --quiet || git commit -m "build: publish v0.3.4.d pathfinding and rewards"
+          git push
+
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
       - name: Validate repository and latest build
         run: node scripts/validate_repo.mjs

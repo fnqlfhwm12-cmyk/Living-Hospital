@@ -32,7 +32,7 @@ replaceBlock(
  "  '검체 획득 처리'\n);",
  `replaceOnce(
   "else if(o.type==='defibrillator'){defibrillatorTimer=7.5;defibrillatorPulseClock=0;bodyTwitch=Math.max(bodyTwitch,.32);sfx('defibrillatorStart');cameraShake=Math.max(cameraShake,5);}",
-  "else if(o.type==='defibrillator'){defibrillatorTimer=7.5;defibrillatorPulseClock=0;bodyTwitch=Math.max(bodyTwitch,.32);sfx('defibrillatorStart');cameraShake=Math.max(cameraShake,5);else if(o.type==='specimen'){meta.specimens=(meta.specimens||0)+1;saveMeta();toast('검체 +1');tone(420,.06,'triangle',.018,690);for(let i=0;i<7;i++)emitParticle(player.x,player.y,(Math.random()-.5)*95,(Math.random()-.5)*95,.32,2+Math.random()*2,'#d7a7b4');}",
+  "else if(o.type==='defibrillator'){defibrillatorTimer=7.5;defibrillatorPulseClock=0;bodyTwitch=Math.max(bodyTwitch,.32);sfx('defibrillatorStart');cameraShake=Math.max(cameraShake,5);}else if(o.type==='specimen'){meta.specimens=(meta.specimens||0)+1;saveMeta();toast('검체 +1');tone(420,.06,'triangle',.018,690);for(let i=0;i<7;i++)emitParticle(player.x,player.y,(Math.random()-.5)*95,(Math.random()-.5)*95,.32,2+Math.random()*2,'#d7a7b4');}",
   '검체 획득 처리'
 );`,
  '검체 획득 치환'

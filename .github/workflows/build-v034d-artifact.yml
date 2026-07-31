@@ -1,0 +1,31 @@
+name: Build v0.3.4.d artifact
+on:
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Generate v0.3.4.d
+        run: node scripts/build_v034d.mjs
+      - name: Validate generated build
+        run: node scripts/validate_repo.mjs
+      - name: Pack generated build
+        run: |
+          mkdir -p artifact/v034d artifact/docs
+          cp Living_Hospital_v0.3.4.d.html index.html stable-v034d.html playtest.html README.md AGENTS.md UPDATE_v0.3.4.d.md artifact/
+          cp v034d/game.gz.part*.txt artifact/v034d/
+          cp docs/PROJECT_STATUS.md docs/CHANGELOG.md artifact/docs/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: living-hospital-v034d
+          path: artifact
+          if-no-files-found: error

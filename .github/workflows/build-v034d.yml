@@ -11,14 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build v0.3.4.d
-        run: node scripts/build_v034d.mjs
-      - name: Validate repository
-        run: node scripts/validate_repo.mjs
-      - name: Commit build
+      - name: Build v0.3.4.d with diagnostic log
+        run: |
+          mkdir -p tmp
+          set +e
+          node scripts/build_v034d.mjs > tmp/build-v034d.log 2>&1
+          code=$?
+          echo "exit_code=$code" >> tmp/build-v034d.log
+          echo "$code" > tmp/build-v034d.exit
+          exit 0
+      - name: Validate repository when build succeeded
+        run: |
+          code=$(cat tmp/build-v034d.exit)
+          if [ "$code" = "0" ]; then node scripts/validate_repo.mjs >> tmp/build-v034d.log 2>&1; else echo "validation skipped" >> tmp/build-v034d.log; fi
+      - name: Commit build or diagnostic
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Living_Hospital_v0.3.4.d.html v034d index.html stable-v034d.html playtest.html README.md AGENTS.md docs/PROJECT_STATUS.md docs/CHANGELOG.md UPDATE_v0.3.4.d.md
-          git diff --cached --quiet || git commit -m "build: publish v0.3.4.d pathfinding and rewards"
+          git add tmp/build-v034d.log tmp/build-v034d.exit
+          if [ -f Living_Hospital_v0.3.4.d.html ]; then
+            git add Living_Hospital_v0.3.4.d.html v034d index.html stable-v034d.html playtest.html README.md AGENTS.md docs/PROJECT_STATUS.md docs/CHANGELOG.md UPDATE_v0.3.4.d.md
+          fi
+          git diff --cached --quiet || git commit -m "build: run v0.3.4.d generator"
           git push

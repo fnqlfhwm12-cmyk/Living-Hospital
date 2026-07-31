@@ -14,6 +14,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Patch build script
+        run: node scripts/patch_build_v034d.mjs
       - name: Generate v0.3.4.d
         run: node scripts/build_v034d.mjs
       - name: Validate generated build

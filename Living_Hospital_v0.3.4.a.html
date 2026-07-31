@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Living Hospital v0.3.4.a · 불러오는 중</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#090707;color:#ddd;display:grid;place-items:center;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif}
+#loading{font-size:13px;opacity:.72;letter-spacing:.08em}
+#error{display:none;max-width:82vw;line-height:1.55;color:#e9a1a7}
+</style>
+</head>
+<body>
+<div id="loading">병동을 불러오는 중…</div>
+<pre id="error"></pre>
+<script>
+(async()=>{
+ const loading=document.getElementById('loading'),error=document.getElementById('error');
+ try{
+  const response=await fetch('./Living_Hospital_v0.3.4.html',{cache:'no-store'});
+  if(!response.ok)throw new Error(`기본 빌드를 불러오지 못했습니다. (${response.status})`);
+  let html=await response.text();
+  html=html.replace('<title>Living Hospital v0.3.4 · Chapter 1</title>','<title>Living Hospital v0.3.4.a · Chapter 1</title>');
+  html=html.replace('/* v0.3.4 · 메타 루프 / 챕터 1 */','/* v0.3.4.a · 플레이어 추적형 미니맵 */');
+  html=html.replace(
+   'const MINIMAP={w:124,h:88,pad:5,minX:-2050,maxX:2050,minY:-1150,maxY:1150,baseInterval:.15};',
+   'const MINIMAP={w:124,h:88,pad:5,edge:9,minX:-2050,maxX:2050,minY:-1150,maxY:1150,viewW:1900,viewH:1348,baseInterval:.15};\nconst minimapCamera={x:0,y:0,ready:false};'
+  );
+  const start=html.indexOf('function minimapPoint(x,y){');
+  const end=html.indexOf('function rectCircle(o,x,y,r){');
+  if(start<0||end<=start)throw new Error('미니맵 코드 위치를 찾지 못했습니다.');
+  const replacement="function minimapPoint(x,y){\n const sx=MINIMAP.w/2+(x-minimapCamera.x)/MINIMAP.viewW*(MINIMAP.w-MINIMAP.pad*2);\n const sy=MINIMAP.h/2+(y-minimapCamera.y)/MINIMAP.viewH*(MINIMAP.h-MINIMAP.pad*2);\n const inside=sx>=MINIMAP.pad&&sx<=MINIMAP.w-MINIMAP.pad&&sy>=MINIMAP.pad&&sy<=MINIMAP.h-MINIMAP.pad;\n return{x:sx,y:sy,inside,dx:sx-MINIMAP.w/2,dy:sy-MINIMAP.h/2};\n}\nfunction minimapEdgePoint(point){\n const cx=MINIMAP.w/2,cy=MINIMAP.h/2,dx=point.dx,dy=point.dy;\n if(point.inside)return{x:point.x,y:point.y,angle:Math.atan2(dy,dx)};\n const halfW=cx-MINIMAP.edge,halfH=cy-MINIMAP.edge;\n const tx=Math.abs(dx)>1e-5?halfW/Math.abs(dx):Infinity,ty=Math.abs(dy)>1e-5?halfH/Math.abs(dy):Infinity,t=Math.min(tx,ty);\n return{x:cx+dx*t,y:cy+dy*t,angle:Math.atan2(dy,dx)};\n}\nfunction minimapRect(x,y,w,h){\n const a=minimapPoint(x,y),b=minimapPoint(x+w,y+h);\n return{x:a.x,y:a.y,w:b.x-a.x,h:b.y-a.y};\n}\nfunction buildMinimapStatic(){\n minimapStatic.width=MINIMAP.w;minimapStatic.height=MINIMAP.h;\n minimapCamera.ready=false;\n}\nfunction drawMinimapBase(){\n const c=minimapCtx;\n c.fillStyle='#090909';c.fillRect(0,0,MINIMAP.w,MINIMAP.h);\n c.save();c.beginPath();c.rect(MINIMAP.pad,MINIMAP.pad,MINIMAP.w-MINIMAP.pad*2,MINIMAP.h-MINIMAP.pad*2);c.clip();\n c.strokeStyle='#ffffff0c';c.lineWidth=.6;\n const grid=240,minGX=Math.floor((minimapCamera.x-MINIMAP.viewW/2)/grid)*grid,maxGX=minimapCamera.x+MINIMAP.viewW/2;\n const minGY=Math.floor((minimapCamera.y-MINIMAP.viewH/2)/grid)*grid,maxGY=minimapCamera.y+MINIMAP.viewH/2;\n for(let x=minGX;x<=maxGX;x+=grid){const p=minimapPoint(x,minimapCamera.y);c.beginPath();c.moveTo(p.x,MINIMAP.pad);c.lineTo(p.x,MINIMAP.h-MINIMAP.pad);c.stroke();}\n for(let y=minGY;y<=maxGY;y+=grid){const p=minimapPoint(minimapCamera.x,y);c.beginPath();c.moveTo(MINIMAP.pad,p.y);c.lineTo(MINIMAP.w-MINIMAP.pad,p.y);c.stroke();}\n for(const z of zones){\n  const r=minimapRect(z.x-z.w/2,z.y-z.h/2,z.w,z.h);\n  if(r.x+r.w<MINIMAP.pad||r.x>MINIMAP.w-MINIMAP.pad||r.y+r.h<MINIMAP.pad||r.y>MINIMAP.h-MINIMAP.pad)continue;\n  c.fillStyle=z.corridor?'#2b2020':z.active?'#202526':'#111415';c.fillRect(r.x,r.y,r.w,r.h);\n  c.strokeStyle=z.corridor?'#654c4c':z.active?'#777':'#333';c.lineWidth=.8;c.strokeRect(r.x+.5,r.y+.5,Math.max(0,r.w-1),Math.max(0,r.h-1));\n }\n const world=minimapRect(MINIMAP.minX,MINIMAP.minY,MINIMAP.maxX-MINIMAP.minX,MINIMAP.maxY-MINIMAP.minY);\n c.strokeStyle='#ffffff24';c.lineWidth=.8;c.strokeRect(world.x+.5,world.y+.5,Math.max(0,world.w-1),Math.max(0,world.h-1));\n c.restore();\n c.strokeStyle='#ffffff33';c.strokeRect(.5,.5,MINIMAP.w-1,MINIMAP.h-1);\n}\nfunction drawMapEdgeArrow(c,point,color,pulse=0){\n const e=minimapEdgePoint(point);c.save();c.translate(e.x,e.y);c.rotate(e.angle+Math.PI/2);\n c.globalAlpha=.82+.18*pulse;c.fillStyle=color;c.strokeStyle='#111';c.lineWidth=1.1;\n c.beginPath();c.moveTo(0,-5.4-pulse);c.lineTo(4.2,3.5);c.lineTo(0,2);c.lineTo(-4.2,3.5);c.closePath();c.fill();c.stroke();c.restore();\n}\nfunction drawHospitalMapMarker(c,h){\n const m=minimapPoint(h.zone.x,h.zone.y),available=h.available!==false,alpha=h.active?1:(available?.34:.16);\n if(!m.inside){if(h.active)drawMapEdgeArrow(c,m,h.color);return;}\n c.save();c.translate(m.x,m.y);c.globalAlpha=alpha;c.fillStyle=h.color;c.strokeStyle=h.active?'#f2f2f2':available?'#888':'#555';c.lineWidth=1.1;\n if(h.role==='support'){c.fillRect(-4,-4,8,8);c.strokeRect(-4,-4,8,8);if(h.id==='supportRecovery'){c.fillStyle='#17241a';c.fillRect(-1,-3,2,6);c.fillRect(-3,-1,6,2);}else{c.fillStyle='#2a1116';c.beginPath();c.moveTo(0,-3.5);c.bezierCurveTo(3,-1,3,2.5,0,4);c.bezierCurveTo(-3,2.5,-3,-1,0,-3.5);c.fill();}}\n else if(available){c.rotate(Math.PI/4);c.fillRect(-3.8,-3.8,7.6,7.6);c.strokeRect(-3.8,-3.8,7.6,7.6);}\n else{c.strokeRect(-3.5,-3.5,7,7);c.beginPath();c.moveTo(-2,-2);c.lineTo(2,2);c.moveTo(2,-2);c.lineTo(-2,2);c.stroke();}\n c.restore();\n}\nfunction drawEventMapMarker(c,x,y,kind){\n const pulse=.5+.5*Math.sin(elapsed*7);c.save();c.translate(x,y);c.globalAlpha=.65+.35*pulse;c.strokeStyle='#fff';c.lineWidth=1.5;c.beginPath();c.arc(0,0,7+pulse*2,0,Math.PI*2);c.stroke();c.globalAlpha=1;const h=hospitalById(kind);c.fillStyle=h?h.color:'#f0d66c';c.strokeStyle='#111';c.lineWidth=1.2;c.beginPath();c.moveTo(0,-7);c.lineTo(6,5);c.lineTo(-6,5);c.closePath();c.fill();c.stroke();c.fillStyle='#111';c.fillRect(-1,-3,2,5);c.fillRect(-1,3,2,2);c.restore();\n}\nfunction eventMapPosition(target){const h=hospitalById(target.hospitalId);if(h?.zone)return{x:h.zone.x,y:h.zone.y};const cx=target.x+target.w/2,cy=target.y+target.h/2;return{x:cx,y:cy};}\nfunction renderMinimap(){\n minimapCamera.x=player.x;minimapCamera.y=player.y;minimapCamera.ready=true;\n drawMinimapBase();\n for(const h of hospitals)drawHospitalMapMarker(minimapCtx,h);\n for(const e of events){\n  if(!e.target||!e.target.active)continue;\n  const pos=eventMapPosition(e.target),m=minimapPoint(pos.x,pos.y),h=hospitalById(e.hospitalId),pulse=.5+.5*Math.sin(elapsed*7);\n  if(m.inside)drawEventMapMarker(minimapCtx,m.x,m.y,e.hospitalId);\n  else drawMapEdgeArrow(minimapCtx,m,h?h.color:'#f0d66c',pulse);\n }\n const x=MINIMAP.w/2,y=MINIMAP.h/2,pulse=.5+.5*Math.sin(elapsed*5);\n minimapCtx.save();minimapCtx.translate(x,y);minimapCtx.globalAlpha=.32+.16*pulse;minimapCtx.strokeStyle='#fff';minimapCtx.lineWidth=1;minimapCtx.beginPath();minimapCtx.arc(0,0,7+pulse,0,Math.PI*2);minimapCtx.stroke();minimapCtx.globalAlpha=1;minimapCtx.fillStyle='#fff';minimapCtx.strokeStyle='#111';minimapCtx.lineWidth=1.3;minimapCtx.beginPath();minimapCtx.moveTo(0,-5.5);minimapCtx.lineTo(4.4,4.5);minimapCtx.lineTo(0,2.7);minimapCtx.lineTo(-4.4,4.5);minimapCtx.closePath();minimapCtx.fill();minimapCtx.stroke();minimapCtx.restore();\n}\n";
+  html=html.slice(0,start)+replacement+html.slice(end);
+  document.open();document.write(html);document.close();
+ }catch(e){
+  loading.style.display='none';error.style.display='block';error.textContent=`Living Hospital v0.3.4.a 로드 실패\n\n${e?.message||e}`;
+ }
+})();
+</script>
+</body>
+</html>

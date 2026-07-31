@@ -1,0 +1,41 @@
+1070:  ctx.fillStyle=def.color;ctx.font=`900 ${Math.min(12,Math.max(9,H*.026))}px -apple-system,sans-serif`;ctx.fillText(def.ritual,cx,cy+baseIcon*.72);
+1071:  ctx.fillStyle='#fff';ctx.font=`800 ${Math.min(20,Math.max(14,H*.043))}px -apple-system,sans-serif`;ctx.fillText(def.name,cx,cy+baseIcon*.96);ctx.globalAlpha=.92*a;ctx.font=`600 ${Math.min(16,Math.max(11,H*.034))}px -apple-system,sans-serif`;ctx.fillText(`“${def.quote}”`,cx,Math.min(H-30,cy+baseIcon*1.33));
+1072:  ctx.globalAlpha=.62*a;ctx.font=`700 ${Math.min(10,Math.max(8,H*.022))}px -apple-system,sans-serif`;ctx.fillText(organCinematicPreview?'확인을 기다립니다':'이식 진행',cx,H-17);ctx.fillStyle='#ffffff2e';ctx.fillRect(W*.28,H-10,W*.44,2);ctx.fillStyle=def.color;ctx.fillRect(W*.28,H-10,W*.44*p,2);
+1073:  ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.globalAlpha=1;ctx.restore();
+1074: }
+1075: 
+1076: 
+1077: function updateHudDom(force=false){
+1078:  const hpW=(player.hp/player.maxHp*100).toFixed(1)+'%',xpW=(player.xp/player.nextGrowthXp*100).toFixed(1)+'%',time=fmt(elapsed);
+1079:  if(force||ui.hpFill.style.width!==hpW)ui.hpFill.style.width=hpW;
+1080:  if(force||ui.xpFill.style.width!==xpW)ui.xpFill.style.width=xpW;
+1081:  if(force||ui.timer.textContent!==time)ui.timer.textContent=time;
+1082: }
+1083: function updateDebugDom(){ui.debug.textContent=`FPS ${Math.round(fps)} · LOW ${Math.round(minFps)} · 지연 ${slowFrames} · Q${qualityLevel} · 적 ${enemies.length} · 혈흔 ${clotFields.length} · 응고 ${clotCritFx.length} · 구슬 ${orbs.length} · 장기 ${organDrops.length} · 아이템 ${pickups.length} · 풀 ${POOLS.enemy.length}/${POOLS.particle.length}`;}
+1084: 
+1085: 
+1086: function showPause(){if(gameOver||transplantOpen||organCinematicTimer>0||organCinematicPreview)return;clearSelectionUi();paused=true;syncActionButton();ui.overlay.style.display='flex';ui.overlayTitle.textContent='일시정지';ui.cards.style.display='none';ui.pauseMenu.style.display='block';renderPauseSummary();}
+1087: function hideOverlay(){if(organCinematicPreview)stopOrganPreview();ui.overlay.style.display='none';ui.cards.innerHTML='';ui.pauseMenu.style.display='none';clearSelectionUi();}
+1088: function endGame(completed=false,reason=completed?'boss-defeated':'player-death'){
+1089:  if(gameOver)return;gameOver=true;paused=true;running=false;stopChapterBgm();best=Math.max(best,elapsed);storageSet('lh_best_v034',String(best));const earned=completed?0:Math.max(1,Math.min(5,Math.floor(elapsed/180)+1));if(earned){meta.specimens+=earned;saveMeta();}ui.overlay.style.display='flex';ui.overlayTitle.textContent=completed?'병동의 작동이 멈췄다':'실험체 사망';ui.cards.style.display='block';ui.pauseMenu.style.display='none';ui.cards.innerHTML=`<div style="text-align:center"><p>${completed?'잠겨 있던 출구가 열렸습니다.':'육체가 더 이상 버티지 못했습니다.'}</p><p>생존 시간: ${fmt(elapsed)} · 처치 수: ${kills}</p><p>회수된 검체: ${completed?8:earned}</p><p>최고 기록: ${fmt(best)}</p><button class="btn" id="returnLobby">대기실로</button></div>`;document.getElementById('returnLobby').onclick=()=>{hideOverlay();openLobby();};
+1090: }
+1091: 
+1092: function fmt(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+1093: function loop(now){
+1094:  if(!running)return;requestAnimationFrame(loop);if(!loopClock){loopClock=now;last=now;return;}const frameMs=1000/PERF.targetFps,rawDelta=now-loopClock,delta=Math.min(50,rawDelta);if(delta<frameMs*.92)return;loopClock=now;
+1095:  if(!paused&&!gameOver&&elapsed>=PERF_WARMUP){const inst=1000/Math.max(1,rawDelta);minFps=Math.min(minFps,inst);maxFrameMs=Math.max(maxFrameMs,rawDelta);frameMsSum+=rawDelta;frameSamples++;if(rawDelta>33.3)slowFrames++;}
+1096:  const dt=delta/1000;if(organCinematicPreview)organPreviewElapsed+=dt;fpsAcc+=dt;fpsFrames++;if(fpsAcc>=.75){fps=fpsFrames/fpsAcc;fpsAcc=0;fpsFrames=0;}const portrait=matchMedia('(orientation:portrait)').matches;if(hitStopTimer>0&&!paused&&!portrait){hitStopTimer=Math.max(0,hitStopTimer-dt);accumulator=0;draw();return;}accumulator=Math.min(.05,accumulator+dt);if(!paused&&!portrait){let steps=0;while(accumulator>=1/60&&steps<3){update(1/60);accumulator-=1/60;steps++;}}else accumulator=0;draw();
+1097: }
+1098: 
+1099: function tStart(e){e.preventDefault();for(const t of e.changedTouches)if(t.clientX<W*.48&&!joystick.active){Object.assign(joystick,{active:true,id:t.identifier,sx:t.clientX,sy:t.clientY,x:t.clientX,y:t.clientY,dx:0,dy:0});}}
+1100: function tMove(e){e.preventDefault();for(const t of e.changedTouches)if(t.identifier===joystick.id){let dx=t.clientX-joystick.sx,dy=t.clientY-joystick.sy,d=Math.hypot(dx,dy)||1;if(d>joystick.max){dx=dx/d*joystick.max;dy=dy/d*joystick.max;}Object.assign(joystick,{x:joystick.sx+dx,y:joystick.sy+dy,dx:dx/joystick.max,dy:dy/joystick.max});}}
+1101: function tEnd(e){e.preventDefault();for(const t of e.changedTouches)if(t.identifier===joystick.id)Object.assign(joystick,{active:false,id:null,dx:0,dy:0});}
+1102: canvas.addEventListener('touchstart',tStart,{passive:false});canvas.addEventListener('touchmove',tMove,{passive:false});canvas.addEventListener('touchend',tEnd,{passive:false});canvas.addEventListener('touchcancel',tEnd,{passive:false});
+1103: function releaseSelectionInputGuard(){if(selectionNeedsFreshPointer){selectionNeedsFreshPointer=false;selectionInputGuardUntil=performance.now()+170;}}
+1104: addEventListener('pointerup',releaseSelectionInputGuard,true);addEventListener('touchend',releaseSelectionInputGuard,true);addEventListener('touchcancel',releaseSelectionInputGuard,true);
+1105: addEventListener('keydown',e=>{keys[e.key]=true;if(e.key==='Enter'&&selectionMode&&!e.repeat){if(!ui.confirmSelectionBtn.disabled&&selectionCanInteract())selectionConfirmAction?.();return;}if((e.key==='e'||e.key==='Enter')&&!e.repeat)useActionButton();});addEventListener('keyup',e=>keys[e.key]=false);
+1106: ui.confirmSelectionBtn.onclick=()=>{if(ui.confirmSelectionBtn.disabled||!selectionCanInteract())return;selectionConfirmAction?.();};
+1107: ui.selectionCancelBtn.onclick=()=>{if(!selectionCanInteract())return;if(selectionMode==='organ'&&organCinematicPreview){returnToOrganSelection();return;}selectionCancelAction?.();};
+1108: ui.audioToggleBtn.onclick=()=>{soundEnabled=!soundEnabled;if(soundEnabled){initAudio();tone(520,.08,'sine',.02,760);startChapterBgm(!!chapterFlags.bossPrelude);}else{stopCinematicAudio();stopChapterBgm();}renderPauseSummary();};ui.actionButton.onclick=useActionButton;ui.pause.onclick=showPause;ui.resumeBtn.onclick=()=>{paused=false;hideOverlay();syncActionButton();};ui.restartBtn.onclick=()=>{reset();startChapterBgm(false);last=performance.now();loopClock=0;if(!running){running=true;requestAnimationFrame(loop);}};ui.mainMenuBtn.onclick=()=>{saveMeta();stopCinematicAudio();stopChapterBgm();running=false;paused=false;growthChoosing=false;gameOver=true;dialogueState=null;bossState=null;bossIntroTimer=0;bossDeathTimer=0;document.body.classList.remove('boss-cinematic');clearSelectionUi();hideOverlay();resetJoystickInput();showMetaScreen('startScreen');};ui.startBtn.onclick=()=>openCharacterSelect('title');ui.recordBtn.onclick=()=>openRecords('title');ui.titleSettingsBtn.onclick=showSettings;ui.characterBackBtn.onclick=()=>characterReturn==='lobby'?openLobby():showMetaScreen('startScreen');ui.characterConfirmBtn.onclick=()=>{saveMeta();openLobby();};ui.changeCharacterBtn.onclick=()=>openCharacterSelect('lobby');ui.lobbyRecordBtn.onclick=()=>openRecords('lobby');ui.enterWardBtn.onclick=startChapterRun;ui.recordBackBtn.onclick=()=>ui.recordScreen.dataset.from==='lobby'?openLobby():showMetaScreen('startScreen');ui.settingsBackBtn.onclick=()=>showMetaScreen('startScreen');ui.metaAudioBtn.onclick=()=>{soundEnabled=!soundEnabled;if(!soundEnabled)stopChapterBgm();syncMetaAudio();};ui.dialogueBox.onclick=advanceDialogue;showMetaScreen('startScreen');
+1109: })();
+1110: 

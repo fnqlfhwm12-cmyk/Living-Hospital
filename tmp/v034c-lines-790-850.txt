@@ -1,0 +1,61 @@
+790:  const count=Math.min(initial?10:8,pool.length),priority=pool.filter(e=>e.anomaly||e.maxHp>=80).slice(0,Math.min(3,count)),selected=[...priority];for(const e of pool){if(selected.length>=count)break;if(!selected.includes(e))selected.push(e);}
+791:  for(const e of selected){e.charm=Math.max(e.charm||0,e.anomaly?2.8:5.2);e.charmHit=0;e.flash=.12;for(let n=0;n<3;n++)emitParticle(e.x,e.y,(Math.random()-.5)*90,(Math.random()-.5)*90,.28,2+Math.random()*2,ORGAN_DEFS.brain.color);}
+792: }
+793: 
+794: function update(dt){
+795:  const realDt=dt;if(updateBossCinematics(realDt))return;updateChapterTimeline();updateBossHazards(dt);updateSpecialWeapons(dt);if(organCinematicTimer>0){organCinematicTimer=Math.max(0,organCinematicTimer-realDt);dt*=.16;if(organCinematicTimer<=0){organCinematicSlot=null;document.body.classList.remove('organ-cinematic');syncActionButton();}}
+796:  frameTick++;elapsed+=dt;defibrillatorTimer=Math.max(0,defibrillatorTimer-dt);defibrillatorPulseClock-=dt;waterReaction=Math.max(0,waterReaction-dt);bodyTwitch=Math.max(0,bodyTwitch-dt);updatePickupRespawns(dt);pickupAuditClock-=dt;if(pickupAuditClock<=0){pickupAuditClock=2;ensurePickupPopulation();}if(defibrillatorTimer>0&&defibrillatorPulseClock<=0){fireDefibrillator();defibrillatorPulseClock=.82;}transplantCooldown=Math.max(0,transplantCooldown-realDt);updateAdaptiveQuality(dt);hudClock-=dt;debugClock-=dt;player.invuln=Math.max(0,player.invuln-dt);player.autoBuff=Math.max(0,player.autoBuff-dt);hitVignette=Math.max(0,hitVignette-dt);broadcastTimer=Math.max(0,broadcastTimer-dt);toastTimer=Math.max(0,toastTimer-dt);if(toastTimer<=0)ui.toast.style.opacity='0';
+797:  eventClock=1e9;anomalyClock=1e9;
+798:  const totalRegen=player.regen+organMods.regen;if(totalRegen>0)player.hp=Math.min(player.maxHp,player.hp+totalRegen*dt);organFx=Math.max(0,organFx-dt*1.25);organPulse=Math.max(0,organPulse-dt*1.8);cameraShake=Math.max(0,cameraShake-dt*24);globalMagnet=Math.max(0,globalMagnet-dt);for(let i=organRings.length-1;i>=0;i--){const r=organRings[i];r.life-=dt;r.r+=(r.max-r.r)*Math.min(1,dt*(r.slot==='stomach'?3.5:5));if(r.life<=0)organRings.splice(i,1);}if(activeOrgan==='heart'){heartBeatClock-=dt;if(heartBeatClock<=0){heartBeatClock=5.6;triggerOrganActivation('heart',true);}}if(activeOrgan==='brain'){brainClock-=dt;if(brainClock<=0){brainClock=12;applyBrainInfluence(false);triggerOrganActivation('brain',true);}}if(activeOrgan==='stomach'){stomachClock-=dt;if(stomachClock<=0){stomachClock=30;globalMagnet=5.5;triggerOrganActivation('stomach',true);}}
+799:  let ix=joystick.dx,iy=joystick.dy;
+800:  if(keys.ArrowLeft||keys.a)ix=-1;if(keys.ArrowRight||keys.d)ix=1;if(keys.ArrowUp||keys.w)iy=-1;if(keys.ArrowDown||keys.s)iy=1;
+801:  const il=Math.hypot(ix,iy);if(il>.16){ix/=il;iy/=il;player.facingX=ix;player.facingY=iy;}else{ix=0;iy=0;}
+802:  const sp=player.speed*(1+player.moveBonus)*organMods.moveSpeed;player.x+=ix*sp*dt;player.y+=iy*sp*dt;for(const o of queryObjects(player.x,player.y,player.r+48))resolveCircleRect(player,o);updateThrombosis(dt,il>.16);tryTransplantStation();
+803:  camera.x+=(player.x-camera.x)*Math.min(1,dt*5.8);camera.y+=(player.y-camera.y)*Math.min(1,dt*5.8);
+804:  minimapClock+=dt;if(minimapClock>=PERF.minimapInterval[qualityLevel]){minimapClock=0;renderMinimap();}
+805: 
+806:  for(const o of objects){o.flash=Math.max(0,o.flash-dt);o.reveal=Math.max(0,(o.reveal||0)-dt);o.hitJolt=Math.max(0,(o.hitJolt||0)-dt);}
+807:  spawnTimer-=dt;
+808:  const phase=Math.min(1,elapsed/900),targetCount=chapterFlags.bossPrelude?0:Math.floor(18+phase*66+Math.max(0,growthCount-5)*1.2),cap=Math.min(PERF.enemyCap,125);maxEnemies=Math.max(maxEnemies,enemies.length);maxOrbs=Math.max(maxOrbs,orbs.length);
+809:  let regularCount=0;for(const e of enemies)if(!e.wavePersistent)regularCount++;
+810:  const rate=Math.max(.075,.62-elapsed/1050-growthCount*.006);
+811:  if(!chapterFlags.bossPrelude&&spawnTimer<=0&&regularCount<cap){const deficit=Math.max(0,targetCount-regularCount),burst=deficit>35?3:deficit>16?2:1;for(let n=0;n<burst&&regularCount+n<cap;n++)spawnEnemy();spawnTimer=rate;}
+812:  rebuildEnemyGrid();for(const w of Object.values(weapons))if(w.level>0)w.timer-=dt;
+813:  const asp=atkSpeedMult();
+814:  if(weapons.blood.level>0&&weapons.blood.timer<=0){fireBlood();weapons.blood.timer=bloodStreamStats(weapons.blood.level).cooldown/asp;}
+815:  if(weapons.bone.level>0&&weapons.bone.timer<=0){fireBone();weapons.bone.timer=Math.max(1.72,weapons.bone.cd*Math.pow(.978,weapons.bone.level-1));}
+816:  if(weapons.heart.level>0&&weapons.heart.timer<=0){fireHeart();weapons.heart.timer=weapons.heart.cd*Math.pow(.97,weapons.heart.level-1)/asp;}
+817:  if(weapons.stitch.level>0&&weapons.stitch.timer<=0){fireStitch();weapons.stitch.timer=Math.max(.62,weapons.stitch.cd*Math.pow(.965,weapons.stitch.level-1)/asp);}
+818:  if(weapons.incision.level>0&&weapons.incision.timer<=0){fireIncision();weapons.incision.timer=Math.max(1.35,weapons.incision.cd*Math.pow(.965,weapons.incision.level-1)/asp);}
+819: 
+820:  const farLimit=Math.max(W,H)*1.65,farLimit2=farLimit*farLimit;
+821:  for(let i=enemies.length-1;i>=0;i--){
+822:   const e=enemies[i];e.flash=Math.max(0,e.flash-dt);e.hitCd=Math.max(0,e.hitCd-dt);e.phaseTimer=Math.max(0,e.phaseTimer-dt);e.routeTimer=Math.max(0,(e.routeTimer||0)-dt);e.rerouteCooldown=Math.max(0,(e.rerouteCooldown||0)-dt);e.navCheck=(e.navCheck||0)-dt;e.shockStun=Math.max(0,(e.shockStun||0)-dt);e.clotStun=Math.max(0,(e.clotStun||0)-dt);e.clotStunResist=Math.max(0,(e.clotStunResist||0)-dt);e.wallStun=Math.max(0,(e.wallStun||0)-dt);if(e.wallStun<=0)e.wallStunMax=0;e.knockbackLock=Math.max(0,(e.knockbackLock||0)-dt);e.charm=Math.max(0,(e.charm||0)-dt);e.charmHit=Math.max(0,(e.charmHit||0)-dt);
+823:   const clot=thrombosisContact(e);let clotSlow=0;if(clot){const resist=e.anomaly?.55:e.type==='fat'?.75:1;clotSlow=clot.slow*resist;e.clotTick=(e.clotTick??.08)-dt;if(e.clotTick<=0){const spawnId=e.spawnId||0,firstContact=!clot.critChecked.has(spawnId);if(firstContact)clot.critChecked.add(spawnId);e.hp-=clot.damage;e.flash=Math.max(e.flash,.045);e.clotTick=clot.tick;if(firstContact&&e.hp>0&&e.clotStunResist<=0){const crit=rollWeaponCrit('autophagy');resolveWeaponCrit('autophagy',{crit,enemy:e,field:clot,x:e.x,y:e.y});}}}else e.clotTick=Math.min(e.clotTick??.08,.08);if(e.hp<=0&&!(e.boneLaunchDuration>0)){killEnemy(i,e);continue;}if(e.type==='collector'){updateCollector(e,dt);if(e.hp<=0)killEnemy(i,e);continue;}
+824:   const launched=updateEnemyBoneLaunch(e,dt),curDx=player.x-e.x,curDy=player.y-e.y,dist2=curDx*curDx+curDy*curDy,coagulated=e.clotStun>0,wallStunned=e.wallStun>0,hardStunned=coagulated||wallStunned,controlMult=hardStunned?0:(e.shockStun>0?.16:1)*(1-clotSlow),moveSpeed=e.speed*controlMult,navEligible=!launched&&!hardStunned&&e.charm<=0&&!(e.anomaly&&e.formationTime>0);
+825:   if(navEligible&&e.routeTimer<=0&&e.navCheck<=0&&e.knockbackLock<=0){e.navCheck=.16+e.aiPhase*.025;if(!pathClearTo(e.x,e.y,player.x,player.y,e.r+2))assignEnemyReroute(e);}
+826:   if(launched){e.dist=Math.sqrt(dist2);}
+827:   else if(hardStunned){e.dist=Math.sqrt(dist2);}
+828:   else if(e.routeTimer>0&&e.charm<=0){const rdx=e.routeX-e.x,rdy=e.routeY-e.y,rl=Math.hypot(rdx,rdy)||1;if(rl<16){if(e.routeStage===1){e.routeX=e.routeNextX;e.routeY=e.routeNextY;e.routeStage=2;e.routeTimer=3.5;}else{e.routeTimer=0;e.routeStage=0;e.routeGateId=null;e.navCheck=0;}}else{e.x+=rdx/rl*moveSpeed*dt;e.y+=rdy/rl*moveSpeed*dt;e.dist=Math.sqrt(dist2);}}
+829:   else if(e.charm>0){const target=nearestEnemy(e,e.x,e.y,285);if(target){const dx=target.x-e.x,dy=target.y-e.y,l=Math.hypot(dx,dy)||1;e.x+=dx/l*moveSpeed*dt;e.y+=dy/l*moveSpeed*dt;if(l<e.r+target.r+6&&e.charmHit<=0){const raw=e.damage*1.05+target.maxHp*.018,brainDamage=Math.min(target.anomaly?30:42,Math.max(8,raw));target.hp-=brainDamage;target.flash=.14;e.charmHit=.62;brainLinks.push({x:e.x,y:e.y,tx:target.x,ty:target.y,life:.24,maxLife:.24});for(let n=0;n<4;n++)emitParticle(target.x,target.y,(Math.random()-.5)*130,(Math.random()-.5)*130,.3,2+Math.random()*2,ORGAN_DEFS.brain.color);}}else e.charm=0;}
+830:   else if(e.anomaly&&e.formationTime>0){e.formationTime-=dt;const tx=player.x+Math.cos(e.formationAngle)*e.formationRadius,ty=player.y+Math.sin(e.formationAngle)*e.formationRadius,fdx=tx-e.x,fdy=ty-e.y,fl=Math.hypot(fdx,fdy)||1;e.x+=fdx/fl*moveSpeed*dt;e.y+=fdy/fl*moveSpeed*dt;e.dist=Math.sqrt(dist2);}
+831:   else{const near=dist2<(Math.max(W,H)*.9)**2,refresh=near?((frameTick+e.aiPhase)%2===0):((frameTick+e.aiPhase)%3===0);if(refresh||!Number.isFinite(e.dist)){const l=Math.sqrt(dist2)||1,tx=curDx/l,ty=curDy/l;if(!Number.isFinite(e.dirX)||Math.hypot(e.dirX,e.dirY)<.2){e.dirX=tx;e.dirY=ty;}else{const blend=near?.42:.28;e.dirX+=(tx-e.dirX)*blend;e.dirY+=(ty-e.dirY)*blend;const dl=Math.hypot(e.dirX,e.dirY)||1;e.dirX/=dl;e.dirY/=dl;}e.dist=l;}if(e.type==='parasite'){const desired=250;if(e.dist>desired+25){e.x+=e.dirX*moveSpeed*dt;e.y+=e.dirY*moveSpeed*dt}else if(e.dist<desired-25){e.x-=e.dirX*moveSpeed*.7*dt;e.y-=e.dirY*moveSpeed*.7*dt}e.shootCd-=dt;if(e.shootCd<=0&&enemyShots.length<28){const shot=takePool('enemyShot');Object.assign(shot,{x:e.x,y:e.y,vx:e.dirX*175,vy:e.dirY*175,r:6*SCALE.projectile,damage:e.damage,life:2.6});enemyShots.push(shot);e.shootCd=2.35+Math.random()*.55;}}else{e.x+=e.dirX*moveSpeed*dt;e.y+=e.dirY*moveSpeed*dt;}}
+832:   let wallBlocked=false;if(inViewWorld(e.x,e.y,e.r,260)||(frameTick+e.aiPhase)%4===0)for(const o of queryObjects(e.x,e.y,e.r+54)){const hit=resolveCircleRect(e,o);if(hit&&o.type==='wall')wallBlocked=true;}
+833:   if(wallBlocked&&e.knockbackLock<=0){e.wallBlockedTime=Math.min(3,(e.wallBlockedTime||0)+dt);if(navEligible&&e.rerouteCooldown<=0&&(e.routeTimer<=0||e.wallBlockedTime>.42)){assignEnemyReroute(e,e.routeTimer>0);e.rerouteCooldown=.20;}}else e.wallBlockedTime=Math.max(0,(e.wallBlockedTime||0)-dt*3);
+834:   e.stuckCheck+=dt;if(e.stuckCheck>=.55){const sample=e.stuckCheck,moved=Math.hypot(e.x-e.lastX,e.y-e.lastY),wantsMove=e.type==='parasite'?(e.dist>275||e.dist<225):e.dist>player.r+e.r+8,minProgress=Math.max(3,moveSpeed*sample*.08);e.stuckTimer=wantsMove&&moved<minProgress?e.stuckTimer+sample:Math.max(0,e.stuckTimer-sample*2);if(e.stuckTimer>.75&&navEligible){assignEnemyReroute(e,true);e.stuckTimer=0;}e.lastX=e.x;e.lastY=e.y;e.stuckCheck=0;}
+835:   const pdx=player.x-e.x,pdy=player.y-e.y,postDist2=pdx*pdx+pdy*pdy;e.farTimer=postDist2>farLimit2?e.farTimer+dt:0;const visible=inViewWorld(e.x,e.y,e.r,40);if(!e.wavePersistent&&e.farTimer>5.5)recycleEnemyOffscreen(e);else if(!visible&&e.stuckTimer>8)recycleEnemyOffscreen(e);
+836:   const hitR=player.r+e.r;if(!launched&&!hardStunned&&postDist2<hitR*hitR&&e.hitCd<=0&&player.invuln<=0){applyPlayerDamage(e.damage,.45);e.hitCd=.8;if(gameOver)return;}if(e.hp<=0&&!(e.boneLaunchDuration>0))killEnemy(i,e);
+837:  }
+838:  rebuildEnemyGrid();
+839:  if(frameTick%3===0){for(const e of enemies){if(e.clotStun>0||e.wallStun>0||!inViewWorld(e.x,e.y,e.r,220))continue;let checked=0;for(const n of queryEnemies(e.x,e.y,e.r*3.2)){if(n===e||checked++>7)continue;const sx=e.x-n.x,sy=e.y-n.y,sd2=sx*sx+sy*sy,routed=e.routeTimer>0||n.routeTimer>0,minD=(e.r+n.r)*(routed?.80:.72);if(sd2>0&&sd2<minD*minD){const sd=Math.sqrt(sd2),push=(minD-sd)*(routed?.067:.052);e.x+=sx/sd*push;e.y+=sy/sd*push;}}for(const o of queryObjects(e.x,e.y,e.r+40))if(o.type==='wall')resolveCircleRect(e,o);}}
+840:  for(let i=enemyShots.length-1;i>=0;i--){
+841:   const s=enemyShots[i];s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt;
+842:   let blocked=false;for(const o of queryObjects(s.x,s.y,s.r+8)){if(o.active&&o.solid&&rectCircle(o,s.x,s.y,s.r)){blocked=true;break;}}
+843:   if(blocked){removePooledAt(enemyShots,i,'enemyShot');continue;}
+844:   const dx=player.x-s.x,dy=player.y-s.y,hitR=player.r+s.r;
+845:   if(dx*dx+dy*dy<hitR*hitR&&player.invuln<=0){applyPlayerDamage(s.damage,.45);removePooledAt(enemyShots,i,'enemyShot');if(gameOver)return;continue;}
+846:   if(s.life<=0)removePooledAt(enemyShots,i,'enemyShot');
+847:  }
+848:  for(let si=slashes.length-1;si>=0;si--){
+849:   const a=slashes[si];a.age=(a.age||0)+dt;a.life-=dt;a.x=player.x;a.y=player.y;
+850:   if(a.kind==='fracture'){

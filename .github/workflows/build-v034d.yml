@@ -2,7 +2,7 @@ name: Build v0.3.4.d
 on:
   push:
     paths:
-      - .github/workflows/build-v034d.yml
+      - .build-trigger-v034d
   workflow_dispatch:
 permissions:
   contents: write

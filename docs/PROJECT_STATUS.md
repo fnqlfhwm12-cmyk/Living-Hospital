@@ -4,8 +4,8 @@
 
 ## 현재 기준
 
-- 저장소 기준 최신 빌드: **v0.3.4.c**
-- 기준 파일: `Living_Hospital_v0.3.4.c.html`
+- 저장소 기준 최신 빌드: **v0.3.4.d**
+- 기준 파일: `Living_Hospital_v0.3.4.d.html`
 - 기본 브랜치: `main`
 - 개발 브랜치: `develop`
 - 일반 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/`

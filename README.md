@@ -2,8 +2,8 @@
 
 모바일 가로 화면을 기준으로 제작 중인 싱글 파일 HTML 액션 로그라이크 프로토타입입니다.
 
-- 현재 저장소 기준 빌드: **v0.3.4.c**
-- 현재 실행 파일: [`Living_Hospital_v0.3.4.c.html`](./Living_Hospital_v0.3.4.c.html)
+- 현재 저장소 기준 빌드: **v0.3.4.d**
+- 현재 실행 파일: [`Living_Hospital_v0.3.4.d.html`](./Living_Hospital_v0.3.4.d.html)
 - 일반 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/`
 - 계측 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html`
 - 주 테스트 환경: **iPhone / Safari 계열 웹뷰 / 가로 화면**

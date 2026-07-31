@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix/v034f-suture-map-spawn
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:

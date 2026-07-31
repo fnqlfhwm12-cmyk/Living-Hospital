@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Living Hospital v0.3.4.b · Chapter 1</title>
+<link rel="stylesheet" href="v034/style.css?v=034" />
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud">
+  <div id="topLeft">
+    <div id="organHud" aria-label="메인 장기"></div>
+    <div id="barStack">
+      <div class="statusRow"><div class="bar" aria-label="체력"><div id="hpFill" class="fill"></div></div></div>
+      <div class="statusRow"><div class="bar" aria-label="경험치"><div id="xpFill" class="fill xp"></div></div></div>
+    </div>
+  </div>
+  <div id="topCenter"><div id="timer">00:00</div></div>
+  <button id="pause" aria-label="일시정지">Ⅱ</button>
+  <canvas id="minimap" width="124" height="88" aria-label="미니맵"></canvas>
+  <div id="debug"></div>
+  <div id="toast"></div>
+  <button id="actionButton" aria-label="사용 가능한 상호작용 없음" disabled></button>
+</div>
+
+<div id="overlay">
+  <div id="panel">
+    <h2 id="overlayTitle">성장 선택</h2>
+    <div id="cards"></div>
+    <div id="selectionFooter">
+      <button class="btn" id="selectionCancelBtn">보류</button>
+      <button class="btn" id="confirmSelectionBtn" disabled>확인</button>
+    </div>
+    <div id="pauseMenu">
+      <div id="pauseSummary"></div>
+      <div class="pauseActions">
+        <button class="btn settingBtn" id="audioToggleBtn">음향 켜짐</button>
+        <button class="btn" id="resumeBtn">계속하기</button>
+        <button class="btn" id="restartBtn">재시작</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="rotateScreen">
+  <div id="rotateCard" style="text-align:center;">
+    <h2>기기를 가로로 돌려주세요</h2>
+    <p class="muted">세로 화면에서는 플레이가 자동으로 멈춥니다.</p>
+  </div>
+</div>
+
+<div id="startScreen" class="metaScreen active">
+  <div id="startCard" class="metaPanel" style="text-align:center;max-width:720px">
+    <h1>Living Hospital</h1>
+    <p class="muted">Chapter 1 · 비어 있는 자리</p>
+    <p>병동은 아직 작동 중입니다. 기록되지 않은 것들이 먼저 깨어납니다.</p>
+    <div class="menuStack">
+      <button class="btn menuBtn" id="startBtn">시작</button>
+      <button class="btn menuBtn" id="recordBtn">기록</button>
+      <button class="btn menuBtn" id="titleSettingsBtn">설정</button>
+    </div>
+  </div>
+</div>
+<div id="characterScreen" class="metaScreen"><div class="metaPanel"><h2>수용 개체 선택</h2><div id="characterGrid" class="metaGrid"></div><div class="metaFooter"><button class="btn" id="characterBackBtn">뒤로</button><button class="btn" id="characterConfirmBtn">대기실로</button></div></div></div>
+<div id="lobbyScreen" class="metaScreen"><div class="metaPanel"><div class="lobbyLayout"><section class="lobbyBox" id="lobbyCharacter"></section><section class="lobbyBox" id="lobbyAbility"></section></div><div class="metaFooter"><button class="btn" id="changeCharacterBtn">개체 변경</button><button class="btn" id="lobbyRecordBtn">기록</button><button class="btn" id="enterWardBtn">병동 진입</button></div></div></div>
+<div id="recordScreen" class="metaScreen"><div class="metaPanel"><h2>회수 기록</h2><div id="recordContent"></div><div class="metaFooter"><button class="btn" id="recordBackBtn">돌아가기</button></div></div></div>
+<div id="settingsScreen" class="metaScreen"><div class="metaPanel" style="max-width:560px"><h2>설정</h2><div class="abilityRow"><div><b>음향</b><p class="muted">효과음과 병동 BGM</p></div><button class="btn" id="metaAudioBtn">켜짐</button></div><div class="metaFooter"><button class="btn" id="settingsBackBtn">돌아가기</button></div></div></div>
+<div id="dialogueBox" class="dialogueBox"><div id="dialogueName" class="dialogueName"></div><div id="dialogueText" class="dialogueText"></div><div class="dialogueHint">화면을 눌러 계속</div></div>
+<div class="cinematicShade"></div>
+
+<div id="bootLoading" style="position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;background:#100d0d;color:#fff;font:700 14px -apple-system,sans-serif">병동을 복구하는 중입니다.</div>
+<div id="bootFailure" style="position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:#100d0d;color:#fff;text-align:center;padding:24px;box-sizing:border-box"><div><h2>복구가 중단되었습니다.</h2><p></p><button onclick="location.reload()" style="border:1px solid #fff;background:#251d1d;color:#fff;border-radius:10px;padding:10px 16px">다시 시도</button></div></div>
+<script>
+(() => {
+ const parts=["v034b/game.gz.part01.txt","v034b/game.gz.part02.txt","v034b/game.gz.part03.txt","v034b/game.gz.part04.txt"];
+ const fail=(message)=>{const el=document.getElementById('bootFailure');if(el){el.style.display='flex';el.querySelector('p').textContent=message;}};
+ Promise.all(parts.map(async path=>{const response=await fetch(path,{cache:'no-store'});if(!response.ok)throw new Error(`${path} · HTTP ${response.status}`);return response.text();}))
+  .then(async chunks=>{
+   if(!('DecompressionStream' in window))throw new Error('이 브라우저는 압축 해제를 지원하지 않습니다.');
+   const binary=atob(chunks.join('').replace(/\s+/g,''));
+   const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+   const source=await new Response(stream).text();
+   const blob=new Blob([source],{type:'text/javascript'}),script=document.createElement('script'),url=URL.createObjectURL(blob);
+   script.src=url;
+   script.onload=()=>{URL.revokeObjectURL(url);document.getElementById('bootLoading')?.remove();};
+   script.onerror=()=>fail('게임 스크립트를 시작하지 못했습니다.');
+   document.body.appendChild(script);
+  })
+  .catch(error=>fail(`업데이트 파일을 불러오지 못했습니다. ${error.message}`));
+})();
+</script>
+</body>
+</html>

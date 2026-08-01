@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix/v034f-suture-map-spawn
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -29,8 +32,6 @@ jobs:
           from pathlib import Path
           import base64, hashlib
           parts=[Path(f'scripts/v034f-patch.part{i:02}.b64').read_text().strip() for i in range(1,8)]
-          # part06 was uploaded with the next two base64 characters and padding attached;
-          # restore the original fixed-width split before concatenation.
           if parts[5].endswith('eQ=='):
               parts[5]=parts[5][:-4]
           payload=base64.b64decode(''.join(parts), validate=True)

@@ -60,7 +60,7 @@ jobs:
           assert not missing, missing
           assert "damageBreakablesAround(ax+f.ux*f.len*.5" not in source
           digest=hashlib.sha256(source.encode()).hexdigest()
-          assert digest=='86fdcfc3cbe1f25517d44c71ac3c4aa37f7dc677816d7ea25df3bee30f3b20a8', digest
+          assert digest=='012d0c26745ae6dcbf573d8a592db3da67cd8112dd2a516a8386029a59065eed', digest
           PY
       - name: Build compressed runtime and loader
         run: |

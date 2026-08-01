@@ -11,7 +11,7 @@
 </style>
 </head>
 <body>
-<iframe id="gameFrame" title="Living Hospital" src="./Living_Hospital_v0.3.4.g.html" allow="autoplay"></iframe>
+<iframe id="gameFrame" title="Living Hospital" src="./Living_Hospital_v0.3.4.h.html" allow="autoplay"></iframe>
 <div id="shade"></div>
 <button id="toggle" type="button" aria-label="비상 기록 열기">R</button>
 <section id="panel" aria-label="플레이테스트 기록">
@@ -21,12 +21,12 @@
 <div class="actions">
 <button id="copyBtn" type="button">보고서 복사</button><button id="shareBtn" type="button">공유</button>
 <button id="resetBtn" type="button">기록 초기화</button><button id="closeBtn" type="button">닫기</button>
-<a class="wide" href="./Living_Hospital_v0.3.4.g.html">일반 플레이 열기</a>
+<a class="wide" href="./Living_Hospital_v0.3.4.h.html">일반 플레이 열기</a>
 </div><div id="status" role="status"></div>
 </section>
 <script>
 (()=>{'use strict';
-const PROTOCOL='LH_PLAYTEST_V1',GAME_FILE='Living_Hospital_v0.3.4.g.html',frame=document.getElementById('gameFrame'),toggle=document.getElementById('toggle'),panel=document.getElementById('panel'),shade=document.getElementById('shade'),summary=document.getElementById('summary'),status=document.getElementById('status'),autoReason=document.getElementById('autoReason');
+const PROTOCOL='LH_PLAYTEST_V1',GAME_FILE='Living_Hospital_v0.3.4.h.html',frame=document.getElementById('gameFrame'),toggle=document.getElementById('toggle'),panel=document.getElementById('panel'),shade=document.getElementById('shade'),summary=document.getElementById('summary'),status=document.getElementById('status'),autoReason=document.getElementById('autoReason');
 const state={resetAt:new Date(),fps:[],latest:null,min:null,avg:null,longTasks:0,longMs:0,touches:0,visibility:0,orientation:0,errors:[],rejections:[],incidents:[],gameSnapshot:null,autoTrigger:'manual'};let frames=0,windowStart=performance.now(),observer=null;
 const clamp=(v,n=1200)=>String(v??'').slice(0,n);const orientation=()=>screen.orientation?.type||(innerWidth>=innerHeight?'landscape':'portrait');
 function setAutoReason(reason){state.autoTrigger=reason||'manual';autoReason.textContent=reason==='run-ended'?'플레이 종료로 자동 생성됨':reason==='fatal-error'?'치명적 오류로 자동 생성됨':reason==='critical-performance'?'심각한 성능 이상으로 자동 생성됨':'비상용 수동 기록'}

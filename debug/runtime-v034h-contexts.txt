@@ -1,0 +1,1092 @@
+
+===== actionButton @ 827 =====
+','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes
+
+
+===== actionButton @ 126323 =====
+floor(o.x/g),Math.floor(o.y/g)),lead=buckets.get(k);if(lead){const dx=lead.x-o.x,dy=lead.y-o.y;if(dx*dx+dy*dy<g*g*.64){const total=lead.v+o.v;lead.x=(lead.x*lead.v+o.x*o.v)/total;lead.y=(lead.y*lead.v+o.y*o.v)/total;lead.v=total;lead.r=Math.min(ORB_MAX_R,ORB_BASE_R+Math.log2(total+1)*ORB_GROWTH);releasePool('orb',o);continue;}}buckets.set(k,o);orbs[write++]=o;}orbs.length=write;}
+function syncActionButton(){
+ if(!ui.actionButton)return;let nearest=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinema
+
+
+===== actionButton @ 126605 =====
+1)*ORB_GROWTH);releasePool('orb',o);continue;}}buckets.set(k,o);orbs[write++]=o;}orbs.length=write;}
+function syncActionButton(){
+ if(!ui.actionButton)return;let nearest=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confir
+
+
+===== actionButton @ 126663 =====
+(k,o);orbs[write++]=o;}orbs.length=write;}
+function syncActionButton(){
+ if(!ui.actionButton)return;let nearest=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confirmSelectionBtn.disabled=false;stopCinematicAudio();playOrga
+
+
+===== actionButton @ 126703 =====
+;}
+function syncActionButton(){
+ if(!ui.actionButton)return;let nearest=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confirmSelectionBtn.disabled=false;stopCinematicAudio();playOrganCinematicSfx(slot);
+}
+function stopOrga
+
+
+===== actionButton @ 126772 =====
+st=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confirmSelectionBtn.disabled=false;stopCinematicAudio();playOrganCinematicSfx(slot);
+}
+function stopOrganPreview(){organCinematicPreview=false;organPreviewElapsed=0;stopCine
+
+
+===== actionButton @ 126858 =====
+**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confirmSelectionBtn.disabled=false;stopCinematicAudio();playOrganCinematicSfx(slot);
+}
+function stopOrganPreview(){organCinematicPreview=false;organPreviewElapsed=0;stopCinematicAudio();ui.overlay.classList.remove('organPreview');if(organCinematicTimer<=0){or
+
+
+===== actionButton @ 126942 =====
+k',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
+}
+function startOrganPreview(slot){
+ const def=ORGAN_DEFS[slot];if(!def)return;organCinematicPreview=true;organCinematicSlot=slot;organPreviewElapsed=0;organFx=1;organFlash=def.color;document.body.classList.add('organ-cinematic');ui.overlay.classList.add('organPreview');ui.selectionCancelBtn.style.display='inline-flex';ui.selectionCancelBtn.textContent='다시 선택';ui.confirmSelectionBtn.disabled=false;stopCinematicAudio();playOrganCinematicSfx(slot);
+}
+function stopOrganPreview(){organCinematicPreview=false;organPreviewElapsed=0;stopCinematicAudio();ui.overlay.classList.remove('organPreview');if(organCinematicTimer<=0){organCinematicSlot=null;document.body.classList.remove('organ-cinematic');}}
+function 
+
+
+===== actionButton @ 202289 =====
+.();};
+ui.selectionCancelBtn.onclick=()=>{if(!selectionCanInteract())return;if(selectionMode==='organ'&&organCinematicPreview){returnToOrganSelection();return;}selectionCancelAction?.();};
+ui.audioToggleBtn.onclick=()=>{soundEnabled=!soundEnabled;if(soundEnabled){initAudio();tone(520,.08,'sine',.02,760);startChapterBgm(!!chapterFlags.bossPrelude);}else{stopCinematicAudio();stopChapterBgm();}renderPauseSummary();};ui.actionButton.onclick=useActionButton;ui.pause.onclick=showPause;ui.resumeBtn.onclick=()=>{paused=false;hideOverlay();syncActionButton();};ui.restartBtn.onclick=()=>{reset();startChapterBgm(false);last=performance.now();loopClock=0;if(!running){running=true;requestAnimationFrame(loop);}};ui.mainMenuBtn.onclick=()=>{saveMeta();stopCinematicAudio();stopChapterBgm();running=false;paused=false;growthChoosing=false;gameOver=true;dialogueState=null;bossState=null;bossIntroTimer=0;bossDeathTimer=0;document.body.classList.remove('boss-cinematic');clearSelectionUi();hideOverlay();resetJoystickInput();showMetaScreen('startScreen');};ui.startBtn.onclick=()=>openCharacterSelect('title');ui.titleSettingsBtn.onclick=showSettings;ui.chara
+
+
+===== xpFill @ 126 =====
+
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const ui={};['hud','hpFill','hpDebtFill','xpFill','timer','debug','organHud','pause','overlay','panel','overlayTitle','cards','selectionFooter','selectionCancelBtn','confirmSelectionBtn','pauseMenu','pauseSummary','audioToggleBtn','resumeBtn','restartBtn','mainMenuBtn','specimenHud','specimenCount','startScreen','startBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id
+
+
+===== xpFill @ 196947 =====
+Fixed(1)+'%',debtW=(Math.min(player.maxHp,player.hp+(player.residualDamage||0))/player.maxHp*100).toFixed(1)+'%',xpW=(player.xp/player.nextGrowthXp*100).toFixed(1)+'%',time=fmt(elapsed),specimenText=Number(runSpecimens).toLocaleString('ko-KR');
+ if(force||ui.hpFill.style.width!==hpW)ui.hpFill.style.width=hpW;
+ if(ui.hpDebtFill&&(force||ui.hpDebtFill.style.width!==debtW))ui.hpDebtFill.style.width=debtW;
+ if(force||ui.xpFill.style.width!==xpW)ui.xpFill.style.width=xpW;
+ if(force||ui.timer.textContent!==time)ui.timer.textContent=time;
+ if(ui.specimenCount&&(force||ui.specimenCount.textContent!==specimenText))ui.specimenCount.textContent=specimenText;
+ if(ui.specimenHud)ui.specimenHud.classList.toggle('pulse',specimenPulse>0);
+}
+function updateDebugDom(){ui.debug.textContent=`FPS ${Math.round(fps)} · LOW ${Math.round(minFps)} · 지연 ${slowFrames} · Q${qualityLevel} · 적 ${enemies.length} · 혈흔 ${clotFields.length} · 응고 ${clotCritFx.length} · 구슬 ${orbs.length} · 장기 ${organDrops.length} · 아이템 ${pickups.length} · 풀 ${POOLS.enemy.length}/${POOLS.particle.length}`;}
+
+
+function showPause(){if(gameOver||transplantOpen||organCinematicTimer>0||o
+
+
+===== xpFill @ 196975 =====
+(player.maxHp,player.hp+(player.residualDamage||0))/player.maxHp*100).toFixed(1)+'%',xpW=(player.xp/player.nextGrowthXp*100).toFixed(1)+'%',time=fmt(elapsed),specimenText=Number(runSpecimens).toLocaleString('ko-KR');
+ if(force||ui.hpFill.style.width!==hpW)ui.hpFill.style.width=hpW;
+ if(ui.hpDebtFill&&(force||ui.hpDebtFill.style.width!==debtW))ui.hpDebtFill.style.width=debtW;
+ if(force||ui.xpFill.style.width!==xpW)ui.xpFill.style.width=xpW;
+ if(force||ui.timer.textContent!==time)ui.timer.textContent=time;
+ if(ui.specimenCount&&(force||ui.specimenCount.textContent!==specimenText))ui.specimenCount.textContent=specimenText;
+ if(ui.specimenHud)ui.specimenHud.classList.toggle('pulse',specimenPulse>0);
+}
+function updateDebugDom(){ui.debug.textContent=`FPS ${Math.round(fps)} · LOW ${Math.round(minFps)} · 지연 ${slowFrames} · Q${qualityLevel} · 적 ${enemies.length} · 혈흔 ${clotFields.length} · 응고 ${clotCritFx.length} · 구슬 ${orbs.length} · 장기 ${organDrops.length} · 아이템 ${pickups.length} · 풀 ${POOLS.enemy.length}/${POOLS.particle.length}`;}
+
+
+function showPause(){if(gameOver||transplantOpen||organCinematicTimer>0||organCinematicPreview)return;
+
+
+===== gainXp @ 111956 =====
+tion updateClotCritFx(dt){for(let i=clotCritFx.length-1;i>=0;i--){const f=clotCritFx[i];f.life-=dt;if(f.life<=0){clotReleaseFx.push({x:f.x,y:f.y,r:f.r,life:.24,maxLife:.24,phase:f.phase});if(clotReleaseFx.length>6)clotReleaseFx.shift();sfx('clotRelease');swapRemove(clotCritFx,i);}}for(let i=clotReleaseFx.length-1;i>=0;i--){clotReleaseFx[i].life-=dt;if(clotReleaseFx[i].life<=0)swapRemove(clotReleaseFx,i);}}
+
+function gainXp(v){
+ const total=v*organMods.xp+player.xpRemainder,gained=Math.floor(total);player.xpRemainder=total-gained;player.xp+=gained;sfx('pickup');
+ while(player.xp>=player.nextGrowthXp){player.xp-=player.nextGrowthXp;growthCount++;player.nextGrowthXp=Math.floor(player.nextGrowthXp+5+growthCount*1.15);sfx('growth');openGrowthChoice();break;}
+}
+function applyPassive(key){
+ const p=passives[key];p.level++;
+ if(key==='density'){player.maxHp+=12;player.hp=Math.min(player.maxHp,player.hp+12);player.damageTakenMult*=.95;}
+ if(key==='sensory')player.crit+=.05;
+ if(key==='necrosis')player.invulnBonus=(player.invulnBonus||0)+.06;
+ if(key==='overload'){player.moveBonus+=.055;player.damageTakenMult*=1.06;}
+}
+function weaponChoi
+
+
+===== gainXp @ 149918 =====
+emove(waves,wi);
+ }
+ const pick=player.pickup*(1+player.pickupBonus)*organMods.pickup,magnetR=pick*1.25,magnetR2=magnetR*magnetR;
+ for(let i=orbs.length-1;i>=0;i--){
+  const o=orbs[i],dx=player.x-o.x,dy=player.y-o.y,d2=dx*dx+dy*dy,collectR=player.r+o.r+5;
+  if(d2<magnetR2||globalMagnet>0){const d=Math.sqrt(d2)||1;o.x+=dx/d*(globalMagnet>0?760:460)*dt;o.y+=dy/d*(globalMagnet>0?760:460)*dt;}
+  if(d2<collectR*collectR){gainXp(o.v);removePooledAt(orbs,i,'orb');}
+ }
+ for(let i=pickups.length-1;i>=0;i--){const o=pickups[i],dx=player.x-o.x,dy=player.y-o.y,d2=dx*dx+dy*dy,cr=player.r+o.r+5;if(d2<cr*cr){const type=o.type,shouldRespawn=PICKUP_TYPES.includes(type)&&!o.bonusMap;collectPickup(o);if(shouldRespawn)schedulePickupRespawn(type);removePooledAt(pickups,i,'pickup');}}
+ for(let i=organDrops.length-1;i>=0;i--){const o=organDrops[i],dx=player.x-o.x,dy=player.y-o.y,d2=dx*dx+dy*dy,mag=145;if(d2<mag*mag){const d=Math.sqrt(d2)||1;o.x+=dx/d*330*dt;o.y+=dy/d*330*dt;}const cr=player.r+o.r+6;if(d2<cr*cr){collectOrganDrop(o);removePooledAt(organDrops,i,'organDrop');}}
+ orbMergeClock+=dt;if(orbMergeClock>=.85){orbMergeClock=0;mergeNearbyOrbs();}
+
+
+
+===== weapons @ 12284 =====
+sabled=!CHAPTER_DEFS[selectedChapter]?.available;}
+function openChapterSelect(){renderChapterSelect();showMetaScreen('chapterScreen');}
+function renderRecords(){const chars=Object.entries(CHARACTER_DEFS).filter(([k])=>meta.unlockedCharacters[k]).map(([k,d])=>`<div class="recordItem"><b>${d.name}</b><p>${d.weaponName} · ${d.ability} · ${meta.abilityLevels[k]||0}/10</p></div>`).join('');const weaponTags=Object.entries(weapons).filter(([k])=>meta.unlockedWeapons[k]).map(([,w])=>`<span class="metaTag">${w.name}</span>`).join('');const evolutions=(meta.discoveredEvolutions||[]).length?meta.discoveredEvolutions.map(x=>`<span class="metaTag">${x}</span>`).join(''):'<p class="muted">발견된 진화가 없습니다.</p>';ui.recordContent.innerHTML=`<p>보유 검체 · ${Number(meta.specimens||0).toLocaleString('ko-KR')}</p><p>최고 생존 기록 · ${fmt(best)}</p><p>회수자 처치 · ${meta.bossKills}회</p><h3>개체</h3><div class="recordList">${chars}</div><h3 style="margin-top:14px">무기</h3><div>${weaponTags}</div><h3 style="margin-top:14px">발견된 진화</h3>${evolutions}`;}
+function openRecords(from='lobby'){renderRecords();ui.recordScreen.dataset.from=from;showMetaScreen('recordScreen');}
+fun
+
+
+===== weapons @ 13804 =====
+reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:13,radius:95,echoChance:.25,maxEchoes:2,lore:'박동이 살갗 밖으로 번지고, 때때로 제 리듬을 잊습니다.'},
+ autophagy:{name:'혈전증',icon:'◉',level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52,lore:'지나온 자리에 병든 피가 남고, 멈춘 자리에서 세 번 응고합니다.'},
+ stitch:{name:'봉합사',icon:'⌁',level:0,cd:1.48,timer:0,damage:18,range:430,lore:'첫 박자에 군집을 꿰고, 
+
+
+===== weapons @ 38361 =====
+,{x:0,y:900,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0});
+ Object.assign(camera,{x:0,y:900});Object.assign(renderCamera,{x:0,y:900});
+ Object.assign(weapons.blood,{level:1,timer:0,cd:1.06,damage:12,speed:398});
+ Object.assign(weapons.bone,{level:0,timer:0,cd:2.35,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=
+
+
+===== weapons @ 38438 =====
+owthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0});
+ Object.assign(camera,{x:0,y:900});Object.assign(renderCamera,{x:0,y:900});
+ Object.assign(weapons.blood,{level:1,timer:0,cd:1.06,damage:12,speed:398});
+ Object.assign(weapons.bone,{level:0,timer:0,cd:2.35,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y
+
+
+===== weapons @ 38599 =====
+adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0});
+ Object.assign(camera,{x:0,y:900});Object.assign(renderCamera,{x:0,y:900});
+ Object.assign(weapons.blood,{level:1,timer:0,cd:1.06,damage:12,speed:398});
+ Object.assign(weapons.bone,{level:0,timer:0,cd:2.35,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrill
+
+
+===== weapons @ 38703 =====
+n(camera,{x:0,y:900});Object.assign(renderCamera,{x:0,y:900});
+ Object.assign(weapons.blood,{level:1,timer:0,cd:1.06,damage:12,speed:398});
+ Object.assign(weapons.bone,{level:0,timer:0,cd:2.35,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.valu
+
+
+===== weapons @ 38827 =====
+12,speed:398});
+ Object.assign(weapons.bone,{level:0,timer:0,cd:2.35,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.values(weapons).forEach(w=>w.level=0);const starter=CHARACTER_DEFS[selectedCharacter]?.weapon||'blood';weapons[starter].level=1;
+
+
+===== weapons @ 38903 =====
+64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50});
+ Object.assign(weapons.heart,{level:0,timer:0,cd:2.55,damage:13,radius:95,echoChance:.25,maxEchoes:2});
+ Object.assign(weapons.autophagy,{level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52});Object.assign(weapons.stitch,{level:0,timer:0,cd:1.48,damage:18,range:430});Object.assign(weapons.incision,{level:0,timer:0,cd:2.85,damage:42,range:390,width:18,delay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.values(weapons).forEach(w=>w.level=0);const starter=CHARACTER_DEFS[selectedCharacter]?.weapon||'blood';weapons[starter].level=1;chapterFlags={heavy:false,fast:false,swarm:false,residualSpawned:false,resid
+
+
+===== weapons @ 39433 =====
+lock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.values(weapons).forEach(w=>w.level=0);const starter=CHARACTER_DEFS[selectedCharacter]?.weapon||'blood';weapons[starter].level=1;chapterFlags={heavy:false,fast:false,swarm:false,residualSpawned:false,residualRunUnlocked:!!meta.unlockedCharacters.residual,attendantSpawned:false,attendantRunUnlocked:!!meta.unlockedCharacters.attendant,bossPrelude:false,bossStarted:false};bossState=null;bossIntroTimer=0;bossDeathTimer=0;bossCinematicAge=0;
+ clearOrganState();
+ generateWorld();rebuildObjectGrid();buildMinimapStatic();renderMinimap();
+ running=true;paused=false;growthChoosing=false;gameOver=false;hideOverlay();renderHudIcons();renderOrganHud();updateHudDom(true);syncActionButton();
+ toast('병동은 조용히 다음 절차를 기다립니다.');
+}
+
+function star
+
+
+===== weapons @ 39529 =====
+clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.values(weapons).forEach(w=>w.level=0);const starter=CHARACTER_DEFS[selectedCharacter]?.weapon||'blood';weapons[starter].level=1;chapterFlags={heavy:false,fast:false,swarm:false,residualSpawned:false,residualRunUnlocked:!!meta.unlockedCharacters.residual,attendantSpawned:false,attendantRunUnlocked:!!meta.unlockedCharacters.attendant,bossPrelude:false,bossStarted:false};bossState=null;bossIntroTimer=0;bossDeathTimer=0;bossCinematicAge=0;
+ clearOrganState();
+ generateWorld();rebuildObjectGrid();buildMinimapStatic();renderMinimap();
+ running=true;paused=false;growthChoosing=false;gameOver=false;hideOverlay();renderHudIcons();renderOrganHud();updateHudDom(true);syncActionButton();
+ toast('병동은 조용히 다음 절차를 기다립니다.');
+}
+
+function startGame(){startChapterRun();}
+
+function takePool(name){return POOLS[name].pop()||{};}
+function rel
+
+
+===== weapons @ 69221 =====
+e{chapterFlags.attendantRunUnlocked=true;broadcast('데스크가 비었다.','eventDone');}saveMeta();}
+function interactUnlock(kind){if(kind==='residual')beginDialogue('미등록 개체',['조용히 해. 여기 누군가가 자고 있어.','……아니. 아무도 없네.','혼자 있으면 다시 들려. 같이 가도 될까.'],()=>completeUnlock('residual'));else beginDialogue('당직자',['미등록 환자가 확인되었습니다.','기록이 없습니다.','보호자 한 명을 확인했습니다. 이동 절차를 시작합니다.'],()=>completeUnlock('attendant'));}
+function stitchCapacity(level=weapons.stitch.level){const l=Math.max(1,Math.min(8,level));return Math.min(8,4+Math.round((l-1)*4/7));}
+function stitchNode(e){return{target:e,spawnId:e.spawnId,x:e.x,y:e.y};}
+function liveStitchTarget(n){return n?.target&&n.target.hp>0&&n.target.spawnId===n.spawnId?n.target:null;}
+function buildStitchCluster(anchor,excluded,maxCount){const radius=190+weapons.stitch.level*12,r2=radius*radius,pool=[];for(const e of queryEnemies(anchor.x,anchor.y,radius)){if(e.hp<=0||excluded.has(e)||(e.x-player.x)**2+(e.y-player.y)**2>weapons.stitch.range**2||!pathClearTo(player.x,player.y,e.x,e.y,.75))continue;const d=(e.x-anchor.x)**2+(e.y-anchor.y)**2;if(d<=r2)pool.push({e,d});}pool.sort((a,b)=>a.d-b.d);const picked=pool.slice(0,ma
+
+
+===== weapons @ 69576 =====
+()=>completeUnlock('attendant'));}
+function stitchCapacity(level=weapons.stitch.level){const l=Math.max(1,Math.min(8,level));return Math.min(8,4+Math.round((l-1)*4/7));}
+function stitchNode(e){return{target:e,spawnId:e.spawnId,x:e.x,y:e.y};}
+function liveStitchTarget(n){return n?.target&&n.target.hp>0&&n.target.spawnId===n.spawnId?n.target:null;}
+function buildStitchCluster(anchor,excluded,maxCount){const radius=190+weapons.stitch.level*12,r2=radius*radius,pool=[];for(const e of queryEnemies(anchor.x,anchor.y,radius)){if(e.hp<=0||excluded.has(e)||(e.x-player.x)**2+(e.y-player.y)**2>weapons.stitch.range**2||!pathClearTo(player.x,player.y,e.x,e.y,.75))continue;const d=(e.x-anchor.x)**2+(e.y-anchor.y)**2;if(d<=r2)pool.push({e,d});}pool.sort((a,b)=>a.d-b.d);const picked=pool.slice(0,maxCount).map(q=>q.e);if(!picked.includes(anchor)&&!excluded.has(anchor))picked.unshift(anchor);return picked.slice(0,maxCount);}
+function nextStitchAnchor(excluded,avoid=null){let best=null,score=Infinity;for(const e of queryEnemies(player.x,player.y,weapons.stitch.range)){if(e.hp<=0||excluded.has(e)||!pathClearTo(player.x,player.y,e.x,e.y,.75))continue;
+
+
+===== passives @ 14691 =====
+ autophagy:{name:'혈전증',icon:'◉',level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52,lore:'지나온 자리에 병든 피가 남고, 멈춘 자리에서 세 번 응고합니다.'},
+ stitch:{name:'봉합사',icon:'⌁',level:0,cd:1.48,timer:0,damage:18,range:430,lore:'첫 박자에 군집을 꿰고, 다음 박자에 한꺼번에 봉합합니다.'},
+ incision:{name:'절개선',icon:'╱',level:0,cd:2.85,timer:0,damage:42,range:390,width:18,delay:.58,lore:'가느다란 지시선 뒤로 공간이 늦게 벌어집니다.'}
+};
+
+const passives={
+ flow:{name:'순환 촉진',icon:'💧',level:0,desc:'피가 재촉합니다. 공격이 빨라집니다.'},
+ density:{name:'골밀도',icon:'🦴',level:0,desc:'뼈가 몸을 붙듭니다. 체력과 방어가 증가합니다.'},
+ sensory:{name:'감각 과민',icon:'👁️',level:0,desc:'신경이 날카로워집니다. 치명타 확률이 증가합니다.'},
+ necrosis:{name:'괴사 내성',icon:'☣️',level:0,desc:'죽은 살이 고통을 늦춥니다. 피격 무적시간이 증가합니다.'},
+ overload:{name:'신경 과부하',icon:'⚡',level:0,desc:'신경이 폭주합니다. 이동·공격 속도가 오르지만 피해에 취약해집니다.'}
+};
+
+const ORGAN_SLOTS=['heart','brain','stomach'];
+const ORGAN_DEFS={
+ heart:{name:'심장',short:'심',icon:'🫀',color:'#d94d5b',effect:'과부하 · 공격·이동 속도와 피해량 증가, 지속 회복',lore:'당신의 박동 사이에, 이름 없는 심장이 기도를 시작합니다.',quote:'두 번째 고동은 오래전부터 당신을 기다리고 있었습니다.',activation:'심장이 폭주합니다.',ritual:'박동 동기화'},
+ brain:{name:'뇌',short:'뇌',icon:'🧠',col
+
+
+===== passives @ 39397 =====
+ay:.58});clotTrailClock=0;clotStillClock=0;clotLastX=player.x;clotLastY=player.y;clotHadMotion=false;clotArmed=false;clotMoveTime=0;clotMoveDistance=0;clotPrevX=player.x;clotPrevY=player.y;clotBurst=null;clotGroupSerial=0;clotCritSerial=0;bloodStreamSerial=0;enemySerial=0;defibrillatorTimer=0;defibrillatorPulseClock=0;defibrillatorAimX=1;defibrillatorAimY=0;waterReaction=0;bodyTwitch=0;
+ for(const p of Object.values(passives))p.level=0;
+ Object.values(weapons).forEach(w=>w.level=0);const starter=CHARACTER_DEFS[selectedCharacter]?.weapon||'blood';weapons[starter].level=1;chapterFlags={heavy:false,fast:false,swarm:false,residualSpawned:false,residualRunUnlocked:!!meta.unlockedCharacters.residual,attendantSpawned:false,attendantRunUnlocked:!!meta.unlockedCharacters.attendant,bossPrelude:false,bossStarted:false};bossState=null;bossIntroTimer=0;bossDeathTimer=0;bossCinematicAge=0;
+ clearOrganState();
+ generateWorld();rebuildObjectGrid();buildMinimapStatic();renderMinimap();
+ running=true;paused=false;growthChoosing=false;gameOver=false;hideOverlay();renderHudIcons();renderOrganHud();updateHudDom(true);syncActionButton();
+ toast('병동은 조용
+
+
+===== passives @ 85979 =====
+Stats(),extra=Math.max(0,activeWeaponCount()-1),adapt=st.damage+Math.min(.075,extra*st.perDamage)+(player.adaptationSurge>0?st.surgeDamage:0);return 1+adapt;}
+function residualDamageMult(){return selectedCharacter==='residual'&&player.residualDamage>0?1+residualAbilityStats().damage:1;}
+function atkSpeedMult(){const attendant=selectedCharacter==='attendant'&&attendantTempo>0?attendantAbilityStats().tempo:1;return (1+passives.flow.level*.04)*(1+passives.overload.level*.09)*(player.autoBuff>0?1.4:1)*organMods.attackSpeed*specimenAdaptationMult()*attendant;}
+function damageMult(){return organMods.damage*specimenDamageMult()*residualDamageMult();}
+function attendantTargetDamageMult(e){if(selectedCharacter!=='attendant'||!e||e!==attendantTarget)return 1;return attendantAbilityStats().damage*((e.attendantVulnerable||0)>0?1.10:1);}
+function onWeaponAcquired(key){if(selectedCharacter!=='specimen')return;const st=specimenAbilityStats();if(st.surge>0)player.adaptationSurge=Math.max(player.adaptationSurge||0,st.surge);if(st.sync){for(const w of Object.values(weapons))if(w.level>0)w.timer=0;receptorSyncClock=14;}bodyTwitch=Math.max(bodyTwitch
+
+
+===== passives @ 86007 =====
+iveWeaponCount()-1),adapt=st.damage+Math.min(.075,extra*st.perDamage)+(player.adaptationSurge>0?st.surgeDamage:0);return 1+adapt;}
+function residualDamageMult(){return selectedCharacter==='residual'&&player.residualDamage>0?1+residualAbilityStats().damage:1;}
+function atkSpeedMult(){const attendant=selectedCharacter==='attendant'&&attendantTempo>0?attendantAbilityStats().tempo:1;return (1+passives.flow.level*.04)*(1+passives.overload.level*.09)*(player.autoBuff>0?1.4:1)*organMods.attackSpeed*specimenAdaptationMult()*attendant;}
+function damageMult(){return organMods.damage*specimenDamageMult()*residualDamageMult();}
+function attendantTargetDamageMult(e){if(selectedCharacter!=='attendant'||!e||e!==attendantTarget)return 1;return attendantAbilityStats().damage*((e.attendantVulnerable||0)>0?1.10:1);}
+function onWeaponAcquired(key){if(selectedCharacter!=='specimen')return;const st=specimenAbilityStats();if(st.surge>0)player.adaptationSurge=Math.max(player.adaptationSurge||0,st.surge);if(st.sync){for(const w of Object.values(weapons))if(w.level>0)w.timer=0;receptorSyncClock=14;}bodyTwitch=Math.max(bodyTwitch,.14);}
+function grantWeapon
+
+
+===== passives @ 112339 =====
+Remove(clotReleaseFx,i);}}
+
+function gainXp(v){
+ const total=v*organMods.xp+player.xpRemainder,gained=Math.floor(total);player.xpRemainder=total-gained;player.xp+=gained;sfx('pickup');
+ while(player.xp>=player.nextGrowthXp){player.xp-=player.nextGrowthXp;growthCount++;player.nextGrowthXp=Math.floor(player.nextGrowthXp+5+growthCount*1.15);sfx('growth');openGrowthChoice();break;}
+}
+function applyPassive(key){
+ const p=passives[key];p.level++;
+ if(key==='density'){player.maxHp+=12;player.hp=Math.min(player.maxHp,player.hp+12);player.damageTakenMult*=.95;}
+ if(key==='sensory')player.crit+=.05;
+ if(key==='necrosis')player.invulnBonus=(player.invulnBonus||0)+.06;
+ if(key==='overload'){player.moveBonus+=.055;player.damageTakenMult*=1.06;}
+}
+function weaponChoiceDescription(key,w){
+ if(key==='blood'){
+  const next=Math.min(8,w.level+1),text={1:w.lore,2:'피가 더 멀리 끊기지 않고 이어집니다.',3:'흐름이 살아 있는 것을 더 집요하게 더듬습니다.',4:'박출된 피가 굵어져 더 넓은 상처를 훑습니다.',5:'흐름 속 맥동이 빨라지고 박출 간격이 짧아집니다.',6:'몸을 떠난 피가 더 오래 형태를 유지합니다.',7:'휘어진 흐름이 더 먼 침입자까지 이어집니다.',8:'한 줄기의 순환이 전장을 버틸 만큼 완성됩니다.'};return text[next];
+ }
+ if(key==='bone')return w.level?'부러진 기억이 더 깊이 몸을 되짚습니다.':w.lor
+
+
+===== passives @ 113910 =====
+of Object.entries(weapons)){
+  if(!meta.unlockedWeapons[key])continue;
+  if(w.level===0)list.push({icon:w.icon,type:'무기',name:`${w.name} · 첫 기억`,desc:weaponChoiceDescription(key,w),apply(){grantWeaponLevel(key);}});
+  else if(w.level<8)list.push({icon:w.icon,type:'무기 강화',name:`${w.name} · ${w.level+1}번째 기억`,desc:weaponChoiceDescription(key,w),apply(){grantWeaponLevel(key);}});
+ }
+ for(const [key,p] of Object.entries(passives)){
+  if(p.level<7)list.push({icon:p.icon,type:'패시브',name:p.level?`${p.name} · ${p.level+1}번째 변형`:`${p.name} · 첫 변형`,desc:p.desc,apply(){applyPassive(key);}});
+ }
+ list.push({icon:'🩹',type:'회복',name:'응급 봉합',desc:'벌어진 상처를 임시로 닫습니다.',apply(){player.hp=Math.min(player.maxHp,player.hp+35);}});
+ return list;
+}
+function resetJoystickInput(){Object.assign(joystick,{active:false,id:null,dx:0,dy:0,x:joystick.sx,y:joystick.sy});}
+function armSelectionInputGuard(){const hadTouch=joystick.active;resetJoystickInput();selectionNeedsFreshPointer=hadTouch;selectionInputGuardUntil=performance.now()+(hadTouch?1e9:240);}
+function selectionCanInteract(){return !selectionNeedsFreshPointer&&performance.now()>=selectionInputGuardUnt
+
+
+===== passives @ 118088 =====
+udIcons();syncActionButton();};
+}
+function pauseItem(icon,name,detail){return `<div class="pauseItem"><div class="pauseItemIcon">${icon}</div><div><b>${name}</b><p>${detail}</p></div></div>`;}
+function renderPauseSummary(){
+ if(!ui.pauseSummary)return;
+ const weaponItems=Object.values(weapons).filter(w=>w.level>0).map(w=>pauseItem(w.icon,`${w.name} · Lv${w.level}`,w.lore)).join('');
+ const passiveItems=Object.values(passives).filter(p=>p.level>0).map(p=>pauseItem(p.icon,`${p.name} · Lv${p.level}`,p.desc)).join('');
+ let organItems='';if(activeOrgan){const d=ORGAN_DEFS[activeOrgan];organItems+=pauseItem(d.icon,`${d.name} · 메인 장기`,d.lore);}else organItems='<div class="pauseEmpty">이식된 메인 장기가 없습니다.</div>';
+ const stored=ORGAN_SLOTS.filter(k=>organStored[k]);for(const k of stored){const d=ORGAN_DEFS[k];organItems+=pauseItem(d.icon,`${d.name} · 보관 표본`,d.lore);}
+ ui.pauseSummary.innerHTML=`<section class="pauseSection"><h3>무기</h3>${weaponItems||'<div class="pauseEmpty">활성 무기 없음</div>'}</section><section class="pauseSection"><h3>패시브</h3>${passiveItems||'<div class="pauseEmpty">활성 패시브 없음</div>'}</section><section class="pauseSection"><h3>장
+
+
+===== organ @ 151 =====
+
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const ui={};['hud','hpFill','hpDebtFill','xpFill','timer','debug','organHud','pause','overlay','panel','overlayTitle','cards','selectionFooter','selectionCancelBtn','confirmSelectionBtn','pauseMenu','pauseSummary','audioToggleBtn','resumeBtn','restartBtn','mainMenuBtn','specimenHud','specimenCount','startScreen','startBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getEle
+
+
+===== organ @ 1666 =====
+,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zones=[],events=[],hazards=[],clotFields=[],clotCritFx=[],clotReleaseFx=[],corpses=[],deathFx=[],breaches=[],navGates=[],stitchFx=[],stitchGroups=[],incisionFx=[],unlockActors=[],bossHazards=[];
+let eventClock=125,eventCount=0,broadcastTimer=0,broadcastText='',broadcastMode='normal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHospital=null,growthCount=0,currentAction=null;
+const joystick={active:false,id:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5
+
+
+===== organ @ 3053 =====
+00,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
+const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,w
+
+
+===== organ @ 3513 =====
+e:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCine
+
+
+===== organ @ 3572 =====
+,()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organ
+
+
+===== organ @ 3587 =====
+));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,
+
+
+===== organ @ 3597 =====
+reenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings
+
+
+===== organ @ 4183 =====
+illatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_
+
+
+===== organ @ 4205 =====
+ction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CA
+
+
+===== organ @ 4229 =====
+tTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거
+
+
+===== organ @ 4257 =====
+=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거운 근접 방사형 넉백, 혈전증은 이동 잔흔과 정지 
+
+
+===== organ @ 4279 =====
+tY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거운 근접 방사형 넉백, 혈전증은 이동 잔흔과 정지 응고를 이용한 지속 제어다.
+// v0.
+
+
+===== WARD_BOUNDS @ 2612 =====
+d:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
+const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
+const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
+const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
+const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTo
+
+
+===== WARD_BOUNDS @ 44580 =====
+reak++;qualityHighStreak=0;}else if(fps>58){qualityHighStreak++;qualityLowStreak=0;}else{qualityLowStreak=0;qualityHighStreak=0;}if(qualityLowStreak>=2){qualityLevel=Math.min(2,qualityLevel+1);qualityLowStreak=0;}else if(qualityHighStreak>=3){qualityLevel=Math.max(0,qualityLevel-1);qualityHighStreak=0;}if(old!==qualityLevel)minimapClock=99;}
+
+function generateWorld(){
+ const defs=[
+  {id:'ward',name:'제1병실',x:0,y:0,w:WARD_BOUNDS.visualHalfW*2,h:WARD_BOUNDS.visualHalfH*2,tint:'#1c1818',corridor:true,mainWard:true,active:true},
+  {id:'supportRecovery',name:'격리 병상',x:-1900,y:-900,w:560,h:420,tint:'#18231d',hospitalId:'supportRecovery',subzone:true},
+  {id:'organHeart',name:'심전도 장비',x:-1050,y:-1050,w:500,h:350,tint:'#27171b',hospitalId:'organHeart',subzone:true},
+  {id:'organBrain',name:'관찰 장비',x:-350,y:-1050,w:500,h:350,tint:'#221b27',hospitalId:'organBrain',subzone:true},
+  {id:'organStomach',name:'처치 장비',x:420,y:-1050,w:500,h:350,tint:'#252216',hospitalId:'organStomach',subzone:true},
+  {id:'supportTransfusion',name:'응급 처치대',x:1880,y:-890,w:560,h:420,tint:'#25191c',hospitalId:'supportTransfusion',subzone:true},
+  {id:'organLockedA',nam
+
+
+===== WARD_BOUNDS @ 44608 =====
+else if(fps>58){qualityHighStreak++;qualityLowStreak=0;}else{qualityLowStreak=0;qualityHighStreak=0;}if(qualityLowStreak>=2){qualityLevel=Math.min(2,qualityLevel+1);qualityLowStreak=0;}else if(qualityHighStreak>=3){qualityLevel=Math.max(0,qualityLevel-1);qualityHighStreak=0;}if(old!==qualityLevel)minimapClock=99;}
+
+function generateWorld(){
+ const defs=[
+  {id:'ward',name:'제1병실',x:0,y:0,w:WARD_BOUNDS.visualHalfW*2,h:WARD_BOUNDS.visualHalfH*2,tint:'#1c1818',corridor:true,mainWard:true,active:true},
+  {id:'supportRecovery',name:'격리 병상',x:-1900,y:-900,w:560,h:420,tint:'#18231d',hospitalId:'supportRecovery',subzone:true},
+  {id:'organHeart',name:'심전도 장비',x:-1050,y:-1050,w:500,h:350,tint:'#27171b',hospitalId:'organHeart',subzone:true},
+  {id:'organBrain',name:'관찰 장비',x:-350,y:-1050,w:500,h:350,tint:'#221b27',hospitalId:'organBrain',subzone:true},
+  {id:'organStomach',name:'처치 장비',x:420,y:-1050,w:500,h:350,tint:'#252216',hospitalId:'organStomach',subzone:true},
+  {id:'supportTransfusion',name:'응급 처치대',x:1880,y:-890,w:560,h:420,tint:'#25191c',hospitalId:'supportTransfusion',subzone:true},
+  {id:'organLockedA',name:'봉인 카트 A',x:-1250,y:1050,w
+
+
+===== WARD_BOUNDS @ 46247 =====
+...d,active:activeHospitalIds.includes(d.id),zone:zones.find(z=>z.id===d.zoneId)}));
+ const add=(type,x,y,w,h,hp=1,solid=true,extra={})=>objects.push({id:Math.random(),type,x,y,w,h,hp,maxHp:hp,solid,active:true,flash:0,reveal:0,hitJolt:0,...extra});
+ const addScaled=(type,x,y,w,h,hp=1,solid=true,extra={})=>{const sw=w*SCALE.object,sh=h*SCALE.object;add(type,x+(w-sw)/2,y+(h-sh)/2,sw,sh,hp,solid,extra);};
+ const halfW=WARD_BOUNDS.halfW,halfH=WARD_BOUNDS.halfH,wallT=WARD_BOUNDS.wallT;
+ add('wall',-halfW,-halfH,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,halfH-wallT,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',halfW-wallT,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('door',-120,-halfH+2,240,34,999,false,{bossDoor:true});
+ add('door',-95,halfH-31,190,29,999,false,{serviceDoor:true});
+ const recovery=zones.find(z=>z.id==='supportRecovery'),transfusion=zones.find(z=>z.id==='
+
+
+===== WARD_BOUNDS @ 46271 =====
+alIds.includes(d.id),zone:zones.find(z=>z.id===d.zoneId)}));
+ const add=(type,x,y,w,h,hp=1,solid=true,extra={})=>objects.push({id:Math.random(),type,x,y,w,h,hp,maxHp:hp,solid,active:true,flash:0,reveal:0,hitJolt:0,...extra});
+ const addScaled=(type,x,y,w,h,hp=1,solid=true,extra={})=>{const sw=w*SCALE.object,sh=h*SCALE.object;add(type,x+(w-sw)/2,y+(h-sh)/2,sw,sh,hp,solid,extra);};
+ const halfW=WARD_BOUNDS.halfW,halfH=WARD_BOUNDS.halfH,wallT=WARD_BOUNDS.wallT;
+ add('wall',-halfW,-halfH,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,halfH-wallT,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',halfW-wallT,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('door',-120,-halfH+2,240,34,999,false,{bossDoor:true});
+ add('door',-95,halfH-31,190,29,999,false,{serviceDoor:true});
+ const recovery=zones.find(z=>z.id==='supportRecovery'),transfusion=zones.find(z=>z.id==='supportTransfusion');
+ [
+
+
+===== WARD_BOUNDS @ 46295 =====
+e:zones.find(z=>z.id===d.zoneId)}));
+ const add=(type,x,y,w,h,hp=1,solid=true,extra={})=>objects.push({id:Math.random(),type,x,y,w,h,hp,maxHp:hp,solid,active:true,flash:0,reveal:0,hitJolt:0,...extra});
+ const addScaled=(type,x,y,w,h,hp=1,solid=true,extra={})=>{const sw=w*SCALE.object,sh=h*SCALE.object;add(type,x+(w-sw)/2,y+(h-sh)/2,sw,sh,hp,solid,extra);};
+ const halfW=WARD_BOUNDS.halfW,halfH=WARD_BOUNDS.halfH,wallT=WARD_BOUNDS.wallT;
+ add('wall',-halfW,-halfH,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,halfH-wallT,halfW*2,wallT,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',-halfW,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('wall',halfW-wallT,-halfH,wallT,halfH*2,999,true,{zoneId:'ward',zoneActive:true,render:false,boundary:true});
+ add('door',-120,-halfH+2,240,34,999,false,{bossDoor:true});
+ add('door',-95,halfH-31,190,29,999,false,{serviceDoor:true});
+ const recovery=zones.find(z=>z.id==='supportRecovery'),transfusion=zones.find(z=>z.id==='supportTransfusion');
+ [[-85,-32],[82,46]].forEa
+
+
+===== WARD_BOUNDS @ 61947 =====
+lot]&&!organDrops.some(d=>d.slot===h.organSlot));
+ let pool=(missing.length?missing:available).filter(h=>h.id!==lastEventHospital);if(!pool.length)pool=missing.length?missing:available;if(!pool.length)return false;
+ const h=pool[Math.floor(Math.random()*pool.length)];setOrganWardActive(h);const target=spawnEventTarget(h);triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(sid
+
+
+===== WARD_BOUNDS @ 62125 =====
+ilable;if(!pool.length)return false;
+ const h=pool[Math.floor(Math.random()*pool.length)];setOrganWardActive(h);const target=spawnEventTarget(h);triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(side===2)return[minX+Math.random()*(maxX-minX),minY];return[minX+Math.random()*(maxX-minX),maxY];}
+function edgeSpawnWorld(){let best=null,bestScore=-Infinity;for(let i=0;i<16;i++){
+
+
+===== WARD_BOUNDS @ 62165 =====
+nst h=pool[Math.floor(Math.random()*pool.length)];setOrganWardActive(h);const target=spawnEventTarget(h);triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(side===2)return[minX+Math.random()*(maxX-minX),minY];return[minX+Math.random()*(maxX-minX),maxY];}
+function edgeSpawnWorld(){let best=null,bestScore=-Infinity;for(let i=0;i<16;i++){const q=randomWardEdgeCandidate(),dx=q[0
+
+
+===== WARD_BOUNDS @ 62198 =====
+()*pool.length)];setOrganWardActive(h);const target=spawnEventTarget(h);triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(side===2)return[minX+Math.random()*(maxX-minX),minY];return[minX+Math.random()*(maxX-minX),maxY];}
+function edgeSpawnWorld(){let best=null,bestScore=-Infinity;for(let i=0;i<16;i++){const q=randomWardEdgeCandidate(),dx=q[0]-player.x,dy=q[1]-player.y,d=Mat
+
+
+===== WARD_BOUNDS @ 62236 =====
+;const target=spawnEventTarget(h);triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(side===2)return[minX+Math.random()*(maxX-minX),minY];return[minX+Math.random()*(maxX-minX),maxY];}
+function edgeSpawnWorld(){let best=null,bestScore=-Infinity;for(let i=0;i<16;i++){const q=randomWardEdgeCandidate(),dx=q[0]-player.x,dy=q[1]-player.y,d=Math.hypot(dx,dy),outside=enemySpawnOutsi
+
+
+===== WARD_BOUNDS @ 62269 =====
+;triggerEvent(h,target);eventCount++;return true;
+}
+function enemySpawnOutsideView(x,y,r=0,margin=WARD_BOUNDS.spawnViewMargin){const sx=x-camera.x+W/2,sy=y-camera.y+H/2;return sx+r<-margin||sx-r>W+margin||sy+r<-margin||sy-r>H+margin;}
+function wardSpawnClamp(x,y){const inset=WARD_BOUNDS.spawnInset;return[Math.max(-WARD_BOUNDS.halfW+inset,Math.min(WARD_BOUNDS.halfW-inset,x)),Math.max(-WARD_BOUNDS.halfH+inset,Math.min(WARD_BOUNDS.halfH-inset,y))];}
+function randomWardEdgeCandidate(){const minX=-WARD_BOUNDS.halfW+WARD_BOUNDS.spawnInset,maxX=WARD_BOUNDS.halfW-WARD_BOUNDS.spawnInset,minY=-WARD_BOUNDS.halfH+WARD_BOUNDS.spawnInset,maxY=WARD_BOUNDS.halfH-WARD_BOUNDS.spawnInset,side=Math.floor(Math.random()*4);if(side===0)return[minX,minY+Math.random()*(maxY-minY)];if(side===1)return[maxX,minY+Math.random()*(maxY-minY)];if(side===2)return[minX+Math.random()*(maxX-minX),minY];return[minX+Math.random()*(maxX-minX),maxY];}
+function edgeSpawnWorld(){let best=null,bestScore=-Infinity;for(let i=0;i<16;i++){const q=randomWardEdgeCandidate(),dx=q[0]-player.x,dy=q[1]-player.y,d=Math.hypot(dx,dy),outside=enemySpawnOutsideView(q[0],q[1],24),score=d+(out
+
+
+===== minimap @ 817 =====
+,'startBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],w
+
+
+===== minimap @ 897 =====
+tn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrap
+
+
+===== minimap @ 911 =====
+ConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLin
+
+
+===== minimap @ 957 =====
+bbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pick
+
+
+===== minimap @ 1004 =====
+n','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks
+
+
+===== minimap @ 1021 =====
+,'chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zo
+
+
+===== minimap @ 1301 =====
+yId(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zones=[],events=[],hazards=[],clotFields=[],clotCritFx=[],clotReleaseFx=[],corpses=[],deathFx=[],breaches=[],navGates=[],stitchFx=[],stitchGroups=[],incisionFx=[],unlockActors=[],bossHazards=[];
+let eventClock=125,eventCount=0,broadcastTimer=0,broadcastText='',broadcastMode='normal
+
+
+===== minimap @ 2400 =====
+stTimer=0,broadcastText='',broadcastMode='normal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHospital=null,growthCount=0,currentAction=null;
+const joystick={active:false,id:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
+const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
+const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
+const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
+const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoin
+
+
+===== minimap @ 36792 =====
+ba(190,20,30,1)');}
+addEventListener('resize',()=>resize(false),{passive:true});addEventListener('orientationchange',()=>setTimeout(()=>resize(true),120),{passive:true});window.visualViewport?.addEventListener('resize',()=>resize(false),{passive:true});resize(true);
+
+function reset(){
+ recycleAllActive();
+ elapsed=0;spawnTimer=0;kills=0;frameTick=0;qualityLevel=0;qualityClock=0;qualityLowStreak=0;qualityHighStreak=0;minimapClock=0;hudClock=0;debugClock=0;orbMergeClock=0;pickupAuditClock=0;runSpecimens=0;specimenPulse=0;accumulator=0;hitStopTimer=0;boneSwingSide=1;receptorSyncClock=14;attendantTarget=null;attendantRetargetClock=0;attendantTempo=0;attendantNextVulnerability=false;stitchPending=null;eventClock=125;eventCount=0;growthCount=0;currentAction=null;lastGrowthChoiceName='';broadcastTimer=0;broadcastText='';broadcastMode='normal';toastTimer=0;anomalyClock=185;anomalyCount=0;waveSerial=0;currentWave=null;lastEventHospital=null;
+ waves.length=0;slashes.length=0;stitchFx.length=0;stitchGroups.length=0;incisionFx.length=0;unlockActors.length=0;bossHazards.length=0;boneShards.length=0;boneImpactFx.length=0;shockFx.length=0;leech
+
+
+===== minimap @ 44486 =====
+k+=dt;if(qualityClock<3.5)return;qualityClock=0;const old=qualityLevel;if(fps<45){qualityLowStreak++;qualityHighStreak=0;}else if(fps>58){qualityHighStreak++;qualityLowStreak=0;}else{qualityLowStreak=0;qualityHighStreak=0;}if(qualityLowStreak>=2){qualityLevel=Math.min(2,qualityLevel+1);qualityLowStreak=0;}else if(qualityHighStreak>=3){qualityLevel=Math.max(0,qualityLevel-1);qualityHighStreak=0;}if(old!==qualityLevel)minimapClock=99;}
+
+function generateWorld(){
+ const defs=[
+  {id:'ward',name:'제1병실',x:0,y:0,w:WARD_BOUNDS.visualHalfW*2,h:WARD_BOUNDS.visualHalfH*2,tint:'#1c1818',corridor:true,mainWard:true,active:true},
+  {id:'supportRecovery',name:'격리 병상',x:-1900,y:-900,w:560,h:420,tint:'#18231d',hospitalId:'supportRecovery',subzone:true},
+  {id:'organHeart',name:'심전도 장비',x:-1050,y:-1050,w:500,h:350,tint:'#27171b',hospitalId:'organHeart',subzone:true},
+  {id:'organBrain',name:'관찰 장비',x:-350,y:-1050,w:500,h:350,tint:'#221b27',hospitalId:'organBrain',subzone:true},
+  {id:'organStomach',name:'처치 장비',x:420,y:-1050,w:500,h:350,tint:'#252216',hospitalId:'organStomach',subzone:true},
+  {id:'supportTransfusion',name:'응급 처치대',x:1880,y:-890,
+
+
+===== minimap @ 49531 =====
+[x,y] of [[-1400,1080],[0,1200],[1400,1080]])addMark('table',x,y,46,0,{mapBlock:true,mapW:170,mapH:72});
+ const stains=['corpse','blood','blood','corpse','organ'];for(let i=0;i<38;i++){const x=-2180+Math.random()*4360,y=-1280+Math.random()*2560;if(Math.hypot(x,y-900)<300)continue;addMark(stains[Math.floor(Math.random()*stains.length)],x,y,15+Math.random()*25,Math.random()*Math.PI*2);}
+ spawnMapPickups();
+}
+
+function minimapPoint(x,y){
+ const px=MINIMAP.w/2+(x-player.x)/MINIMAP.viewW*(MINIMAP.w-MINIMAP.pad*2);
+ const py=MINIMAP.h/2+(y-player.y)/MINIMAP.viewH*(MINIMAP.h-MINIMAP.pad*2);
+ return{x:px,y:py};
+}
+function minimapRect(x,y,w,h){
+ const a=minimapPoint(x,y),b=minimapPoint(x+w,y+h);return{x:a.x,y:a.y,w:Math.max(1,b.x-a.x),h:Math.max(1,b.y-a.y)};
+}
+function buildMinimapStatic(){
+ minimapStatic.width=MINIMAP.w;minimapStatic.height=MINIMAP.h;
+}
+function drawMinimapBase(){
+ const c=minimapCtx;c.fillStyle='#090909';c.fillRect(0,0,MINIMAP.w,MINIMAP.h);
+ c.save();c.beginPath();c.rect(MINIMAP.pad,MINIMAP.pad,MINIMAP.w-MINIMAP.pad*2,MINIMAP.h-MINIMAP.pad*2);c.clip();
+ const ward=zones.find(z=>z.mainWard);if(ward){const r=minimapRect(w
+
+
+===== minimap @ 49733 =====
+h.random()*4360,y=-1280+Math.random()*2560;if(Math.hypot(x,y-900)<300)continue;addMark(stains[Math.floor(Math.random()*stains.length)],x,y,15+Math.random()*25,Math.random()*Math.PI*2);}
+ spawnMapPickups();
+}
+
+function minimapPoint(x,y){
+ const px=MINIMAP.w/2+(x-player.x)/MINIMAP.viewW*(MINIMAP.w-MINIMAP.pad*2);
+ const py=MINIMAP.h/2+(y-player.y)/MINIMAP.viewH*(MINIMAP.h-MINIMAP.pad*2);
+ return{x:px,y:py};
+}
+function minimapRect(x,y,w,h){
+ const a=minimapPoint(x,y),b=minimapPoint(x+w,y+h);return{x:a.x,y:a.y,w:Math.max(1,b.x-a.x),h:Math.max(1,b.y-a.y)};
+}
+function buildMinimapStatic(){
+ minimapStatic.width=MINIMAP.w;minimapStatic.height=MINIMAP.h;
+}
+function drawMinimapBase(){
+ const c=minimapCtx;c.fillStyle='#090909';c.fillRect(0,0,MINIMAP.w,MINIMAP.h);
+ c.save();c.beginPath();c.rect(MINIMAP.pad,MINIMAP.pad,MINIMAP.w-MINIMAP.pad*2,MINIMAP.h-MINIMAP.pad*2);c.clip();
+ const ward=zones.find(z=>z.mainWard);if(ward){const r=minimapRect(ward.x-ward.w/2,ward.y-ward.h/2,ward.w,ward.h);c.fillStyle='#252020';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle='#745b5b';c.lineWidth=1;c.strokeRect(r.x+.5,r.y+.5,Math.max(0,r.w-1),Math.max(0,r.h-1));}
+ c
+
+
+===== specimen @ 355 =====
+
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const ui={};['hud','hpFill','hpDebtFill','xpFill','timer','debug','organHud','pause','overlay','panel','overlayTitle','cards','selectionFooter','selectionCancelBtn','confirmSelectionBtn','pauseMenu','pauseSummary','audioToggleBtn','resumeBtn','restartBtn','mainMenuBtn','specimenHud','specimenCount','startScreen','startBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR
+
+
+===== specimen @ 369 =====
+
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const ui={};['hud','hpFill','hpDebtFill','xpFill','timer','debug','organHud','pause','overlay','panel','overlayTitle','cards','selectionFooter','selectionCancelBtn','confirmSelectionBtn','pauseMenu','pauseSummary','audioToggleBtn','resumeBtn','restartBtn','mainMenuBtn','specimenHud','specimenCount','startScreen','startBtn','titleSettingsBtn','characterScreen','characterGrid','characterBackBtn','characterConfirmBtn','lobbyScreen','lobbyCharacter','lobbyAbility','changeCharacterBtn','lobbyRecordBtn','enterWardBtn','chapterScreen','chapterGrid','chapterBackBtn','chapterEnterBtn','recordScreen','recordContent','recordBackBtn','settingsScreen','metaAudioBtn','settingsBackBtn','dialogueBox','dialogueName','dialogueText','toast','minimap','actionButton'].forEach(id=>ui[id]=document.getElementById(id));
+const minimapCtx=ui.minimap.getContext('2d',{alpha:false});
+const minimapStatic=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,runn
+
+
+===== specimen @ 1390 =====
+=document.createElement('canvas'),minimapStaticCtx=minimapStatic.getContext('2d',{alpha:false});
+
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zones=[],events=[],hazards=[],clotFields=[],clotCritFx=[],clotReleaseFx=[],corpses=[],deathFx=[],breaches=[],navGates=[],stitchFx=[],stitchGroups=[],incisionFx=[],unlockActors=[],bossHazards=[];
+let eventClock=125,eventCount=0,broadcastTimer=0,broadcastText='',broadcastMode='normal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHosp
+
+
+===== specimen @ 4585 =====
+Pending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거운 근접 방사형 넉백, 혈전증은 이동 잔흔과 정지 응고를 이용한 지속 제어다.
+// v0.3.3.t: 심장박동은 확률적으로 최대 두 번 연쇄되며, 치명 박동은 120%·치명 추가 박동은 80% 피해를 준다. 골편은 순수 연출이다.
+
+
+function storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY
+
+
+===== specimen @ 5427 =====
+.t: 심장박동은 확률적으로 최대 두 번 연쇄되며, 치명 박동은 120%·치명 추가 박동은 80% 피해를 준다. 골편은 순수 연출이다.
+
+
+function storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const ABILITY_COSTS=[100,180,300,450,650,900,1200,1550,2000,2600];
+const DEFAULT_META={version:2,specimens:0,selectedCharacter:'specimen',selectedChapter:'beta',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};
+
+
+===== specimen @ 5458 =====
+ 박동은 120%·치명 추가 박동은 80% 피해를 준다. 골편은 순수 연출이다.
+
+
+function storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const ABILITY_COSTS=[100,180,300,450,650,900,1200,1550,2000,2600];
+const DEFAULT_META={version:2,specimens:0,selectedCharacter:'specimen',selectedChapter:'beta',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated
+
+
+===== specimen @ 5511 =====
+on storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const ABILITY_COSTS=[100,180,300,450,650,900,1200,1550,2000,2600];
+const DEFAULT_META={version:2,specimens:0,selectedCharacter:'specimen',selectedChapter:'beta',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*1
+
+
+===== specimen @ 5665 =====
+Item(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const ABILITY_COSTS=[100,180,300,450,650,900,1200,1550,2000,2600];
+const DEFAULT_META={version:2,specimens:0,selectedCharacter:'specimen',selectedChapter:'beta',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedC
+
+
+===== specimen @ 6187 =====
+ion loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';selectedChapter=meta.selectedChapter||'beta';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;meta.selectedChapter=selectedChapter;meta.version=2;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'베타',glyph:'β',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 모든 공격이 빨라진다. 복구가 진행되면 무기들이 서로 적응하고 같은 순간에 반응한다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:
+
+
+===== specimen @ 6224 =====
+se(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';selectedChapter=meta.selectedChapter||'beta';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;meta.selectedChapter=selectedChapter;meta.version=2;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'베타',glyph:'β',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 모든 공격이 빨라진다. 복구가 진행되면 무기들이 서로 적응하고 같은 순간에 반응한다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:'봉합사',ability:'잔존 반응',abilityText:'받은
+
+
+===== specimen @ 6404 =====
+rs,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';selectedChapter=meta.selectedChapter||'beta';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;meta.selectedChapter=selectedChapter;meta.version=2;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'베타',glyph:'β',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 모든 공격이 빨라진다. 복구가 진행되면 무기들이 서로 적응하고 같은 순간에 반응한다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:'봉합사',ability:'잔존 반응',abilityText:'받은 피해 일부가 즉시 상처가 되지 않고 잔류 손상으로 남는다. 적을 처치하면 남은 손상을 지울 수 있다.'},
+ attendant:{name:'당직자',glyph:'▣',quote:'중지 명령이 전달되지 않았다.',weapon:'incision',weaponName:'절개선',ability:'처치 순서',abilityTex
+
+
+===== specimen @ 6641 =====
+aw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';selectedChapter=meta.selectedChapter||'beta';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;meta.selectedChapter=selectedChapter;meta.version=2;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'베타',glyph:'β',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 모든 공격이 빨라진다. 복구가 진행되면 무기들이 서로 적응하고 같은 순간에 반응한다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:'봉합사',ability:'잔존 반응',abilityText:'받은 피해 일부가 즉시 상처가 되지 않고 잔류 손상으로 남는다. 적을 처치하면 남은 손상을 지울 수 있다.'},
+ attendant:{name:'당직자',glyph:'▣',quote:'중지 명령이 전달되지 않았다.',weapon:'incision',weaponName:'절개선',ability:'처치 순서',abilityText:'시야 안에서 가장 위험한 개체를 자동으로 분류한다. 분류된 대상에는 모든 무기가 더 효율적으로 작동한다.'}
+};
+const ABILITY_STEPS={
+ specimen:['추가 무기당 적응 속도가 증가합니다.','수용체의 최대 적응 폭이 넓어집니다.','새 무기를 처음 받아들이면 12초간 적응이 가속됩니다.','적응 가속의 지속시간과 기본 효율이 증가합니다.','무기 4종 이상 보유 시 모든 피해가 증가합니다.'
+
+
+===== player @ 2445 =====
+mal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHospital=null,growthCount=0,currentAction=null;
+const joystick={active:false,id:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
+const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
+const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
+const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
+const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+
+
+
+===== player @ 13464 =====
+oBtn.textContent=soundEnabled?'켜짐':'꺼짐';}
+function showSettings(){syncMetaAudio();showMetaScreen('settingsScreen');}
+function startChapterRun(){if(selectedChapter!=='beta')return;initAudio();startChapterBgm(false);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});hideMetaScreens();ui.hud.style.display='block';reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:
+
+
+===== player @ 13491 =====
+ed?'켜짐':'꺼짐';}
+function showSettings(){syncMetaAudio();showMetaScreen('settingsScreen');}
+function startChapterRun(){if(selectedChapter!=='beta')return;initAudio();startChapterBgm(false);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});hideMetaScreens();ui.hud.style.display='block';reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:13,radius:95,echoChance:.25
+
+
+===== player @ 18803 =====
+lse{d.className='organSlot empty';d.innerHTML='<span style="font-size:14px;opacity:.6">◇</span>';d.title='메인 장기 없음';}
+ ui.organHud.appendChild(d);
+}
+function triggerOrganActivation(slot,announce=true,playSound=true){
+ const def=ORGAN_DEFS[slot];organPulse=1;organPulseSlot=slot;organFx=Math.max(organFx,.55);organFlash=def.color;cameraShake=Math.max(cameraShake,slot==='heart'?5:slot==='brain'?4:6);
+ organRings.push({x:player.x,y:player.y,r:slot==='stomach'?235:8,max:slot==='heart'?190:slot==='brain'?215:24,life:slot==='stomach'?1.05:.85,maxLife:slot==='stomach'?1.05:.85,color:def.color,slot});
+ const count=qualityLevel===2?10:18;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=55+Math.random()*150;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.45,2+Math.random()*3,def.color);}
+ if(playSound){if(slot==='heart')sfx('organHeart');else if(slot==='brain')sfx('organBrain');else sfx('organStomach');}
+ if(announce)broadcast(def.activation,'organ');
+}
+function triggerOrganCinematic(slot){
+ const def=ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color
+
+
+===== player @ 18814 =====
+Name='organSlot empty';d.innerHTML='<span style="font-size:14px;opacity:.6">◇</span>';d.title='메인 장기 없음';}
+ ui.organHud.appendChild(d);
+}
+function triggerOrganActivation(slot,announce=true,playSound=true){
+ const def=ORGAN_DEFS[slot];organPulse=1;organPulseSlot=slot;organFx=Math.max(organFx,.55);organFlash=def.color;cameraShake=Math.max(cameraShake,slot==='heart'?5:slot==='brain'?4:6);
+ organRings.push({x:player.x,y:player.y,r:slot==='stomach'?235:8,max:slot==='heart'?190:slot==='brain'?215:24,life:slot==='stomach'?1.05:.85,maxLife:slot==='stomach'?1.05:.85,color:def.color,slot});
+ const count=qualityLevel===2?10:18;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=55+Math.random()*150;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.45,2+Math.random()*3,def.color);}
+ if(playSound){if(slot==='heart')sfx('organHeart');else if(slot==='brain')sfx('organBrain');else sfx('organStomach');}
+ if(announce)broadcast(def.activation,'organ');
+}
+function triggerOrganCinematic(slot){
+ const def=ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShak
+
+
+===== player @ 19112 =====
+rganFlash=def.color;cameraShake=Math.max(cameraShake,slot==='heart'?5:slot==='brain'?4:6);
+ organRings.push({x:player.x,y:player.y,r:slot==='stomach'?235:8,max:slot==='heart'?190:slot==='brain'?215:24,life:slot==='stomach'?1.05:.85,maxLife:slot==='stomach'?1.05:.85,color:def.color,slot});
+ const count=qualityLevel===2?10:18;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=55+Math.random()*150;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.45,2+Math.random()*3,def.color);}
+ if(playSound){if(slot==='heart')sfx('organHeart');else if(slot==='brain')sfx('organBrain');else sfx('organStomach');}
+ if(announce)broadcast(def.activation,'organ');
+}
+function triggerOrganCinematic(slot){
+ const def=ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShake=slot==='heart'?10:slot==='brain'?7:8;broadcastTimer=0;toastTimer=0;ui.toast.style.opacity='0';document.body.classList.add('organ-cinematic');syncActionButton();
+ const count=qualityLevel===2?22:36;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=70+Math.random()*210;emitParticle(playe
+
+
+===== player @ 19121 =====
+=def.color;cameraShake=Math.max(cameraShake,slot==='heart'?5:slot==='brain'?4:6);
+ organRings.push({x:player.x,y:player.y,r:slot==='stomach'?235:8,max:slot==='heart'?190:slot==='brain'?215:24,life:slot==='stomach'?1.05:.85,maxLife:slot==='stomach'?1.05:.85,color:def.color,slot});
+ const count=qualityLevel===2?10:18;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=55+Math.random()*150;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.45,2+Math.random()*3,def.color);}
+ if(playSound){if(slot==='heart')sfx('organHeart');else if(slot==='brain')sfx('organBrain');else sfx('organStomach');}
+ if(announce)broadcast(def.activation,'organ');
+}
+function triggerOrganCinematic(slot){
+ const def=ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShake=slot==='heart'?10:slot==='brain'?7:8;broadcastTimer=0;toastTimer=0;ui.toast.style.opacity='0';document.body.classList.add('organ-cinematic');syncActionButton();
+ const count=qualityLevel===2?22:36;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=70+Math.random()*210;emitParticle(player.x,playe
+
+
+===== player @ 19833 =====
+ORGAN_DEFS[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShake=slot==='heart'?10:slot==='brain'?7:8;broadcastTimer=0;toastTimer=0;ui.toast.style.opacity='0';document.body.classList.add('organ-cinematic');syncActionButton();
+ const count=qualityLevel===2?22:36;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=70+Math.random()*210;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.75,2+Math.random()*4,def.color);}
+ if(slot==='brain')applyBrainInfluence(true);
+ triggerOrganActivation(slot,false,false);playOrganCinematicSfx(slot);
+}
+
+const HOSPITAL_DEFS=[
+ {id:'supportRecovery',name:'격리 병상',short:'회복',zoneId:'supportRecovery',color:'#79b58b',role:'support'},
+ {id:'supportTransfusion',name:'응급 처치대',short:'수혈',zoneId:'supportTransfusion',color:'#d15b68',role:'support'},
+ {id:'organHeart',name:'심전도 장비',short:'심장',zoneId:'organHeart',color:'#d94d5b',role:'organ',organSlot:'heart',eventLabel:'정지된 심장 회수'},
+ {id:'organBrain',name:'관찰 장비',short:'신경',zoneId:'organBrain',color:'#b58ad2',role:'organ',organSlot:'brain',eventLabel:'침식된 뇌 표본 회수'},
+ {id:'organSt
+
+
+===== player @ 19842 =====
+S[slot];organCinematicSlot=slot;organCinematicTimer=ORGAN_CINEMATIC_DURATION;organFx=1;organFlash=def.color;cameraShake=slot==='heart'?10:slot==='brain'?7:8;broadcastTimer=0;toastTimer=0;ui.toast.style.opacity='0';document.body.classList.add('organ-cinematic');syncActionButton();
+ const count=qualityLevel===2?22:36;for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,sp=70+Math.random()*210;emitParticle(player.x,player.y,Math.cos(a)*sp,Math.sin(a)*sp,.75,2+Math.random()*4,def.color);}
+ if(slot==='brain')applyBrainInfluence(true);
+ triggerOrganActivation(slot,false,false);playOrganCinematicSfx(slot);
+}
+
+const HOSPITAL_DEFS=[
+ {id:'supportRecovery',name:'격리 병상',short:'회복',zoneId:'supportRecovery',color:'#79b58b',role:'support'},
+ {id:'supportTransfusion',name:'응급 처치대',short:'수혈',zoneId:'supportTransfusion',color:'#d15b68',role:'support'},
+ {id:'organHeart',name:'심전도 장비',short:'심장',zoneId:'organHeart',color:'#d94d5b',role:'organ',organSlot:'heart',eventLabel:'정지된 심장 회수'},
+ {id:'organBrain',name:'관찰 장비',short:'신경',zoneId:'organBrain',color:'#b58ad2',role:'organ',organSlot:'brain',eventLabel:'침식된 뇌 표본 회수'},
+ {id:'organStomach',na
+
+
+===== player @ 33835 =====
+;bgmNodes.push(drone);let beat=0;bgmTimer=setInterval(()=>{if(!soundEnabled||paused||gameOver||!audioCtx)return;const seq=boss?[55,55,62,49]:[48,0,44,0,52,0,41,0],freq=seq[beat++%seq.length];if(freq)toneAt(freq,0,boss?.20:.28,'sine',boss?.018:.009,freq*.72,false);if(beat%4===0)noiseAt(0,.12,boss?.008:.004,boss?420:250,'lowpass',false);},boss?430:720);}
+
+function addResidualDamage(amount,duration){if(amount<=0)return;player.residualDamage=(player.residualDamage||0)+amount;player.residualRate=(player.residualRate||0)+amount/Math.max(1,duration);}
+function clearResidualDamage(amount){const before=player.residualDamage||0;if(before<=0||amount<=0)return 0;const cleared=Math.min(before,amount),ratio=(before-cleared)/before;player.residualDamage=before-cleared;player.residualRate=(player.residualRate||0)*ratio;if(player.residualDamage<.05){player.residualDamage=0;player.residualRate=0;}return cleared;}
+function applyPlayerDamage(raw,invuln=.45){
+ if(player.invuln>0||raw<=0)return false;
+ let dmg=raw*player.damageTakenMult*organMods.damageTaken;
+ if(player.shield>0){const absorbed=Math.min(player.shield,dmg);player.shield-=absorbed;dmg-
+
+
+===== player @ 33858 =====
+et beat=0;bgmTimer=setInterval(()=>{if(!soundEnabled||paused||gameOver||!audioCtx)return;const seq=boss?[55,55,62,49]:[48,0,44,0,52,0,41,0],freq=seq[beat++%seq.length];if(freq)toneAt(freq,0,boss?.20:.28,'sine',boss?.018:.009,freq*.72,false);if(beat%4===0)noiseAt(0,.12,boss?.008:.004,boss?420:250,'lowpass',false);},boss?430:720);}
+
+function addResidualDamage(amount,duration){if(amount<=0)return;player.residualDamage=(player.residualDamage||0)+amount;player.residualRate=(player.residualRate||0)+amount/Math.max(1,duration);}
+function clearResidualDamage(amount){const before=player.residualDamage||0;if(before<=0||amount<=0)return 0;const cleared=Math.min(before,amount),ratio=(before-cleared)/before;player.residualDamage=before-cleared;player.residualRate=(player.residualRate||0)*ratio;if(player.residualDamage<.05){player.residualDamage=0;player.residualRate=0;}return cleared;}
+function applyPlayerDamage(raw,invuln=.45){
+ if(player.invuln>0||raw<=0)return false;
+ let dmg=raw*player.damageTakenMult*organMods.damageTaken;
+ if(player.shield>0){const absorbed=Math.min(player.shield,dmg);player.shield-=absorbed;dmg-=absorbed;}
+ let immedi
+
+
+===== player @ 33891 =====
+=>{if(!soundEnabled||paused||gameOver||!audioCtx)return;const seq=boss?[55,55,62,49]:[48,0,44,0,52,0,41,0],freq=seq[beat++%seq.length];if(freq)toneAt(freq,0,boss?.20:.28,'sine',boss?.018:.009,freq*.72,false);if(beat%4===0)noiseAt(0,.12,boss?.008:.004,boss?420:250,'lowpass',false);},boss?430:720);}
+
+function addResidualDamage(amount,duration){if(amount<=0)return;player.residualDamage=(player.residualDamage||0)+amount;player.residualRate=(player.residualRate||0)+amount/Math.max(1,duration);}
+function clearResidualDamage(amount){const before=player.residualDamage||0;if(before<=0||amount<=0)return 0;const cleared=Math.min(before,amount),ratio=(before-cleared)/before;player.residualDamage=before-cleared;player.residualRate=(player.residualRate||0)*ratio;if(player.residualDamage<.05){player.residualDamage=0;player.residualRate=0;}return cleared;}
+function applyPlayerDamage(raw,invuln=.45){
+ if(player.invuln>0||raw<=0)return false;
+ let dmg=raw*player.damageTakenMult*organMods.damageTaken;
+ if(player.shield>0){const absorbed=Math.min(player.shield,dmg);player.shield-=absorbed;dmg-=absorbed;}
+ let immediate=dmg;
+ if(dmg>0&&selectedChara

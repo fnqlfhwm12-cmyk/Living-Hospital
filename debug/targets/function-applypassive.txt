@@ -1,0 +1,7 @@
+function applyPassive(key){
+ const p=passives[key];p.level++;
+ if(key==='density'){player.maxHp+=12;player.hp=Math.min(player.maxHp,player.hp+12);player.damageTakenMult*=.95;}
+ if(key==='sensory')player.crit+=.05;
+ if(key==='necrosis')player.invulnBonus=(player.invulnBonus||0)+.06;
+ if(key==='overload'){player.moveBonus+=.055;player.damageTakenMult*=1.06;}
+}

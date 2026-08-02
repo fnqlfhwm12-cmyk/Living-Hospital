@@ -1,0 +1,5 @@
+function fireBlood(){
+ const w=weapons.blood,targetInfo=nearestTarget();if(!targetInfo)return;sfx('bloodFire');
+ const st=bloodStreamStats(w.level),target=targetInfo.target,dmg=rollWeaponDamage('blood',st.damage);
+ createBloodStream(player.x,player.y,targetInfo.x,targetInfo.y,targetInfo.kind==='enemy'?target:null,targetInfo.kind==='object'?target:null,st,dmg.value,{crit:dmg.crit,allowCrit:true});
+}

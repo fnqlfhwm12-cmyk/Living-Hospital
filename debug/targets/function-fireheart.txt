@@ -1,0 +1,10 @@
+function fireHeart(){
+ const w=weapons.heart,base=w.damage*(1+.16*(w.level-1))*damageMult(),crit=rollWeaponCrit('heart');
+ waves.push(makeHeartWave(base*(crit?1.20:1),crit));sfx(crit?'heartBeatCrit':'heartBeat');
+ let delay=.14;
+ for(let echoDepth=1;echoDepth<=w.maxEchoes;echoDepth++){
+  if(Math.random()>=w.echoChance)break;
+  waves.push(makeHeartWave(base*(crit?.80:.50),crit,echoDepth,delay));
+  delay+=echoDepth===1?.10:.08;
+ }
+}

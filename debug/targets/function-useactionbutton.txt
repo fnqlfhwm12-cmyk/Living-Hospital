@@ -1,0 +1,1 @@
+function useActionButton(){if(!currentAction||paused||gameOver||organCinematicTimer>0)return;initAudio();if(currentAction.type==='unlock')interactUnlock(currentAction.kind);}

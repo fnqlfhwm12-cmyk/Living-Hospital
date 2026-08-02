@@ -1,0 +1,8 @@
+function drawMinimapBase(){
+ const c=minimapCtx;c.fillStyle='#090909';c.fillRect(0,0,MINIMAP.w,MINIMAP.h);
+ c.save();c.beginPath();c.rect(MINIMAP.pad,MINIMAP.pad,MINIMAP.w-MINIMAP.pad*2,MINIMAP.h-MINIMAP.pad*2);c.clip();
+ const ward=zones.find(z=>z.mainWard);if(ward){const r=minimapRect(ward.x-ward.w/2,ward.y-ward.h/2,ward.w,ward.h);c.fillStyle='#252020';c.fillRect(r.x,r.y,r.w,r.h);c.strokeStyle='#745b5b';c.lineWidth=1;c.strokeRect(r.x+.5,r.y+.5,Math.max(0,r.w-1),Math.max(0,r.h-1));}
+ c.fillStyle='#57504d';for(const l of landmarks){if(!l.mapBlock)continue;const w=l.mapW||l.r*2,h=l.mapH||l.r*.7,r=minimapRect(l.x-w/2,l.y-h/2,w,h);if(r.x+r.w<MINIMAP.pad||r.x>MINIMAP.w-MINIMAP.pad||r.y+r.h<MINIMAP.pad||r.y>MINIMAP.h-MINIMAP.pad)continue;c.globalAlpha=.52;c.fillRect(r.x,r.y,r.w,r.h);}c.globalAlpha=1;
+ const world=minimapRect(MINIMAP.minX,MINIMAP.minY,MINIMAP.maxX-MINIMAP.minX,MINIMAP.maxY-MINIMAP.minY);c.strokeStyle='#ffffff28';c.lineWidth=.9;c.strokeRect(world.x+.5,world.y+.5,Math.max(0,world.w-1),Math.max(0,world.h-1));c.restore();
+ c.strokeStyle='#ffffff33';c.strokeRect(.5,.5,MINIMAP.w-1,MINIMAP.h-1);
+}

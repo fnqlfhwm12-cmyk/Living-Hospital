@@ -1,0 +1,69 @@
+// ===== scale-weapons =====
+const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
+const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
+const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
+const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
+const enemyGrid=new Map(),objectGrid=new Map();
+const enemyQueryBuffer=[],objectQueryBuffer=[],enemyBucketPool=[],objectBucketPool=[];
+const POOLS={enemy:[],projectile:[],enemyShot:[],orb:[],organDrop:[],pickup:[],particle:[],corpse:[],deathFx:[]};
+const screenPoints=Array.from({length:64},()=>({x:0,y:0}));
+let screenPointIndex=0,querySerial=1,vignetteGradient=null;
+let accumulator=0,loopClock=0,audioCtx=null,audioMaster=null,audioCompressor=null,soundEnabled=true,lastPickupTone=0,lastPlayerHitTone=0,lastBoneHitTone=0,lastBloodHitTone=0,transplantInside=false,transplantNear=false,transplantReady=false,transplantCooldown=0,transplantOpen=false,organSerial=0,cinematicAudioNodes=[];
+let activeOrgan=null,organStored={},organFx=0,organFlash='#fff',cameraShake=0,brainClock=8,stomachClock=20,heartBeatClock=4,globalMagnet=0,defibrillatorTimer=0,defibrillatorPulseClock=0,defibrillatorAimX=1,defibrillatorAimY=0,waterReaction=0,bodyTwitch=0,clotTrailClock=0,clotStillClock=0,clotLastX=0,clotLastY=0,clotHadMotion=false,clotArmed=false,clotMoveTime=0,clotMoveDistance=0,clotPrevX=0,clotPrevY=0,clotBurst=null,clotGroupSerial=0,clotCritSerial=0,bloodStreamSerial=0,enemySerial=0,receptorSyncClock=14,attendantTarget=null,attendantRetargetClock=0,attendantTempo=0,attendantNextVulnerability=false,stitchPending=null;
+let organCinematicTimer=0,organCinematicSlot=null,organCinematicPreview=false,organPreviewElapsed=0,organPulse=0,organPulseSlot=null,organRings=[];
+let selectionMode=null,selectedChoice=null,selectionConfirmAction=null,selectionCancelAction=null,selectionInputGuardUntil=0,selectionNeedsFreshPointer=false,lastGrowthChoiceName='';
+let hitStopTimer=0,boneSwingSide=1;
+let chapterFlags={},selectedCharacter='specimen',selectedChapter='beta',characterReturn='title',dialogueState=null,bossState=null,bossIntroTimer=0,bossDeathTimer=0,bossCinematicAge=0,bgmTimer=null,bgmNodes=[];
+const PERF_WARMUP=4,ORGAN_CINEMATIC_DURATION=3.7,MAX_MAP_PICKUPS=3,BONUS_MAP_PICKUP_CAP=1,PICKUP_RESPAWN_MIN=20,PICKUP_RESPAWN_MAX=35;
+const CLOT_FIELD_CAP=28,CLOT_CRIT_FX_CAP=4;
+// 첫 밸런스 기준: 골절은 무거운 근접 방사형 넉백, 혈전증은 이동 잔흔과 정지 응고를 이용한 지속 제어다.
+// v0.3.3.t: 심장박동은 확률적으로 최대 두 번 연쇄되며, 치명 박동은 120%·치명 추가 박동은 80% 피해를 준다. 골편은 순수 연출이다.
+
+
+function storageGet(key){try{return window.localStorage?.getItem(key)??null;}catch(_){return null;}}
+function storageSet(key,value){try{window.localStorage?.setItem(key,value);return true;}catch(_){return false;}}
+const META_KEY='lh_meta_v034';
+const ABILITY_COSTS=[100,180,300,450,650,900,1200,1550,2000,2600];
+const DEFAULT_META={version:2,specimens:0,selectedCharacter:'specimen',selectedChapter:'beta',unlockedCharacters:{specimen:true,residual:false,attendant:false},unlockedWeapons:{blood:true,bone:true,heart:true,autophagy:true,stitch:false,incision:false},abilityLevels:{specimen:0,residual:0,attendant:0},discoveredEvolutions:[],bossKills:0,chapterOneCleared:false};
+function loadMeta(){try{const raw=JSON.parse(storageGet(META_KEY)||'null');if(!raw)return JSON.parse(JSON.stringify(DEFAULT_META));const migrated={...DEFAULT_META,...raw,unlockedCharacters:{...DEFAULT_META.unlockedCharacters,...raw.unlockedCharacters},unlockedWeapons:{...DEFAULT_META.unlockedWeapons,...raw.unlockedWeapons},abilityLevels:{...DEFAULT_META.abilityLevels,...raw.abilityLevels}};if((raw.version||1)<2){migrated.specimens=Math.max(0,Math.round((raw.specimens||0)*100));migrated.version=2;}return migrated;}catch(_){return JSON.parse(JSON.stringify(DEFAULT_META));}}
+let meta=loadMeta();selectedCharacter=meta.selectedCharacter||'specimen';selectedChapter=meta.selectedChapter||'beta';
+function saveMeta(){meta.selectedCharacter=selectedCharacter;meta.selectedChapter=selectedChapter;meta.version=2;storageSet(META_KEY,JSON.stringify(meta));}
+const CHARACTER_DEFS={
+ specimen:{name:'베타',glyph:'β',quote:'교체될 때마다 조금씩 자신을 잊는다.',weapon:'blood',weaponName:'혈류',ability:'수용체',abilityText:'서로 다른 무기를 받아들일수록 모든 공격이 빨라진다. 복구가 진행되면 무기들이 서로 적응하고 같은 순간에 반응한다.'},
+ residual:{name:'잔존자',glyph:'⌁',quote:'남의 기억으로 자신의 형태를 유지한다.',weapon:'stitch',weaponName:'봉합사',ability:'잔존 반응',abilityText:'받은 피해 일부가 즉시 상처가 되지 않고 잔류 손상으로 남는다. 적을 처치하면 남은 손상을 지울 수 있다.'},
+ attendant:{name:'당직자',glyph:'▣',quote:'중지 명령이 전달되지 않았다.',weapon:'incision',weaponName:'절개선',ability:'처치 순서',abilityText:'시야 안에서 가장 위험한 개체를 자동으로 분류한다. 분류된 대상에는 모든 무기가 더 효율적으로 작동한다.'}
+};
+const ABILITY_STEPS={
+ specimen:['추가 무기당 적응 속도가 증가합니다.','수용체의 최대 적응 폭이 넓어집니다.','새 무기를 처음 받아들이면 12초간 적응이 가속됩니다.','적응 가속의 지속시간과 기본 효율이 증가합니다.','무기 4종 이상 보유 시 모든 피해가 증가합니다.','추가 무기마다 피해 적응이 함께 축적됩니다.','공격 주기 적응의 상한이 크게 확장됩니다.','적응 가속 중 피해량도 함께 증가합니다.','무기 5종 이상 보유 시 치명 현상 확률이 증가합니다.','14초마다 모든 활성 무기가 한꺼번에 반응합니다.'],
+ residual:['처치 시 지워지는 잔류 손상이 증가합니다.','잔류 손상이 더 천천히 실제 상처로 변합니다.','처치 시 현재 잔류 손상의 일정 비율을 지웁니다.','잔류 손상이 남아 있으면 이동속도가 증가합니다.','강한 개체를 처치하면 잔류 손상을 대량 제거합니다.','더 많은 피해를 잔류 손상으로 유예합니다.','잔류 손상이 남아 있으면 공격력이 증가합니다.','처치에 의한 잔류 손상 제거량이 다시 증가합니다.','피해 유예 비율과 처치 회복 효율이 최대치에 가까워집니다.','치명상을 한 번 버티고 남은 피해를 잔류 손상으로 전환합니다.'],
+ attendant:['분류 대상에 대한 피해 효율이 증가합니다.','위험 대상을 더 자주 다시 분류합니다.','특수 개체와 강한 개체의 분류 우선도가 높아집니다.','분류 대상에 대한 밀침과 제어가 강화됩니다.','분류 대상을 처치하면 잠시 공격 주기가 빨라집니다.','분류 대상에 대한 피해 효율이 크게 증가합니다.','분류 대상 처치 시 모든 무기의 남은 대기시간이 줄어듭니다.','다음 분류 대상이 잠시 더 취약한 상태로 지정됩니다.','분류 대상 피해와 처치 가속 효과가 최대치에 가까워집니다.','분류 대상 처치 시 모든 무기의 대기시간이 크게 당겨지고 다음 절차가 즉시 시작됩니다.']
+};
+const CHAPTER_DEFS={beta:{label:'CHAPTER I',title:'β',subtitle:'비어 있는 자리',desc:'기록되지 않은 개체들이 먼저 깨어난 병동.',available:true},living:{label:'CHAPTER II',title:'Living Hospital',subtitle:'아직 닫혀 있음',desc:'다음 병동은 아직 연결되지 않았습니다.',available:false},third:{label:'CHAPTER III',title:'—',subtitle:'기록 없음',desc:'확인되지 않은 절차입니다.',available:false}};
+function hideMetaScreens(){for(const id of ['startScreen','characterScreen','lobbyScreen','chapterScreen','recordScreen','settingsScreen'])ui[id]?.classList.remove('active');}
+function showMetaScreen(id){hideMetaScreens();ui[id]?.classList.add('active');ui.hud.style.display='none';}
+function abilityCost(level){return ABILITY_COSTS[level]??null;}
+function abilityTrackMarkup(level){return `<div class="abilityTrack" aria-label="강화 ${level}/10">${Array.from({length:10},(_,i)=>`<span class="abilityPip ${i<level?'active':''} ${(i+1)%3===0||i===9?'milestone':''}">${i+1}</span>`).join('')}</div>`;}
+function renderCharacterSelect(){ui.characterGrid.innerHTML='';for(const [key,d] of Object.entries(CHARACTER_DEFS)){const unlocked=!!meta.unlockedCharacters[key],b=document.createElement('button');b.className='card characterCard'+(unlocked?'':' locked')+(selectedCharacter===key?' selected':'');b.disabled=!unlocked;b.innerHTML=`<div class="characterGlyph">${unlocked?d.glyph:'?'}</div><small>${unlocked?d.weaponName:'기록 없음'}</small><h3>${unlocked?d.name:'미등록 개체'}</h3><p>${unlocked?d.quote:(key==='residual'?'비어 있지 않은 침대가 있다.':'근무자가 확인되지 않는다.')}</p>`;b.onclick=()=>{selectedCharacter=key;renderCharacterSelect();};ui.characterGrid.appendChild(b);}ui.characterConfirmBtn.disabled=!meta.unlockedCharacters[selectedCharacter];}
+function renderLobby(){const d=CHARACTER_DEFS[selectedCharacter],lv=Math.min(10,meta.abilityLevels[selectedCharacter]||0),cost=abilityCost(lv),next=ABILITY_STEPS[selectedCharacter][lv];ui.lobbyCharacter.innerHTML=`<div class="characterGlyph">${d.glyph}</div><small>수용 개체</small><h2>${d.name}</h2><p>${d.quote}</p><span class="metaTag">기본 무기 · ${d.weaponName}</span><span class="metaTag">개인능력 · ${d.ability}</span><hr><div class="currency"><span class="specimenMiniIcon">▣</span> ${Number(meta.specimens||0).toLocaleString('ko-KR')}</div>`;ui.lobbyAbility.innerHTML=`<small>개인능력</small><h2>${d.ability}</h2><p>${d.abilityText}</p>${abilityTrackMarkup(lv)}<p class="muted">검체 강화 ${lv}/10</p><div class="abilityCurrent"><b>${lv===0?'기본 반응':`${lv}강 적용`}</b><span>${lv===0?'개인능력의 기본 규칙이 활성화되어 있습니다.':ABILITY_STEPS[selectedCharacter][lv-1]}</span></div><div class="abilityRow"><div>${cost===null?'이 개체의 복구가 완성되었습니다.':`다음 복구 · ${Number(cost).toLocaleString('ko-KR')} 검체${next?`<small>${next}</small>`:''}`}</div>${cost===null?'':`<button class="btn" id="abilityUpgradeBtn" ${meta.specimens<cost?'disabled':''}>복구</button>`}</div>`;const btn=document.getElementById('abilityUpgradeBtn');if(btn)btn.onclick=()=>{if(meta.specimens<cost)return;meta.specimens-=cost;meta.abilityLevels[selectedCharacter]=lv+1;saveMeta();renderLobby();};}
+function openCharacterSelect(from='title'){characterReturn=from;renderCharacterSelect();showMetaScreen('characterScreen');}
+function openLobby(){renderLobby();showMetaScreen('lobbyScreen');}
+function renderChapterSelect(){ui.chapterGrid.innerHTML='';for(const [key,d] of Object.entries(CHAPTER_DEFS)){const b=document.createElement('button');b.className='chapterCard'+(d.available?'':' locked')+(selectedChapter===key&&d.available?' selected':'');b.disabled=!d.available;b.innerHTML=`<small>${d.label}</small><strong>${d.title}</strong><span>${d.subtitle}</span><p>${d.desc}</p>`;if(d.available)b.onclick=()=>{selectedChapter=key;saveMeta();renderChapterSelect();};ui.chapterGrid.appendChild(b);}ui.chapterEnterBtn.disabled=!CHAPTER_DEFS[selectedChapter]?.available;}
+function openChapterSelect(){renderChapterSelect();showMetaScreen('chapterScreen');}
+function renderRecords(){const chars=Object.entries(CHARACTER_DEFS).filter(([k])=>meta.unlockedCharacters[k]).map(([k,d])=>`<div class="recordItem"><b>${d.name}</b><p>${d.weaponName} · ${d.ability} · ${meta.abilityLevels[k]||0}/10</p></div>`).join('');const weaponTags=Object.entries(weapons).filter(([k])=>meta.unlockedWeapons[k]).map(([,w])=>`<span class="metaTag">${w.name}</span>`).join('');const evolutions=(meta.discoveredEvolutions||[]).length?meta.discoveredEvolutions.map(x=>`<span class="metaTag">${x}</span>`).join(''):'<p class="muted">발견된 진화가 없습니다.</p>';ui.recordContent.innerHTML=`<p>보유 검체 · ${Number(meta.specimens||0).toLocaleString('ko-KR')}</p><p>최고 생존 기록 · ${fmt(best)}</p><p>회수자 처치 · ${meta.bossKills}회</p><h3>개체</h3><div class="recordList">${chars}</div><h3 style="margin-top:14px">무기</h3><div>${weaponTags}</div><h3 style="margin-top:14px">발견된 진화</h3>${evolutions}`;}
+function openRecords(from='lobby'){renderRecords();ui.recordScreen.dataset.from=from;showMetaScreen('recordScreen');}
+function syncMetaAudio(){ui.metaAudioBtn.textContent=soundEnabled?'켜짐':'꺼짐';}
+function showSettings(){syncMetaAudio();showMetaScreen('settingsScreen');}
+function startChapterRun(){if(selectedChapter!=='beta')return;initAudio();startChapterBgm(false);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});hideMetaScreens();ui.hud.style.display='block';reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:13,radius:95,echoChance:.25,maxEchoes:2,lore:'박동이 살갗 밖으로 번지고, 때때로 제 리듬을 잊습니다.'},
+ autophagy:{name:'혈전증',icon:'◉',level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52,lore:'지나온 자리에 병든 피가 남고, 멈춘 자리에서 세 번 응고합니다.'},
+ stitch:{name:'봉합사',icon:'⌁',level:0,cd:1.48,timer:0,damage:18,range:430,lore:'첫 박자에 군집을 꿰고, 다음 박자에 한꺼번에 봉합합니다.'},
+ incision:{name:'절개선',icon:'╱',level:0,cd:2.85,timer:0,damage:42,range:390,width:18,delay:.58,lore:'가느다란 지시선 뒤로 공간이 늦게 벌어집니다.'}
+};
+
+

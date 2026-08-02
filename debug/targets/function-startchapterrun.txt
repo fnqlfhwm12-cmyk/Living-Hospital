@@ -1,0 +1,29 @@
+function startChapterRun(){if(selectedChapter!=='beta')return;initAudio();startChapterBgm(false);if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{});hideMetaScreens();ui.hud.style.display='block';reset();last=performance.now();loopClock=0;requestAnimationFrame(loop);}
+
+const player={x:0,y:0,r:16*SCALE.player,hp:100,maxHp:100,shield:0,speed:186,xp:0,nextGrowthXp:9,invuln:0,pickup:95,moveBonus:0,pickupBonus:0,damageTakenMult:1,crit:0.05,critMult:1.7,regen:0,autoBuff:0,invulnBonus:0,xpRemainder:0,facingX:1,facingY:0,adaptationSurge:0,residualDamage:0,residualRate:0,residualGrace:0,residualLastStandCd:0};
+
+const weapons={
+ blood:{name:'혈류',icon:'🩸',level:1,cd:1.06,timer:0,damage:12,speed:398,lore:'몸을 벗어난 피가 하나의 생명으로 이어져 살아 있는 것을 스스로 찾아냅니다.'},
+ bone:{name:'골절',icon:'🦴',level:0,cd:2.35,timer:0,damage:64,range:102,arc:Math.PI,knockback:76,critKnockback:148,lift:.43,hold:.11,strike:.15,recovery:.50,lore:'몸을 떠난 뼈가 뒤늦게 제 쓰임을 기억합니다.'},
+ heart:{name:'심장박동',icon:'❤️',level:0,cd:2.55,timer:0,damage:13,radius:95,echoChance:.25,maxEchoes:2,lore:'박동이 살갗 밖으로 번지고, 때때로 제 리듬을 잊습니다.'},
+ autophagy:{name:'혈전증',icon:'◉',level:0,timer:0,damage:1.15,radius:28,slow:.14,trailLife:1.05,poolLife:2.4,poolRadius:52,lore:'지나온 자리에 병든 피가 남고, 멈춘 자리에서 세 번 응고합니다.'},
+ stitch:{name:'봉합사',icon:'⌁',level:0,cd:1.48,timer:0,damage:18,range:430,lore:'첫 박자에 군집을 꿰고, 다음 박자에 한꺼번에 봉합합니다.'},
+ incision:{name:'절개선',icon:'╱',level:0,cd:2.85,timer:0,damage:42,range:390,width:18,delay:.58,lore:'가느다란 지시선 뒤로 공간이 늦게 벌어집니다.'}
+};
+
+const passives={
+ flow:{name:'순환 촉진',icon:'💧',level:0,desc:'피가 재촉합니다. 공격이 빨라집니다.'},
+ density:{name:'골밀도',icon:'🦴',level:0,desc:'뼈가 몸을 붙듭니다. 체력과 방어가 증가합니다.'},
+ sensory:{name:'감각 과민',icon:'👁️',level:0,desc:'신경이 날카로워집니다. 치명타 확률이 증가합니다.'},
+ necrosis:{name:'괴사 내성',icon:'☣️',level:0,desc:'죽은 살이 고통을 늦춥니다. 피격 무적시간이 증가합니다.'},
+ overload:{name:'신경 과부하',icon:'⚡',level:0,desc:'신경이 폭주합니다. 이동·공격 속도가 오르지만 피해에 취약해집니다.'}
+};
+
+const ORGAN_SLOTS=['heart','brain','stomach'];
+const ORGAN_DEFS={
+ heart:{name:'심장',short:'심',icon:'🫀',color:'#d94d5b',effect:'과부하 · 공격·이동 속도와 피해량 증가, 지속 회복',lore:'당신의 박동 사이에, 이름 없는 심장이 기도를 시작합니다.',quote:'두 번째 고동은 오래전부터 당신을 기다리고 있었습니다.',activation:'심장이 폭주합니다.',ritual:'박동 동기화'},
+ brain:{name:'뇌',short:'뇌',icon:'🧠',color:'#b58ad2',effect:'정신침식 · 주기적으로 적 일부가 서로를 공격',lore:'낯선 주름이 당신의 침묵을 생각하기 시작합니다.',quote:'서로 다른 머릿속에서 하나의 속삭임이 자랍니다.',activation:'그들의 사고가 하나로 겹칩니다.',ritual:'신경 침식'},
+ stomach:{name:'위',short:'위',icon:'◉',color:'#d1b45f',effect:'폭식 · 일정 시간마다 전장의 경험치와 아이템을 흡수',lore:'비어 있는 기관은 이미 전장의 끝을 맛보았습니다.',quote:'굶주림이 눈을 뜨자, 흩어진 것들이 길을 잃습니다.',activation:'굶주림이 깨어납니다.',ritual:'포식 개방'}
+};
+const EVOLUTION_RECIPES=[];
+const AWAKENING_RECIPES=[];

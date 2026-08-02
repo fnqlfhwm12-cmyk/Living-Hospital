@@ -1,0 +1,5 @@
+function collectPickup(o){
+ if(o.type==='water'){player.hp=Math.min(player.maxHp,player.hp+24);waterReaction=.85;bodyTwitch=Math.max(bodyTwitch,.55);sfx('dirtyWater');for(let i=0;i<8;i++)emitParticle(player.x,player.y,(Math.random()-.5)*75,(Math.random()-.5)*65,.35,2+Math.random()*2,'#7d7651');}
+ else if(o.type==='magnet'){globalMagnet=Math.max(globalMagnet,4.2);sfx('magnet');for(let i=0;i<10;i++){const a=i/10*Math.PI*2;emitParticle(player.x,player.y,Math.cos(a)*110,Math.sin(a)*110,.42,2,'#9ac4c9');}}
+ else if(o.type==='defibrillator'){defibrillatorTimer=7.5;defibrillatorPulseClock=0;bodyTwitch=Math.max(bodyTwitch,.32);sfx('defibrillatorStart');cameraShake=Math.max(cameraShake,5);}else if(o.type==='specimen'){creditSpecimens(o.value||10);tone(420,.06,'triangle',.018,690);for(let i=0;i<7;i++)emitParticle(player.x,player.y,(Math.random()-.5)*95,(Math.random()-.5)*95,.32,2+Math.random()*2,'#d7a7b4');}
+}

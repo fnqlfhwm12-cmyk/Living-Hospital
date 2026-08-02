@@ -1,0 +1,6 @@
+function openGrowthChoice(){
+ growthChoosing=true;beginConfirmedSelection('growth','육체가 다음 흔적을 고릅니다');
+ weightedGrowthChoices(4).forEach(o=>{const b=document.createElement('button');b.className='card';b.innerHTML=`<div class="cardIcon">${o.icon||'·'}</div><small>${o.type}</small><h3>${o.name}</h3><p>${o.desc}</p>`;b.onclick=()=>markSelection(b,o);ui.cards.appendChild(b);});
+ selectionConfirmAction=()=>{if(!selectedChoice)return;lastGrowthChoiceName=selectedChoice.name||'';selectedChoice.apply();renderHudIcons();growthChoosing=false;paused=false;hideOverlay();syncActionButton();};
+}
+// 유물·전리품 선택이 추가되면 같은 확인 흐름을 그대로 사용한다.

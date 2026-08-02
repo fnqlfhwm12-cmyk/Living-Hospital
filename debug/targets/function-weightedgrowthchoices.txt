@@ -1,0 +1,9 @@
+function weightedGrowthChoices(count=4){
+ const pool=upgradePool().slice(),result=[];
+ while(pool.length&&result.length<count){
+  const weights=pool.map(o=>o.name===lastGrowthChoiceName?0.60:1),total=weights.reduce((a,b)=>a+b,0);let roll=Math.random()*total,index=0;
+  for(;index<pool.length-1;index++){roll-=weights[index];if(roll<=0)break;}
+  result.push(pool.splice(index,1)[0]);
+ }
+ return result;
+}

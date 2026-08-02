@@ -1,0 +1,11 @@
+// ===== core-declarations =====
+let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
+let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
+let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
+let enemies=[],projectiles=[],waves=[],slashes=[],boneShards=[],boneImpactFx=[],shockFx=[],leechFx=[],bloodWrapFx=[],brainLinks=[],enemyShots=[],orbs=[],organDrops=[],pickups=[],pickupRespawns=[],particles=[],landmarks=[],objects=[],zones=[],events=[],hazards=[],clotFields=[],clotCritFx=[],clotReleaseFx=[],corpses=[],deathFx=[],breaches=[],navGates=[],stitchFx=[],stitchGroups=[],incisionFx=[],unlockActors=[],bossHazards=[];
+let eventClock=125,eventCount=0,broadcastTimer=0,broadcastText='',broadcastMode='normal',toastTimer=0,anomalyClock=185,anomalyCount=0,waveSerial=0,currentWave=null,lastEventHospital=null,growthCount=0,currentAction=null;
+const joystick={active:false,id:null,sx:0,sy:0,x:0,y:0,dx:0,dy:0,max:72};
+const keys={};
+const camera={x:0,y:0},renderCamera={x:0,y:0};
+const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
+

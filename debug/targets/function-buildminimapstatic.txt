@@ -1,0 +1,3 @@
+function buildMinimapStatic(){
+ minimapStatic.width=MINIMAP.w;minimapStatic.height=MINIMAP.h;
+}

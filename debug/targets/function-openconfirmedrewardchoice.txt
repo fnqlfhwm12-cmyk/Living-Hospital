@@ -1,0 +1,3 @@
+function openConfirmedRewardChoice(title,choices,{cancelLabel=null,onCancel=null}={}){
+ beginConfirmedSelection('reward',title,{cancelLabel,onCancel});for(const o of choices){const b=document.createElement('button');b.className='card';b.innerHTML=`<div class="cardIcon">${o.icon||'·'}</div><small>${o.type||'전리품'}</small><h3>${o.name}</h3><p>${o.desc||''}</p>`;b.onclick=()=>markSelection(b,o);ui.cards.appendChild(b);}selectionConfirmAction=()=>{if(!selectedChoice)return;selectedChoice.apply?.();paused=false;hideOverlay();renderHudIcons();syncActionButton();};
+}

@@ -1,0 +1,9 @@
+function renderPauseSummary(){
+ if(!ui.pauseSummary)return;
+ const weaponItems=Object.values(weapons).filter(w=>w.level>0).map(w=>pauseItem(w.icon,`${w.name} · Lv${w.level}`,w.lore)).join('');
+ const passiveItems=Object.values(passives).filter(p=>p.level>0).map(p=>pauseItem(p.icon,`${p.name} · Lv${p.level}`,p.desc)).join('');
+ let organItems='';if(activeOrgan){const d=ORGAN_DEFS[activeOrgan];organItems+=pauseItem(d.icon,`${d.name} · 메인 장기`,d.lore);}else organItems='<div class="pauseEmpty">이식된 메인 장기가 없습니다.</div>';
+ const stored=ORGAN_SLOTS.filter(k=>organStored[k]);for(const k of stored){const d=ORGAN_DEFS[k];organItems+=pauseItem(d.icon,`${d.name} · 보관 표본`,d.lore);}
+ ui.pauseSummary.innerHTML=`<section class="pauseSection"><h3>무기</h3>${weaponItems||'<div class="pauseEmpty">활성 무기 없음</div>'}</section><section class="pauseSection"><h3>패시브</h3>${passiveItems||'<div class="pauseEmpty">활성 패시브 없음</div>'}</section><section class="pauseSection"><h3>장기</h3>${organItems}</section>`;
+ ui.audioToggleBtn.textContent=soundEnabled?'음향 켜짐':'음향 꺼짐';ui.audioToggleBtn.classList.toggle('off',!soundEnabled);
+}

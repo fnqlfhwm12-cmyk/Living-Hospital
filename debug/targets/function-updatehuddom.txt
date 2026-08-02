@@ -1,0 +1,9 @@
+function updateHudDom(force=false){
+ const hpW=(player.hp/player.maxHp*100).toFixed(1)+'%',debtW=(Math.min(player.maxHp,player.hp+(player.residualDamage||0))/player.maxHp*100).toFixed(1)+'%',xpW=(player.xp/player.nextGrowthXp*100).toFixed(1)+'%',time=fmt(elapsed),specimenText=Number(runSpecimens).toLocaleString('ko-KR');
+ if(force||ui.hpFill.style.width!==hpW)ui.hpFill.style.width=hpW;
+ if(ui.hpDebtFill&&(force||ui.hpDebtFill.style.width!==debtW))ui.hpDebtFill.style.width=debtW;
+ if(force||ui.xpFill.style.width!==xpW)ui.xpFill.style.width=xpW;
+ if(force||ui.timer.textContent!==time)ui.timer.textContent=time;
+ if(ui.specimenCount&&(force||ui.specimenCount.textContent!==specimenText))ui.specimenCount.textContent=specimenText;
+ if(ui.specimenHud)ui.specimenHud.classList.toggle('pulse',specimenPulse>0);
+}

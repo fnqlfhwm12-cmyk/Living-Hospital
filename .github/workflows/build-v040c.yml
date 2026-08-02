@@ -1,6 +1,7 @@
 name: Build v0.4.0.c room encounter baseline
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - agent/v040c-room-encounter-baseline

@@ -24,17 +24,19 @@ fs.writeFileSync(path.join(outDir, 'runtime-v034h.js'), runtime, 'utf8');
 const keywords = [
   'actionButton', 'xpFill', 'gainXp', 'gainXP', 'levelUp', 'openLevel',
   'weapons', 'passives', 'relic', 'artifact', 'organ', 'WARD_BOUNDS',
-  'generateWard', 'buildWard', 'minimap', 'specimen', 'player', 'drawWard'
+  'generateWard', 'buildWard', 'minimap', 'specimen', 'player', 'drawWard',
+  'weapons.blood', 'weapons.bone', 'weapons.heart', 'weapons.autophagy',
+  'weapons.stitch', 'weapons.incision', 'spawnXpOrb', 'openGrowthChoice'
 ];
 const contexts = [];
 for (const keyword of keywords) {
   let from = 0;
   let count = 0;
-  while (count < 12) {
+  while (count < 16) {
     const index = runtime.indexOf(keyword, from);
     if (index < 0) break;
-    const start = Math.max(0, index - 420);
-    const end = Math.min(runtime.length, index + keyword.length + 720);
+    const start = Math.max(0, index - 520);
+    const end = Math.min(runtime.length, index + keyword.length + 980);
     contexts.push(`\n===== ${keyword} @ ${index} =====\n${runtime.slice(start, end)}\n`);
     from = index + keyword.length;
     count += 1;
@@ -47,5 +49,36 @@ for (const match of runtime.matchAll(/\bfunction\s+([A-Za-z_$][\w$]*)\s*\(/g)) s
 for (const match of runtime.matchAll(/\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?\([^)]*\)\s*=>/g)) symbols.add(`arrow ${match[1]}`);
 for (const match of runtime.matchAll(/\bclass\s+([A-Za-z_$][\w$]*)\b/g)) symbols.add(`class ${match[1]}`);
 fs.writeFileSync(path.join(outDir, 'runtime-v034h-symbols.txt'), [...symbols].sort().join('\n') + '\n', 'utf8');
+
+function extractFunction(name) {
+  const marker = `function ${name}(`;
+  const start = runtime.indexOf(marker);
+  if (start < 0) return `// missing function ${name}\n`;
+  const next = runtime.indexOf('\nfunction ', start + marker.length);
+  return runtime.slice(start, next < 0 ? runtime.length : next).trimEnd() + '\n';
+}
+function extractRange(label, startMarker, endMarker) {
+  const start = runtime.indexOf(startMarker);
+  if (start < 0) return `// missing range ${label}: ${startMarker}\n`;
+  const end = runtime.indexOf(endMarker, start + startMarker.length);
+  if (end < 0) return `// missing range end ${label}: ${endMarker}\n`;
+  return `// ===== ${label} =====\n${runtime.slice(start, end)}\n`;
+}
+
+const targets = [];
+targets.push(extractRange('core declarations', 'let W=0,H=0', 'const SCALE='));
+targets.push(extractRange('scale through weapons', 'const SCALE=', 'const passives='));
+targets.push(extractRange('passives and organs', 'const passives=', 'const metaDefaults='));
+targets.push(extractRange('player declaration', 'const player=', 'const camera='));
+targets.push(extractRange('world constants', 'const WARD_BOUNDS=', 'function generateWorld'));
+for (const name of [
+  'generateWorld','reset','activeWeaponCount','grantWeaponLevel','onWeaponAcquired',
+  'gainXp','applyPassive','weightedGrowthChoices','openGrowthChoice','openConfirmedRewardChoice',
+  'syncActionButton','useActionButton','updateHudDom','renderPauseSummary','spawnXpOrb',
+  'collectPickup','killEnemy','updateSpecialWeapons','update','draw','renderMinimap',
+  'buildMinimapStatic','drawMinimapBase','drawRoom','drawObject','startChapterRun'
+]) targets.push(`\n// ===== function ${name} =====\n${extractFunction(name)}`);
+targets.push(extractRange('event bindings', 'ui.confirmSelectionBtn.onclick=', 'canvas.addEventListener'));
+fs.writeFileSync(path.join(outDir, 'runtime-v034h-targets.txt'), targets.join('\n'), 'utf8');
 
 console.log(`runtime ${runtime.length} bytes, contexts ${contexts.length}, symbols ${symbols.size}`);

@@ -6,6 +6,7 @@ on:
       - agent/v040b-ui-heart-map
     paths:
       - scripts/build_v040b.mjs
+      - scripts/fix_v040b_loader.mjs
       - .github/workflows/build-v040b.yml
 
 permissions:
@@ -23,6 +24,8 @@ jobs:
           node-version: 22
       - name: Generate v0.4.0.b
         run: node scripts/build_v040b.mjs
+      - name: Restore and verify HUD loader
+        run: node scripts/fix_v040b_loader.mjs
       - name: Validate repository
         run: node scripts/validate_repo.mjs
       - name: Commit generated build

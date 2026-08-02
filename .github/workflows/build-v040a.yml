@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Generate prototype
+      - name: Generate prototype with room rewards
         run: node scripts/build_v040a.mjs
       - name: Validate repository
         run: node scripts/validate_repo.mjs

@@ -149,7 +149,7 @@ generateWorld=function(){
  structureAddNode('passiveCombat','passive','leftCombat',-1050,200,false);
  structureAddNode('relicCombat','relic','rightCombat',1050,200,false);
  structureAddNode('specimenLab','specimen','leftLab',-1050,-600,true);
- structureAddNode('passiveLab','passive','rightLab',1050,-600,true);
+ structureAddNode('organLab','organ','rightLab',1050,-600,true);
  structureAddNode('exit','exit','exit',0,-600,false);
  structureDecorate();
 };
@@ -162,7 +162,7 @@ drawRoom=function(z){
 const legacyDrawObject=drawObject;
 drawObject=function(o,s){
  if(!o.structureNode){legacyDrawObject(o,s);return;}
- const ready=structureNodeReady(o),claimed=o.claimed,pulse=.5+.5*Math.sin(elapsed*5+o.id*7),icon=o.nodeType==='weapon'?'↔':o.nodeType==='passive'?'◇':o.nodeType==='relic'?'◆':o.nodeType==='specimen'?'▣':'▲';ctx.save();ctx.translate(s.x,s.y);ctx.globalAlpha=claimed?.22:1;ctx.fillStyle=ready?'#d9d1c5':'#51484a';ctx.fillRect(0,0,o.w,o.h);ctx.fillStyle='#171314';ctx.fillRect(6,6,o.w-12,o.h-12);ctx.strokeStyle=ready?'#fff':'#817679';ctx.lineWidth=ready?2:1;ctx.strokeRect(.5,.5,o.w-1,o.h-1);ctx.fillStyle=ready?'#fff':'#91878a';ctx.font='700 23px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(icon,o.w*.5,o.h*.52);if(ready&&!claimed){ctx.globalAlpha=.22+.18*pulse;ctx.strokeRect(-4-pulse*2,-4-pulse*2,o.w+8+pulse*4,o.h+8+pulse*4);}ctx.restore();
+ const ready=structureNodeReady(o),claimed=o.claimed,pulse=.5+.5*Math.sin(elapsed*5+o.id*7),icon=o.nodeType==='weapon'?'↔':o.nodeType==='passive'?'◇':o.nodeType==='relic'?'◆':o.nodeType==='organ'?'◉':o.nodeType==='specimen'?'▣':'▲';ctx.save();ctx.translate(s.x,s.y);ctx.globalAlpha=claimed?.22:1;ctx.fillStyle=ready?'#d9d1c5':'#51484a';ctx.fillRect(0,0,o.w,o.h);ctx.fillStyle='#171314';ctx.fillRect(6,6,o.w-12,o.h-12);ctx.strokeStyle=ready?'#fff':'#817679';ctx.lineWidth=ready?2:1;ctx.strokeRect(.5,.5,o.w-1,o.h-1);ctx.fillStyle=ready?'#fff':'#91878a';ctx.font='700 23px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(icon,o.w*.5,o.h*.52);if(ready&&!claimed){ctx.globalAlpha=.22+.18*pulse;ctx.strokeRect(-4-pulse*2,-4-pulse*2,o.w+8+pulse*4,o.h+8+pulse*4);}ctx.restore();
 };
 
 drawMinimapBase=function(){
@@ -202,14 +202,17 @@ function structurePassiveChoices(){
 function structureRelicChoices(){
  const keys=Object.keys(STRUCTURE_RELICS).filter(key=>!relicInventory.includes(key));return shuffledCopy(keys).slice(0,3).map(key=>{const d=STRUCTURE_RELICS[key];return{icon:d.icon,type:'유물',name:d.name,desc:d.desc,apply(){if(relicInventory.length<STRUCTURE_RELIC_LIMIT)relicInventory.push(key);else creditSpecimens(80);updateStructureHud();}};});
 }
+function structureOrganChoices(){
+ const keys=shuffledCopy(ORGAN_SLOTS).slice(0,3);return keys.map(slot=>{const d=ORGAN_DEFS[slot];return{icon:d.icon,type:'장기',name:d.name,desc:d.lore,apply(){organStored[slot]=true;transplantOrgan(slot);renderOrganHud();}};});
+}
 function structureClaimNode(node){node.claimed=true;structureClaimedNodes.add(node.nodeId);updateStructureHud();renderMinimap();syncActionButton();}
 function structureOpenNode(node){
  if(!structureNodeReady(node)){toast(node.nodeType==='exit'?'아직 세 개의 반응이 필요합니다.':'방이 아직 당신을 놓아주지 않습니다.');return;}
  if(node.nodeType==='specimen'){creditSpecimens(100+structureFloor*40);structureClaimNode(node);toast('보존액 속 검체가 몸 안으로 스며듭니다.');return;}
  if(node.nodeType==='exit'){structureAdvanceFloor();return;}
- const choices=node.nodeType==='weapon'?structureWeaponChoices():node.nodeType==='passive'?structurePassiveChoices():structureRelicChoices();
+ const choices=node.nodeType==='weapon'?structureWeaponChoices():node.nodeType==='passive'?structurePassiveChoices():node.nodeType==='organ'?structureOrganChoices():structureRelicChoices();
  if(!choices.length){creditSpecimens(70);structureClaimNode(node);toast('남은 것은 검체뿐입니다.');return;}
- const title=node.nodeType==='weapon'?'어느 반응을 깨울 것인가':node.nodeType==='passive'?'몸이 새로운 규칙을 기억합니다':'병원이 버리지 못한 물건';
+ const title=node.nodeType==='weapon'?'어느 반응을 깨울 것인가':node.nodeType==='passive'?'몸이 새로운 규칙을 기억합니다':node.nodeType==='organ'?'당신의 빈자리가 반응합니다':'병원이 버리지 못한 물건';
  for(const choice of choices){const original=choice.apply;choice.apply=()=>{original();structureClaimNode(node);};}
  openConfirmedRewardChoice(title,choices,{cancelLabel:'닫기'});
 }
@@ -316,12 +319,12 @@ write('README.md', readme);
 let agents = read('AGENTS.md').replaceAll(fromFile, toFile).replaceAll(fromVersion, toVersion);
 agents = agents.replace('- 기본 무기는 개성이 있으나 완성형 성능이 아니어야 합니다.', '- 무기는 획득 즉시 완성형으로 작동하며, 주무기와 보조무기를 A버튼으로 교체합니다.');
 write('AGENTS.md', agents);
-write('docs/PROJECT_STATUS.md', `# 프로젝트 상태\n\n마지막 갱신: 2026-08-02\n\n## 현재 기준\n\n- 저장소 기준 최신 빌드: **${toVersion}**\n- 기준 파일: \`${toFile}\`\n- 작업 브랜치: \`agent/v035-structural-prototype\`\n- 주 테스트 환경: iPhone 가로 화면\n\n## 현재 개발 단계\n\n${toVersion}는 기존 v0.3.4.h 전투 엔진을 유지하면서 게임의 큰 진행 구조를 교체한 1차 프로토타입입니다.\n\n적용된 골격:\n\n1. 단일 대형 병실을 일곱 개 방과 짧은 통로로 구성된 층으로 교체\n2. EXP 바와 레벨업 선택을 제거하고 적 처치 보상을 검체로 전환\n3. 무기 보유량을 주무기 1개와 보조무기 1개로 제한\n4. A버튼으로 두 무기의 역할을 교체하고, 대기 무기는 보조효과 제공\n5. 패시브는 중복 없이 누적되며 화면상 레벨 제거\n6. 장기 1개 교체식 구조 유지\n7. 유물 최대 3개 보유 골격 추가\n8. 방 보상 세 개를 회수하면 다음 층으로 이동 가능\n9. 오메가가 병원을 장악해 내부를 변형한다는 서사 전제로 변경\n\n## 이번 버전의 의도적 한계\n\n- 방 배치는 아직 고정형입니다.\n- 무기별 보조효과와 유물 효과는 구조 검증용 1차 수치입니다.\n- 장기 목표군 6종 중 기존 구현된 심장·뇌·위만 실제 작동합니다.\n- 봉쇄문, 방별 세부 목표, 무기·패시브 시너지 태그는 다음 단계입니다.\n- 보스 타임라인은 구조 검증 중 임시 비활성화했습니다.\n\n## 우선 확인 항목\n\n- 방과 통로에서 적이 벽에 장시간 걸리지 않는지\n- A버튼 스왑이 기존 상호작용과 충돌하지 않는지\n- 주무기만 완전 공격하고 보조무기는 직접 동시 발사하지 않는지\n- 보상 세 개 회수 후 층 이동이 정상 작동하는지\n- iPhone 가로 화면에서 새 HUD가 겹치거나 잘리지 않는지\n- EXP 제거 후 검체 획득량과 전투 동기가 적절한지\n`);
+write('docs/PROJECT_STATUS.md', `# 프로젝트 상태\n\n마지막 갱신: 2026-08-02\n\n## 현재 기준\n\n- 저장소 기준 최신 빌드: **${toVersion}**\n- 기준 파일: \`${toFile}\`\n- 작업 브랜치: \`agent/v035-structural-prototype\`\n- 주 테스트 환경: iPhone 가로 화면\n\n## 현재 개발 단계\n\n${toVersion}는 기존 v0.3.4.h 전투 엔진을 유지하면서 게임의 큰 진행 구조를 교체한 1차 프로토타입입니다.\n\n적용된 골격:\n\n1. 단일 대형 병실을 일곱 개 방과 짧은 통로로 구성된 층으로 교체\n2. EXP 바와 레벨업 선택을 제거하고 적 처치 보상을 검체로 전환\n3. 무기 보유량을 주무기 1개와 보조무기 1개로 제한\n4. A버튼으로 두 무기의 역할을 교체하고, 대기 무기는 보조효과 제공\n5. 패시브는 중복 없이 누적되며 화면상 레벨 제거\n6. 관찰실의 장기 보상에서 기존 장기 3종 중 하나를 이식하는 경로 추가\n7. 장기 1개 교체식 구조 유지 및 유물 최대 3개 보유 골격 추가\n8. 방 보상 세 개를 회수하면 다음 층으로 이동 가능\n9. 오메가가 병원을 장악해 내부를 변형한다는 서사 전제로 변경\n\n## 이번 버전의 의도적 한계\n\n- 방 배치는 아직 고정형입니다.\n- 무기별 보조효과와 유물 효과는 구조 검증용 1차 수치입니다.\n- 장기 목표군 6종 중 기존 구현된 심장·뇌·위만 실제 작동합니다.\n- 봉쇄문, 방별 세부 목표, 무기·패시브 시너지 태그는 다음 단계입니다.\n- 보스 타임라인은 구조 검증 중 임시 비활성화했습니다.\n\n## 우선 확인 항목\n\n- 방과 통로에서 적이 벽에 장시간 걸리지 않는지\n- A버튼 스왑이 기존 상호작용과 충돌하지 않는지\n- 주무기만 완전 공격하고 보조무기는 직접 동시 발사하지 않는지\n- 보상 세 개 회수 후 층 이동이 정상 작동하는지\n- iPhone 가로 화면에서 새 HUD가 겹치거나 잘리지 않는지\n- EXP 제거 후 검체 획득량과 전투 동기가 적절한지\n`);
 write('docs/PROJECT_RULES.md', `# 프로젝트 고정 원칙\n\n## 게임 방향\n\n- 방을 탐색하며 빌드를 조립하는 뱀서류 기반 액션 로그라이크\n- 한 판 목표 길이 30~45분\n- 모바일 가로 화면 우선\n- 귀엽지만 그로테스크한 병원·실험실\n- 오메가는 병원과 결합해 공간을 움직이고 변형합니다.\n\n## 진행 구조\n\n- 병원은 여러 방이 연결된 층으로 구성합니다.\n- 일정 수의 방 보상을 회수하면 다음 층으로 이동합니다.\n- 모든 방을 전멸전으로 만들지 않으며 생존·파괴·활성화 목표를 혼합합니다.\n- 긴 복도보다 짧은 연결 통로를 사용합니다.\n\n## 전투와 성장\n\n- 플레이어 레벨과 EXP 성장은 사용하지 않습니다.\n- 적 처치와 탐색으로 검체를 얻습니다.\n- 검체는 캐릭터 개인능력의 1~10강 영구 강화에 사용합니다.\n- 무기는 획득 즉시 완성된 기능을 가집니다.\n- 최대 무기는 주무기 1개와 보조무기 1개입니다.\n- A버튼으로 두 무기의 역할을 교체합니다.\n- 주무기는 완전한 공격을 수행하고 보조무기는 직접 동시 발사 대신 보조효과를 제공합니다.\n- 단일 공격은 강하고 광역 공격은 상대적으로 약해야 합니다.\n\n## 패시브·장기·유물\n\n- 패시브는 슬롯 제한과 레벨 없이 중복되지 않게 누적합니다.\n- 패시브는 단순 수치보다 상태와 공격 사이의 연쇄 반응을 만듭니다.\n- 메인 장기는 한 번에 1개만 착용하며 새 장기와 교체합니다.\n- 목표 장기군은 뇌, 심장, 위, 간, 폐, 척추입니다.\n- 유물은 최대 3개이며 일반 규칙을 비트는 희귀 효과를 담당합니다.\n\n## 정보 전달과 성능\n\n- 텍스트는 짧고 모호하며 실제 효과·이미지·소리로 학습하게 합니다.\n- 발열과 프레임 유지가 최우선 기술 조건입니다.\n- 현재 방 주변만 활성화하는 방향으로 객체와 충돌 계산을 제한합니다.\n`);
 let changelog = read('docs/CHANGELOG.md').trimEnd();
-if (!changelog.includes(`## ${toVersion} - 2026-08-02`)) changelog += `\n\n## ${toVersion} - 2026-08-02\n\n- 일곱 개 방과 짧은 통로로 구성된 오메가 층 프로토타입 추가\n- EXP 바와 레벨업 선택 제거, 경험치 구슬을 검체 회수로 전환\n- 주무기·보조무기 2칸 구조와 A버튼 스왑 추가\n- 보조무기 직접 동시 발사를 막고 무기별 1차 보조효과 적용\n- 패시브 무제한 비중복 수집, 장기 1개 유지, 유물 3칸 골격 추가\n- 방 보상 3개 회수 후 다음 층 재구성\n- 오메가가 병원 전체를 장악해 공간을 변형한다는 설정 반영\n`;
+if (!changelog.includes(`## ${toVersion} - 2026-08-02`)) changelog += `\n\n## ${toVersion} - 2026-08-02\n\n- 일곱 개 방과 짧은 통로로 구성된 오메가 층 프로토타입 추가\n- EXP 바와 레벨업 선택 제거, 경험치 구슬을 검체 회수로 전환\n- 주무기·보조무기 2칸 구조와 A버튼 스왑 추가\n- 보조무기 직접 동시 발사를 막고 무기별 1차 보조효과 적용\n- 패시브 무제한 비중복 수집, 관찰실 장기 선택, 장기 1개 유지, 유물 3칸 골격 추가\n- 방 보상 3개 회수 후 다음 층 재구성\n- 오메가가 병원 전체를 장악해 공간을 변형한다는 설정 반영\n`;
 write('docs/CHANGELOG.md', changelog);
-write('UPDATE_v0.4.0.a.md', `# Living Hospital ${toVersion}\n\n## 구조 개편\n\n- 맵이 단일 병실에서 방 연결형 층으로 바뀌었습니다.\n- EXP와 레벨업을 제거했습니다.\n- 무기는 두 개만 보유하며 A버튼으로 주·보조 역할을 교체합니다.\n- 패시브는 레벨 없이 누적되고, 유물은 최대 세 개까지 보유합니다.\n- 세 개의 보상을 회수하면 오메가가 다음 층을 다시 구성합니다.\n\n## 테스트 포인트\n\n- 시작 방의 무기 장치에서 보조무기를 획득할 수 있는지\n- A버튼으로 주무기와 보조무기가 정상 교체되는지\n- 격리실과 배양실에서 10마리 처치 후 보상 장치가 활성화되는지\n- 보상 세 개 회수 후 승강기실에서 다음 층으로 이동하는지\n- 새 HUD와 미니맵이 iPhone 가로 화면에서 읽히는지\n`);
+write('UPDATE_v0.4.0.a.md', `# Living Hospital ${toVersion}\n\n## 구조 개편\n\n- 맵이 단일 병실에서 방 연결형 층으로 바뀌었습니다.\n- EXP와 레벨업을 제거했습니다.\n- 무기는 두 개만 보유하며 A버튼으로 주·보조 역할을 교체합니다.\n- 패시브는 레벨 없이 누적되고, 관찰실에서 장기를 교체하며, 유물은 최대 세 개까지 보유합니다.\n- 세 개의 보상을 회수하면 오메가가 다음 층을 다시 구성합니다.\n\n## 테스트 포인트\n\n- 시작 방의 무기 장치에서 보조무기를 획득할 수 있는지\n- A버튼으로 주무기와 보조무기가 정상 교체되는지\n- 격리실과 배양실에서 10마리 처치 후 보상 장치가 활성화되는지\n- 보상 세 개 회수 후 승강기실에서 다음 층으로 이동하는지\n- 새 HUD와 미니맵이 iPhone 가로 화면에서 읽히는지\n`);
 
 // Diagnostic extraction files are branch-only scaffolding and should not remain in the review diff.
 fs.rmSync(path.join(root, 'debug'), { recursive: true, force: true });

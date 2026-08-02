@@ -26,7 +26,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add debug/runtime-v034h.js debug/runtime-v034h-contexts.txt debug/runtime-v034h-symbols.txt
+          git add debug/runtime-v034h.js debug/runtime-v034h-contexts.txt debug/runtime-v034h-symbols.txt debug/runtime-v034h-targets.txt
           git diff --cached --quiet && exit 0
           git commit -m "chore: extract v0.3.4.h runtime for structural refactor"
           git push origin HEAD:agent/v035-structural-prototype

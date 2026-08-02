@@ -1,1 +1,0 @@
-function specimenAdaptationMult(){if(selectedCharacter!=='specimen')return 1;const st=specimenAbilityStats(),extra=Math.max(0,activeWeaponCount()-1),base=1+Math.min(st.cap,extra*st.per),surge=player.adaptationSurge>0?st.surgeSpeed:1;return base*surge;}

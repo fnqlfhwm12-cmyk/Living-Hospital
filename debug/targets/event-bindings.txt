@@ -1,1 +1,0 @@
-// missing range end event-bindings: canvas.addEventListener

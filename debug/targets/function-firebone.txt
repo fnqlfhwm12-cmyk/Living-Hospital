@@ -1,4 +1,0 @@
-function fireBone(){
- const ti=nearestTarget();if(!ti)return;const dx=ti.x-player.x,dy=ti.y-player.y,l=Math.hypot(dx,dy)||1,st=boneSwingStats(),dmg=rollWeaponDamage('bone',st.damage),duration=st.lift+st.hold+st.strike+st.recovery,side=boneSwingSide;boneSwingSide*=-1;
- slashes.push({kind:'fracture',x:player.x,y:player.y,ux:dx/l,uy:dy/l,target:ti.target,targetKind:ti.kind,age:0,life:duration,maxLife:duration,lift:st.lift,hold:st.hold,strike:st.strike,recovery:st.recovery,impactQ:.91,impactAt:st.lift+st.hold+st.strike*.91,lockAt:st.lift*.78,side,impacted:false,crit:dmg.crit,damage:dmg.value,range:st.range,arc:st.arc,innerRatio:st.innerRatio,knockback:st.knockback,critKnockback:st.critKnockback,fragments:st.fragments,critFragments:st.critFragments});sfx('boneFire');
-}

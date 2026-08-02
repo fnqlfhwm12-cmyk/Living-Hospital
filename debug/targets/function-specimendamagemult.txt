@@ -1,1 +1,0 @@
-function specimenDamageMult(){if(selectedCharacter!=='specimen')return 1;const st=specimenAbilityStats(),extra=Math.max(0,activeWeaponCount()-1),adapt=st.damage+Math.min(.075,extra*st.perDamage)+(player.adaptationSurge>0?st.surgeDamage:0);return 1+adapt;}

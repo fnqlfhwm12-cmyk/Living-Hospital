@@ -1,1 +1,0 @@
-function activeWeaponCount(){return Object.values(weapons).reduce((n,w)=>n+(w.level>0?1:0),0);}

@@ -1,1 +1,0 @@
-function spawnXpOrb(x,y,v){const o=takePool('orb');Object.assign(o,{x,y,r:Math.min(ORB_MAX_R,ORB_BASE_R+Math.log2(v+1)*ORB_GROWTH),v,pulse:Math.random()*6.28});orbs.push(o);}

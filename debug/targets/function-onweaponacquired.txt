@@ -1,1 +1,0 @@
-function onWeaponAcquired(key){if(selectedCharacter!=='specimen')return;const st=specimenAbilityStats();if(st.surge>0)player.adaptationSurge=Math.max(player.adaptationSurge||0,st.surge);if(st.sync){for(const w of Object.values(weapons))if(w.level>0)w.timer=0;receptorSyncClock=14;}bodyTwitch=Math.max(bodyTwitch,.14);}

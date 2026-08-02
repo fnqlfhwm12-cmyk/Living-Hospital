@@ -1,4 +1,0 @@
-function gainXp(v){
- const total=v*organMods.xp+player.xpRemainder,gained=Math.floor(total);player.xpRemainder=total-gained;player.xp+=gained;sfx('pickup');
- while(player.xp>=player.nextGrowthXp){player.xp-=player.nextGrowthXp;growthCount++;player.nextGrowthXp=Math.floor(player.nextGrowthXp+5+growthCount*1.15);sfx('growth');openGrowthChoice();break;}
-}

@@ -1,1 +1,0 @@
-function atkSpeedMult(){const attendant=selectedCharacter==='attendant'&&attendantTempo>0?attendantAbilityStats().tempo:1;return (1+passives.flow.level*.04)*(1+passives.overload.level*.09)*(player.autoBuff>0?1.4:1)*organMods.attackSpeed*specimenAdaptationMult()*attendant;}

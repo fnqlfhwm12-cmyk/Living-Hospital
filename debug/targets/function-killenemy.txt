@@ -1,5 +1,0 @@
-function killEnemy(i,e){
- if(e.type==='collector'){beginBossDeath(e);return;}
- onResidualKill(e);onAttendantMarkedKill(e);
- const elite=e.maxHp>=80||e.anomaly||e.type==='fat',fx=takePool('deathFx');Object.assign(fx,{x:e.x,y:e.y,r:e.r,xp:e.xp,color:e.color,life:elite?.42:.28,maxLife:elite?.42:.28,eliteDeath:elite});deathFx.push(fx);swapRemove(enemies,i);releasePool('enemy',e);
-}

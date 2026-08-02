@@ -1,1 +1,0 @@
-function grantWeaponLevel(key){const w=weapons[key],was=w.level;w.level=Math.min(8,w.level+1);if(was===0&&w.level===1)onWeaponAcquired(key);}

@@ -1,3 +1,0 @@
-function syncActionButton(){
- if(!ui.actionButton)return;let nearest=null,bd=76*76;for(const a of unlockActors){const d=(a.x-player.x)**2+(a.y-player.y)**2;if(d<bd){bd=d;nearest=a;}}currentAction=nearest&&!paused&&!gameOver?{type:'unlock',kind:nearest.kind,accent:nearest.kind==='residual'?'#b77986':'#9aa5a1'}:null;ui.actionButton.classList.toggle('ready',!!currentAction);ui.actionButton.disabled=!currentAction;ui.actionButton.setAttribute('aria-disabled',String(!currentAction));ui.actionButton.style.setProperty('--action-accent',currentAction?.accent||'#625d5b');ui.actionButton.setAttribute('aria-label',currentAction?'상호작용 가능':'사용 가능한 상호작용 없음');ui.actionButton.title='';
-}

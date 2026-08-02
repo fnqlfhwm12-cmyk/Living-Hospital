@@ -1,0 +1,35 @@
+name: Build v0.4.0.b UI prototype
+
+on:
+  push:
+    branches:
+      - agent/v040b-ui-heart-map
+    paths:
+      - scripts/build_v040b.mjs
+      - .github/workflows/build-v040b.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v040b-ui-heart-map
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate v0.4.0.b
+        run: node scripts/build_v040b.mjs
+      - name: Validate repository
+        run: node scripts/validate_repo.mjs
+      - name: Commit generated build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "v0.4.0.b: compact heart HUD and explored minimap"
+          git push origin HEAD:agent/v040b-ui-heart-map

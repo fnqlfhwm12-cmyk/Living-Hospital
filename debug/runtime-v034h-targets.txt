@@ -1,4 +1,4 @@
-// ===== core declarations =====
+// ===== core-declarations =====
 let W=0,H=0,DPR=1,last=0,running=false,paused=false,growthChoosing=false,gameOver=false;
 let elapsed=0,spawnTimer=0,fps=60,fpsAcc=0,fpsFrames=0,kills=0,frameTick=0,qualityLevel=0,qualityClock=0,qualityLowStreak=0,qualityHighStreak=0,minimapClock=0,hudClock=0,debugClock=0,orbMergeClock=0,pickupAuditClock=0,runSpecimens=0,specimenPulse=0;
 let minFps=60,slowFrames=0,maxEnemies=0,maxOrbs=0,maxFrameMs=0,frameMsSum=0,frameSamples=0,hitVignette=0;
@@ -10,7 +10,7 @@ const camera={x:0,y:0},renderCamera={x:0,y:0};
 const PERF={targetFps:60,enemyCap:150,gridSize:128,objectGridSize:192,cullMargin:110,dpr:[1.5,1.25,1],minimapInterval:[.15,.22,.30]};
 
 
-// ===== scale through weapons =====
+// ===== scale-weapons =====
 const SCALE={player:.90,enemy:.80,eliteEnemy:.88,projectile:.75,item:.85,object:.85,landmark:.85,effect:.75,particle:.75};
 const ORB_BASE_R=4.9,ORB_MAX_R=9.5,ORB_GROWTH=.85;
 const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
@@ -80,11 +80,11 @@ const weapons={
 
 
 
-// missing range end passives and organs: const metaDefaults=
+// missing range end passives-organs: const metaDefaults=
 
-// missing range end player declaration: const camera=
+// missing range end player-declaration: const camera=
 
-// ===== world constants =====
+// ===== world-constants =====
 const WARD_BOUNDS={halfW:2300,halfH:1400,visualHalfW:2920,visualHalfH:1900,wallT:28,spawnInset:58,spawnViewMargin:160,minSpawnDistance:520};
 const MINIMAP={w:124,h:88,pad:5,minX:-2350,maxX:2350,minY:-1450,maxY:1450,viewW:2400,viewH:1650,baseInterval:.15};
 const enemyGrid=new Map(),objectGrid=new Map();
@@ -367,6 +367,8 @@ function recycleEnemyOffscreen(e){const pos=edgeSpawnWorld();e.x=pos[0];e.y=pos[
 function updateAdaptiveQuality(dt){qualityClock+=dt;if(qualityClock<3.5)return;qualityClock=0;const old=qualityLevel;if(fps<45){qualityLowStreak++;qualityHighStreak=0;}else if(fps>58){qualityHighStreak++;qualityLowStreak=0;}else{qualityLowStreak=0;qualityHighStreak=0;}if(qualityLowStreak>=2){qualityLevel=Math.min(2,qualityLevel+1);qualityLowStreak=0;}else if(qualityHighStreak>=3){qualityLevel=Math.max(0,qualityLevel-1);qualityHighStreak=0;}if(old!==qualityLevel)minimapClock=99;}
 
 
+
+// missing range end event-bindings: canvas.addEventListener
 
 
 // ===== function generateWorld =====
@@ -839,4 +841,60 @@ const ORGAN_DEFS={
 const EVOLUTION_RECIPES=[];
 const AWAKENING_RECIPES=[];
 
-// missing range end event bindings: canvas.addEventListener
+
+// ===== function specimenAbilityStats =====
+function specimenAbilityStats(){const lv=characterAbilityLevel('specimen'),per=[.015,.020,.025,.025,.030,.030,.035,.040,.040,.045,.050][lv],cap=[.12,.14,.16,.18,.19,.20,.22,.24,.25,.27,.30][lv];return{lv,per,cap,surge:lv>=3?(lv>=8?18:12):0,surgeSpeed:lv>=10?1.30:1.20,damage:lv>=5&&activeWeaponCount()>=4?.08:0,perDamage:lv>=6?.015:0,surgeDamage:lv>=8?.12:0,crit:lv>=9&&activeWeaponCount()>=5?.06:0,sync:lv>=10};}
+
+
+// ===== function specimenAdaptationMult =====
+function specimenAdaptationMult(){if(selectedCharacter!=='specimen')return 1;const st=specimenAbilityStats(),extra=Math.max(0,activeWeaponCount()-1),base=1+Math.min(st.cap,extra*st.per),surge=player.adaptationSurge>0?st.surgeSpeed:1;return base*surge;}
+
+
+// ===== function specimenDamageMult =====
+function specimenDamageMult(){if(selectedCharacter!=='specimen')return 1;const st=specimenAbilityStats(),extra=Math.max(0,activeWeaponCount()-1),adapt=st.damage+Math.min(.075,extra*st.perDamage)+(player.adaptationSurge>0?st.surgeDamage:0);return 1+adapt;}
+
+
+// ===== function atkSpeedMult =====
+function atkSpeedMult(){const attendant=selectedCharacter==='attendant'&&attendantTempo>0?attendantAbilityStats().tempo:1;return (1+passives.flow.level*.04)*(1+passives.overload.level*.09)*(player.autoBuff>0?1.4:1)*organMods.attackSpeed*specimenAdaptationMult()*attendant;}
+
+
+// ===== function fireBlood =====
+function fireBlood(){
+ const w=weapons.blood,targetInfo=nearestTarget();if(!targetInfo)return;sfx('bloodFire');
+ const st=bloodStreamStats(w.level),target=targetInfo.target,dmg=rollWeaponDamage('blood',st.damage);
+ createBloodStream(player.x,player.y,targetInfo.x,targetInfo.y,targetInfo.kind==='enemy'?target:null,targetInfo.kind==='object'?target:null,st,dmg.value,{crit:dmg.crit,allowCrit:true});
+}
+
+
+// ===== function fireBone =====
+function fireBone(){
+ const ti=nearestTarget();if(!ti)return;const dx=ti.x-player.x,dy=ti.y-player.y,l=Math.hypot(dx,dy)||1,st=boneSwingStats(),dmg=rollWeaponDamage('bone',st.damage),duration=st.lift+st.hold+st.strike+st.recovery,side=boneSwingSide;boneSwingSide*=-1;
+ slashes.push({kind:'fracture',x:player.x,y:player.y,ux:dx/l,uy:dy/l,target:ti.target,targetKind:ti.kind,age:0,life:duration,maxLife:duration,lift:st.lift,hold:st.hold,strike:st.strike,recovery:st.recovery,impactQ:.91,impactAt:st.lift+st.hold+st.strike*.91,lockAt:st.lift*.78,side,impacted:false,crit:dmg.crit,damage:dmg.value,range:st.range,arc:st.arc,innerRatio:st.innerRatio,knockback:st.knockback,critKnockback:st.critKnockback,fragments:st.fragments,critFragments:st.critFragments});sfx('boneFire');
+}
+
+
+// ===== function fireHeart =====
+function fireHeart(){
+ const w=weapons.heart,base=w.damage*(1+.16*(w.level-1))*damageMult(),crit=rollWeaponCrit('heart');
+ waves.push(makeHeartWave(base*(crit?1.20:1),crit));sfx(crit?'heartBeatCrit':'heartBeat');
+ let delay=.14;
+ for(let echoDepth=1;echoDepth<=w.maxEchoes;echoDepth++){
+  if(Math.random()>=w.echoChance)break;
+  waves.push(makeHeartWave(base*(crit?.80:.50),crit,echoDepth,delay));
+  delay+=echoDepth===1?.10:.08;
+ }
+}
+
+
+// ===== function updateThrombosis =====
+function updateThrombosis(dt,moving){updateClotCritFx(dt);for(let i=clotFields.length-1;i>=0;i--){const f=clotFields[i];f.life-=dt;f.pop=Math.max(0,(f.pop||0)-dt);if(f.life<=0)clotFields.splice(i,1);}updateClotBurst(dt,moving);const w=weapons.autophagy,frameDist=Math.hypot(player.x-clotPrevX,player.y-clotPrevY);clotPrevX=player.x;clotPrevY=player.y;if(w.level<=0){clotHadMotion=false;clotArmed=false;clotStillClock=0;clotMoveTime=0;clotMoveDistance=0;if(clotBurst)freezeClotBurstFields(clotBurst);clotBurst=null;return;}const st=thrombosisStats();clotTrailClock-=dt;if(moving){clotStillClock=0;if(!clotArmed){clotMoveTime+=dt;clotMoveDistance+=frameDist;if(clotMoveTime>=.18||clotMoveDistance>=22)clotArmed=true;}if(!clotHadMotion){clotLastX=player.x;clotLastY=player.y;addClotField('trail',player.x,player.y,st);clotTrailClock=st.interval;}let dx=player.x-clotLastX,dy=player.y-clotLastY,dist=Math.hypot(dx,dy),guard=0;while(dist>=st.spacing&&guard++<4){const t=st.spacing/dist,px=clotLastX+dx*t,py=clotLastY+dy*t;addClotField('trail',px,py,st);clotLastX=px;clotLastY=py;dx=player.x-clotLastX;dy=player.y-clotLastY;dist=Math.hypot(dx,dy);clotTrailClock=st.interval;}if(clotTrailClock<=0&&dist>3){addClotField('trail',player.x,player.y,st);clotLastX=player.x;clotLastY=player.y;clotTrailClock=st.interval;}clotHadMotion=true;}else if(clotArmed&&!clotBurst){clotStillClock+=dt;if(clotStillClock+1e-6>=st.coagulateDelay)startClotBurst(st);}}
+
+
+// ===== function fireStitch =====
+function fireStitch(){const w=weapons.stitch;if(stitchPending?.groups?.length){for(const group of stitchPending.groups){const living=group.targets.filter(e=>e.hp>0);if(!living.length)continue;const cx=living.reduce((n,e)=>n+e.x,0)/living.length,cy=living.reduce((n,e)=>n+e.y,0)/living.length,damage=(w.damage+(w.level-1)*3.2)*damageMult()*.78;for(const e of living){const dx=cx-e.x,dy=cy-e.y,l=Math.hypot(dx,dy)||1;hitEnemy(e,damage,dx,dy,false,3);e.x+=dx/l*Math.min(34,l*.22);e.y+=dy/l*Math.min(34,l*.22);e.shockStun=Math.max(e.shockStun||0,.20+w.level*.018);stitchFx.push({mode:'close',x:e.x,y:e.y,tx:cx,ty:cy,target:null,life:.34,maxLife:.34,count:1});}cameraShake=Math.max(cameraShake,3.2);tone(88,.14,'triangle',.025,46);}stitchPending=null;return;}
+ const anchor=nearestEnemy(null,player.x,player.y,w.range);if(!anchor)return;const capacity=stitchCapacity(w.level),crit=rollWeaponCrit('stitch'),groups=[],used=new Set(),first=stitchCluster(anchor,capacity,used);if(first.length){groups.push({targets:first});first.forEach(e=>used.add(e));}if(crit){let secondAnchor=null,bd=Infinity;for(const e of enemies){if(e.hp<=0||used.has(e)||!pathClearTo(player.x,player.y,e.x,e.y,.75))continue;const nearestUsed=Math.min(...first.map(n=>(n.x-e.x)**2+(n.y-e.y)**2));if(nearestUsed<150**2)continue;const d=(e.x-player.x)**2+(e.y-player.y)**2;if(d<bd&&d<w.range*w.range){bd=d;secondAnchor=e;}}if(secondAnchor){const second=stitchCluster(secondAnchor,capacity,used);if(second.length)groups.push({targets:second});}}
+ const damage=(w.damage+(w.level-1)*3.2)*damageMult()*.42;for(const group of groups)for(const e of group.targets){hitEnemy(e,damage,e.x-player.x,e.y-player.y,crit,1.5);stitchFx.push({mode:'thread',x:player.x,y:player.y,tx:e.x,ty:e.y,target:e,life:.32,maxLife:.32,count:1});}if(groups.length)stitchPending={groups};}
+
+
+// ===== function fireIncision =====
+function fireIncision(){const w=weapons.incision,target=(selectedCharacter==='attendant'&&attendantTarget?.hp>0?attendantTarget:nearestEnemy(null,player.x,player.y,w.range));const tx=target?.x??player.x+(player.facingX||1)*w.range,ty=target?.y??player.y+(player.facingY||0)*w.range,dx=tx-player.x,dy=ty-player.y,l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l;incisionFx.push({x:player.x-ux*20,y:player.y-uy*20,ux,uy,len:w.range+35,width:w.width+(w.level-1)*1.1,delay:Math.max(.24,w.delay-(w.level-1)*.025),life:1.0,triggered:false,damage:(w.damage+(w.level-1)*5.5)*damageMult()});tone(410,.06,'sine',.012,250);}

@@ -2,13 +2,19 @@
 
 모바일 가로 화면을 기준으로 제작 중인 HTML 액션 로그라이크 프로토타입입니다. v0.4 계열은 오메가가 변형하는 방 연결형 병원을 검증합니다.
 
-- 현재 저장소 기준 빌드: **v0.4.0.b**
-- 현재 실행 파일: [`Living_Hospital_v0.4.0.b.html`](./Living_Hospital_v0.4.0.b.html)
+- 현재 저장소 기준 빌드: **v0.4.0.c**
+- 현재 실행 파일: [`Living_Hospital_v0.4.0.c.html`](./Living_Hospital_v0.4.0.c.html)
 - 일반 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/`
 - 계측 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html`
 - 주 테스트 환경: **iPhone / Safari 계열 웹뷰 / 가로 화면**
 - 목표 플레이 타임: **30~45분**
 - 시각 방향: **귀엽지만 그로테스크한 미래형 병원·생체 다크 판타지**
+
+## 현재 구조 방향
+
+플레이어블 캐릭터는 베타 하나입니다. 매 판의 차이는 캐릭터 선택이나 영구 수치 강화가 아니라, 완전 무작위로 발견하는 무기·패시브·장기·유물 조합에서 발생합니다.
+
+전투방은 시간에 따라 적이 계속 몰려오는 웨이브 방식이 아닙니다. 층 생성 시 방별 적 수와 위치를 미리 정하고, 플레이어가 방에 들어가면 문이 닫히며 해당 인카운터가 시작됩니다.
 
 ## 현재 서사 방향
 
@@ -19,7 +25,7 @@
 ## 저장소 운영 원칙
 
 1. 기존 버전 파일은 덮어쓰지 않고 보존합니다.
-2. 수정본은 `Living_Hospital_v0.4.0.b.html`처럼 새 버전 파일로 생성합니다.
+2. 수정본은 `Living_Hospital_v0.4.0.c.html`처럼 새 버전 파일로 생성합니다.
 3. 실제 작업 시작 전 가장 최신 HTML과 문서를 먼저 확인합니다.
 4. 코드 변경과 함께 `docs/CHANGELOG.md`와 `docs/PROJECT_STATUS.md`를 갱신합니다.
 5. iPhone 가로 화면, 프레임 유지, 발열 억제를 기능 추가보다 우선합니다.
@@ -53,6 +59,7 @@
 - [`AGENTS.md`](./AGENTS.md): ChatGPT·Codex 등 작업 에이전트용 필수 규칙
 - [`docs/PROJECT_STATUS.md`](./docs/PROJECT_STATUS.md): 현재 상태와 다음 작업 후보
 - [`docs/PROJECT_RULES.md`](./docs/PROJECT_RULES.md): 고정된 게임 디자인·기술 원칙
+- [`docs/ROOM_SYSTEM.md`](./docs/ROOM_SYSTEM.md): 방 생성, 대기 적, 봉쇄와 클리어 상태의 공통 기준
 - [`docs/CHANGELOG.md`](./docs/CHANGELOG.md): 버전별 변경 기록
 - [`docs/ROADMAP.md`](./docs/ROADMAP.md): 중장기 작업 순서
 - [`docs/PLAYTESTING.md`](./docs/PLAYTESTING.md): 계측 플레이와 보고 절차

@@ -1,0 +1,36 @@
+name: Build v0.4.0.c room encounter baseline
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - agent/v040c-room-encounter-baseline
+    paths:
+      - scripts/build_v040c.mjs
+      - .github/workflows/build-v040c.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/v040c-room-encounter-baseline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate v0.4.0.c
+        run: node scripts/build_v040c.mjs
+      - name: Validate repository
+        run: node scripts/validate_repo.mjs
+      - name: Commit generated build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "v0.4.0.c: preassigned room encounters and physical weapon swap"
+          git push origin HEAD:agent/v040c-room-encounter-baseline

@@ -18,7 +18,8 @@ const packed = partFiles
 const runtime = zlib.gunzipSync(Buffer.from(packed, 'base64')).toString('utf8');
 
 const outDir = path.join(root, 'debug');
-fs.mkdirSync(outDir, { recursive: true });
+const targetDir = path.join(outDir, 'targets');
+fs.mkdirSync(targetDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'runtime-v034h.js'), runtime, 'utf8');
 
 const keywords = [
@@ -64,21 +65,37 @@ function extractRange(label, startMarker, endMarker) {
   if (end < 0) return `// missing range end ${label}: ${endMarker}\n`;
   return `// ===== ${label} =====\n${runtime.slice(start, end)}\n`;
 }
+function safeName(value) {
+  return value.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
+}
+function writeTarget(name, content) {
+  fs.writeFileSync(path.join(targetDir, `${safeName(name)}.txt`), content, 'utf8');
+}
 
-const targets = [];
-targets.push(extractRange('core declarations', 'let W=0,H=0', 'const SCALE='));
-targets.push(extractRange('scale through weapons', 'const SCALE=', 'const passives='));
-targets.push(extractRange('passives and organs', 'const passives=', 'const metaDefaults='));
-targets.push(extractRange('player declaration', 'const player=', 'const camera='));
-targets.push(extractRange('world constants', 'const WARD_BOUNDS=', 'function generateWorld'));
-for (const name of [
+const ranges = [
+  ['core-declarations', 'let W=0,H=0', 'const SCALE='],
+  ['scale-weapons', 'const SCALE=', 'const passives='],
+  ['passives-organs', 'const passives=', 'const metaDefaults='],
+  ['player-declaration', 'const player=', 'const camera='],
+  ['world-constants', 'const WARD_BOUNDS=', 'function generateWorld'],
+  ['event-bindings', 'ui.confirmSelectionBtn.onclick=', 'canvas.addEventListener']
+];
+for (const [name, start, end] of ranges) writeTarget(name, extractRange(name, start, end));
+
+const functionNames = [
   'generateWorld','reset','activeWeaponCount','grantWeaponLevel','onWeaponAcquired',
   'gainXp','applyPassive','weightedGrowthChoices','openGrowthChoice','openConfirmedRewardChoice',
   'syncActionButton','useActionButton','updateHudDom','renderPauseSummary','spawnXpOrb',
   'collectPickup','killEnemy','updateSpecialWeapons','update','draw','renderMinimap',
-  'buildMinimapStatic','drawMinimapBase','drawRoom','drawObject','startChapterRun'
-]) targets.push(`\n// ===== function ${name} =====\n${extractFunction(name)}`);
-targets.push(extractRange('event bindings', 'ui.confirmSelectionBtn.onclick=', 'canvas.addEventListener'));
+  'buildMinimapStatic','drawMinimapBase','drawRoom','drawObject','startChapterRun',
+  'specimenAbilityStats','specimenAdaptationMult','specimenDamageMult','atkSpeedMult',
+  'fireBlood','fireBone','fireHeart','updateThrombosis','fireStitch','fireIncision'
+];
+for (const name of functionNames) writeTarget(`function-${name}`, extractFunction(name));
+
+const targets = [];
+for (const [name, start, end] of ranges) targets.push(extractRange(name, start, end));
+for (const name of functionNames) targets.push(`\n// ===== function ${name} =====\n${extractFunction(name)}`);
 fs.writeFileSync(path.join(outDir, 'runtime-v034h-targets.txt'), targets.join('\n'), 'utf8');
 
-console.log(`runtime ${runtime.length} bytes, contexts ${contexts.length}, symbols ${symbols.size}`);
+console.log(`runtime ${runtime.length} bytes, contexts ${contexts.length}, symbols ${symbols.size}, targets ${functionNames.length + ranges.length}`);

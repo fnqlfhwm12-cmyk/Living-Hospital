@@ -8,12 +8,18 @@
 - 계측 플레이: `https://fnqlfhwm12-cmyk.github.io/Living-Hospital/playtest.html`
 - 주 테스트 환경: **iPhone / Safari 계열 웹뷰 / 가로 화면**
 - 목표 플레이 타임: **30~45분**
-- 시각 방향: **귀엽지만 그로테스크한 병원·실험실 세계**
+- 시각 방향: **귀엽지만 그로테스크한 미래형 병원·생체 다크 판타지**
+
+## 현재 서사 방향
+
+최첨단 미래형 병원이 재생 생명체 오메가와 연결된 뒤 서서히 잠식되어 폭주했습니다. 모든 주요 인물과 세력은 오메가에서 파생된 부산물이며, 플레이어인 베타는 타우의 자유와 누의 안정·연결 사이를 지나며 자신의 답을 행동으로 만듭니다.
+
+서사는 장문의 컷신보다 방 구조, 시스템 해금, 보스 패턴, 짧은 대사, 음향과 환경 변화로 전달합니다.
 
 ## 저장소 운영 원칙
 
 1. 기존 버전 파일은 덮어쓰지 않고 보존합니다.
-2. 수정본은 `Living_Hospital_v0.4.0.btml`처럼 새 버전 파일로 생성합니다.
+2. 수정본은 `Living_Hospital_v0.4.0.b.html`처럼 새 버전 파일로 생성합니다.
 3. 실제 작업 시작 전 가장 최신 HTML과 문서를 먼저 확인합니다.
 4. 코드 변경과 함께 `docs/CHANGELOG.md`와 `docs/PROJECT_STATUS.md`를 갱신합니다.
 5. iPhone 가로 화면, 프레임 유지, 발열 억제를 기능 추가보다 우선합니다.
@@ -42,12 +48,21 @@
 
 ## 문서
 
+### 프로젝트 운영
+
 - [`AGENTS.md`](./AGENTS.md): ChatGPT·Codex 등 작업 에이전트용 필수 규칙
 - [`docs/PROJECT_STATUS.md`](./docs/PROJECT_STATUS.md): 현재 상태와 다음 작업 후보
 - [`docs/PROJECT_RULES.md`](./docs/PROJECT_RULES.md): 고정된 게임 디자인·기술 원칙
 - [`docs/CHANGELOG.md`](./docs/CHANGELOG.md): 버전별 변경 기록
 - [`docs/ROADMAP.md`](./docs/ROADMAP.md): 중장기 작업 순서
 - [`docs/PLAYTESTING.md`](./docs/PLAYTESTING.md): 계측 플레이와 보고 절차
+
+### 서사 설계
+
+- [`docs/NARRATIVE_CORE.md`](./docs/NARRATIVE_CORE.md): 세계관 핵심 규칙과 짧은 연출 원칙
+- [`docs/CHARACTERS_TAU_NU.md`](./docs/CHARACTERS_TAU_NU.md): 핵심 인물 타우·누의 욕망, 모순, 보스전과 장면
+- [`docs/SEVEN_FLOOR_STORY.md`](./docs/SEVEN_FLOOR_STORY.md): 표면 7층의 장소 콘셉트와 서사 진행
+- [`docs/FACTION_EVENT_MATRIX.md`](./docs/FACTION_EVENT_MATRIX.md): 세력 관계를 실제 방과 사건으로 표현하는 계획
 
 ## 권장 작업 흐름
 

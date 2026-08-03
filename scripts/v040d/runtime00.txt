@@ -1,0 +1,45 @@
+
+
+// v0.4.0.d: randomized maze floor and complete extermination-room family.
+const V040D_ROOM_W=1020,V040D_ROOM_H=720,V040D_CELL_X=1260,V040D_CELL_Y=940;
+const V040D_COMMON_TYPES=[['standard',32],['ward',22],['examination',16],['isolation',12],['open',10],['storage',8]];
+const V040D_RARE_TYPES=[['collapse',18],['surgery',12],['culture',10],['contamination',14],['sterilization',12],['compression',10],['incubation',14],['scene',10]];
+const V040D_MINOR_TYPES=[['blackout',40],['bio',35],['flood',25]];
+const V040D_SCENES=['surgery','recovery','cleaning','regeneration','quarantine'];
+const V040D_ERROR_ITEMS={
+ missingDamage:{icon:'∅',name:'누락된 피해',desc:'일부 피격 기록이 사라집니다.'},
+ overflowClock:{icon:'∞',name:'넘친 시계',desc:'활성 무기의 재사용 대기시간이 비정상적으로 빠르게 회복됩니다.'},
+ duplicateSpecimen:{icon:'⧉',name:'중복 회수',desc:'검체 회수 결과가 낮은 확률로 복제됩니다.'},
+ unwrittenDeath:{icon:'□',name:'기록되지 않은 죽음',desc:'층마다 한 번 치명적인 피해가 사망 기록으로 남지 않습니다.'},
+ wrongReference:{icon:'↯',name:'잘못된 참조',desc:'무기 교체 직후 새 활성 무기가 즉시 반응합니다.'}
+};
+const V040D_POINTS={
+ standard:[[-.62,-.44],[-.22,-.56],[.24,-.48],[.62,-.34],[-.58,.12],[-.18,.32],[.30,.20],[.60,.48]],
+ ward:[[-.66,-.48],[-.66,.02],[-.66,.48],[-.20,-.28],[-.20,.34],[.34,-.46],[.34,.06],[.68,.40],[.04,.52]],
+ examination:[[-.62,-.50],[0,-.58],[.62,-.50],[-.56,.02],[.56,.02],[-.62,.50],[0,.58],[.62,.50],[0,0]],
+ isolation:[[-.50,-.38],[-.12,-.48],[.30,-.34],[.52,-.02],[-.42,.12],[-.18,.42],[.22,.34],[.48,.44],[.02,.02]],
+ open:[[-.70,-.52],[-.24,-.62],[.28,-.58],[.70,-.42],[-.68,.28],[-.22,.56],[.30,.54],[.70,.30],[0,0]],
+ storage:[[-.64,-.48],[-.64,.06],[-.64,.48],[-.18,-.38],[-.18,.36],[.34,-.46],[.34,.10],[.66,.46],[.60,-.12]],
+ collapse:[[-.66,-.46],[-.30,-.52],[.08,-.30],[.54,-.46],[-.54,.22],[-.16,.48],[.26,.26],[.66,.48],[.48,.02]],
+ surgery:[[-.64,-.42],[-.20,-.54],[.26,-.48],[.62,-.32],[-.56,.30],[-.16,.48],[.34,.36],[.62,.50]],
+ culture:[[-.62,-.48],[0,-.56],[.62,-.48],[-.48,.04],[.48,.04],[-.62,.48],[0,.56],[.62,.48],[0,0]]
+};
+const V040D_PROP_LAYOUTS={
+ standard:[['table',0,0,110,44],['medicalCart',-.36,.28,62,42]],
+ ward:[['bed',-.40,-.22,118,48],['bed',.40,-.22,118,48],['bed',-.40,.28,118,48],['bed',.40,.28,118,48]],
+ examination:[['table',-.28,0,132,74],['table',.30,0,132,74],['medicalCart',0,.34,58,40]],
+ isolation:[['wall',-.24,-.18,150,28],['wall',.24,.18,150,28],['smallCabinet',-.42,.32,58,58],['smallCabinet',.42,-.32,58,58]],
+ open:[['medicalCart',-.52,.38,58,40]],
+ storage:[['smallCabinet',-.48,-.26,68,78],['smallCabinet',-.48,.26,68,78],['smallCabinet',.48,-.26,68,78],['smallCabinet',.48,.26,68,78],['wasteBin',0,.36,46,46]],
+ collapse:[['wall',-.28,-.12,210,30],['wall',.26,.18,190,30],['smallCabinet',-.52,.38,62,62],['wasteBin',.52,-.34,48,48]],
+ surgery:[['table',0,0,170,72],['medicalCart',-.42,-.30,58,42],['medicalCart',.42,-.30,58,42],['medicalCart',0,.36,58,42]],
+ culture:[['bloodTank',-.42,-.28,76,96],['bloodTank',.42,-.28,76,96],['bloodTank',-.42,.30,76,96],['bloodTank',.42,.30,76,96]]
+};
+let v040dLayout=null,v040dRareRoomId=null,v040dMinorRoomId=null,v040dBugFloor=null,v040dBugUsed=false;
+let v040dErrorItem=null,v040dErrorGuardUsed=false,v040dDebugBug=false,v040dMechanicTick=0;
+try{v040dDebugBug=new URLSearchParams(location.search).get('bugroom')==='1';}catch(error){}
+
+function v040dWeighted(entries){
+ let total=0;for(const entry of entries)total+=entry[1];let roll=Math.random()*total;
+ for(const entry of entries){roll-=entry[1];if(roll<=0)return entry[0];}return entries[entries.length-1][0];
+}

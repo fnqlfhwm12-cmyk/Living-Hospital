@@ -1,0 +1,45 @@
+function v040dShuffle(list){
+ const out=[...list];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const value=out[i];out[i]=out[j];out[j]=value;}return out;
+}
+function v040dCellKey(x,y){return x+','+y;}
+function v040dEdgeKey(a,b){const left=a.key<b.key?a.key:b.key,right=a.key<b.key?b.key:a.key;return left+'|'+right;}
+function v040dAdjacent(a,b){return Math.abs(a.gx-b.gx)+Math.abs(a.gy-b.gy)===1;}
+function v040dBfs(cells,edges,start){
+ const distances=new Map([[start.key,0]]),queue=[start];
+ while(queue.length){const current=queue.shift(),distance=distances.get(current.key);for(const edge of edges){let next=null;if(edge.a===current.key)next=edge.b;else if(edge.b===current.key)next=edge.a;if(next&&!distances.has(next)){distances.set(next,distance+1);queue.push(cells.get(next));}}}
+ return distances;
+}
+function v040dCreateMaze(){
+ const target=9+(Math.random()<.35?1:0),cells=new Map(),edges=[],edgeSet=new Set();
+ const addCell=(gx,gy,parent=null)=>{const key=v040dCellKey(gx,gy),cell={key,gx,gy};cells.set(key,cell);if(parent){const edge={a:parent.key,b:key};edges.push(edge);edgeSet.add(v040dEdgeKey(parent,cell));}return cell;};
+ const start=addCell(0,3),north=addCell(0,2,start);
+ while(cells.size<target){
+  const frontier=[];for(const cell of cells.values())for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const gx=cell.gx+dx,gy=cell.gy+dy,key=v040dCellKey(gx,gy);if(gx<-2||gx>2||gy<0||gy>2||cells.has(key))continue;frontier.push({gx,gy,parent:cell});}
+  if(!frontier.length)break;const choice=frontier[Math.floor(Math.random()*frontier.length)];addCell(choice.gx,choice.gy,choice.parent);
+ }
+ const all=[...cells.values()];const possible=[];for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const a=all[i],b=all[j];if(!v040dAdjacent(a,b)||edgeSet.has(v040dEdgeKey(a,b))||a===start||b===start)continue;possible.push({a,b});}
+ for(const option of v040dShuffle(possible).slice(0,Math.random()<.55?1:2)){edges.push({a:option.a.key,b:option.b.key});edgeSet.add(v040dEdgeKey(option.a,option.b));}
+ const distances=v040dBfs(cells,edges,start),exit=[...cells.values()].filter(cell=>cell!==start).sort((a,b)=>(distances.get(b.key)-distances.get(a.key))||(a.gy-b.gy))[0];
+ let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;for(const cell of cells.values()){cell.rawX=cell.gx*V040D_CELL_X;cell.rawY=cell.gy*V040D_CELL_Y;minX=Math.min(minX,cell.rawX);maxX=Math.max(maxX,cell.rawX);minY=Math.min(minY,cell.rawY);maxY=Math.max(maxY,cell.rawY);}const shiftX=-(minX+maxX)*.5,shiftY=-(minY+maxY)*.5;
+ let index=0;for(const cell of cells.values()){cell.x=cell.rawX+shiftX;cell.y=cell.rawY+shiftY;cell.id=cell===start?'start':cell===exit?'exit':'combat'+(++index);cell.doors={};}
+ const corridors=[];for(const edge of edges){const a=cells.get(edge.a),b=cells.get(edge.b);if(a.gx!==b.gx){const left=a.x<b.x?a:b,right=a.x<b.x?b:a;(left.doors.e||(left.doors.e=[])).push(left.y);(right.doors.w||(right.doors.w=[])).push(right.y);corridors.push({id:'corridor'+corridors.length,x:(left.x+right.x)*.5,y:left.y,w:Math.abs(right.x-left.x)-V040D_ROOM_W,h:210,vertical:false});}else{const top=a.y<b.y?a:b,bottom=a.y<b.y?b:a;(top.doors.s||(top.doors.s=[])).push(top.x);(bottom.doors.n||(bottom.doors.n=[])).push(bottom.x);corridors.push({id:'corridor'+corridors.length,x:top.x,y:(top.y+bottom.y)*.5,w:210,h:Math.abs(bottom.y-top.y)-V040D_ROOM_H,vertical:true});}}
+ const degree=new Map();for(const cell of cells.values())degree.set(cell.key,0);for(const edge of edges){degree.set(edge.a,(degree.get(edge.a)||0)+1);degree.set(edge.b,(degree.get(edge.b)||0)+1);}const rooms=[...cells.values()].map(cell=>({id:cell.id,name:cell.id,x:cell.x,y:cell.y,w:V040D_ROOM_W,h:V040D_ROOM_H,tint:'#1d1819',combat:cell!==start&&cell!==exit,doors:cell.doors,v040dDistance:distances.get(cell.key)||0,v040dDegree:degree.get(cell.key)||0,v040dType:cell===start?'start':cell===exit?'exit':v040dWeighted(V040D_COMMON_TYPES),v040dRotation:Math.floor(Math.random()*4),v040dMinor:null,v040dRare:null,v040dScene:null,v040dBug:false}));
+ const combat=rooms.filter(room=>room.combat),floorIndex=Math.max(1,Math.min(7,structureFloor||1));
+ const minorChance=[0,.08,.10,.12,.14,.16,.18,.20][floorIndex],rareChance=[0,0,.03,.04,.05,.06,.07,.08][floorIndex];
+ if(combat.length&&Math.random()<minorChance){const room=combat[Math.floor(Math.random()*combat.length)];room.v040dMinor=v040dWeighted(V040D_MINOR_TYPES);v040dMinorRoomId=room.id;}else v040dMinorRoomId=null;
+ if(combat.length&&Math.random()<rareChance){let eligible=combat.filter(room=>room.id!==v040dMinorRoomId);if(!eligible.length)eligible=combat;const room=eligible[Math.floor(Math.random()*eligible.length)],kind=v040dWeighted(V040D_RARE_TYPES);room.v040dRare=kind;if(kind==='collapse'||kind==='surgery'||kind==='culture')room.v040dType=kind;if(kind==='scene')room.v040dScene=V040D_SCENES[Math.floor(Math.random()*V040D_SCENES.length)];v040dRareRoomId=room.id;}else v040dRareRoomId=null;
+ const bugEligible=(v040dDebugBug&&floorIndex===1)||(!v040dBugUsed&&v040dBugFloor===floorIndex&&floorIndex>=3&&floorIndex<=6);if(combat.length&&bugEligible){const deadEnds=combat.filter(room=>room.v040dDegree===1),pool=deadEnds.length?deadEnds:combat,room=pool[Math.floor(Math.random()*pool.length)];room.v040dBug=true;room.v040dMinor=null;room.v040dRare=null;room.v040dScene=null;room.v040dType='standard';v040dBugUsed=true;}
+ return{rooms,corridors,edges,cells,startId:'start',exitId:'exit'};
+}
+function v040dApplyLayout(layout){
+ STRUCTURE_ROOMS.splice(0,STRUCTURE_ROOMS.length,...layout.rooms);STRUCTURE_CORRIDORS.splice(0,STRUCTURE_CORRIDORS.length,...layout.corridors);
+ let maxX=0,maxY=0;for(const room of layout.rooms){maxX=Math.max(maxX,Math.abs(room.x)+room.w*.5);maxY=Math.max(maxY,Math.abs(room.y)+room.h*.5);}WARD_BOUNDS.halfW=maxX+120;WARD_BOUNDS.halfH=maxY+120;WARD_BOUNDS.visualHalfW=WARD_BOUNDS.halfW;WARD_BOUNDS.visualHalfH=WARD_BOUNDS.halfH;
+ MINIMAP.minX=-WARD_BOUNDS.halfW;MINIMAP.maxX=WARD_BOUNDS.halfW;MINIMAP.minY=-WARD_BOUNDS.halfH;MINIMAP.maxY=WARD_BOUNDS.halfH;MINIMAP.viewW=WARD_BOUNDS.halfW*2;MINIMAP.viewH=WARD_BOUNDS.halfH*2;
+}
+function v040dTransform(room,nx,ny,w,h){
+ let x=nx,y=ny,width=w,height=h;for(let i=0;i<room.v040dRotation;i++){const oldX=x;x=-y;y=oldX;const oldW=width;width=height;height=oldW;}return{x:room.x+x*(room.w*.5-80),y:room.y+y*(room.h*.5-80),w:width,h:height};
+}
+function v040dDecorateRoom(room){
+ if(room.id==='start'){landmarks.push({x:room.x-220,y:room.y,r:42*SCALE.landmark,type:'bed',rot:0,mapBlock:false});return;}if(room.id==='exit'){landmarks.push({x:room.x,y:room.y-120,r:46*SCALE.landmark,type:'breach',rot:0,mapBlock:false});return;}
+ const specs=V040D_PROP_LAYOUTS[room.v040dType]||V040D_PROP_LAYOUTS.standard;for(const spec of specs){const placed=v040dTransform(room,spec[1],spec[2],spec[3],spec[4]),type=spec[0];structureAddObject(type,placed.x-placed.w*.5,placed.y-placed.h*.5,placed.w,placed.h,type==='wall'?999:70,true,{v040dProp:true,structureRoomId:room.id,zoneActive:true});}
+ const markCount=room.v040dType==='open'?4:2;for(let i=0;i<markCount;i++){const angle=(i/markCount)*Math.PI*2+room.v040dRotation*.7;landmarks.push({x:room.x+Math.cos(angle)*room.w*.30,y:room.y+Math.sin(angle)*room.h*.28,r:(15+i*3)*SCALE.landmark,type:i%2?'blood':'corpse',rot:angle,mapBlock:false});}

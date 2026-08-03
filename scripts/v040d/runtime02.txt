@@ -1,0 +1,45 @@
+ if(room.v040dScene){const sceneMarks=room.v040dScene==='cleaning'?['table','blood']:room.v040dScene==='surgery'?['table','blood']:room.v040dScene==='regeneration'?['organ','blood']:['bed','corpse'];for(let i=0;i<sceneMarks.length;i++)landmarks.push({x:room.x+(i?120:-120),y:room.y,r:32*SCALE.landmark,type:sceneMarks[i],rot:i?1.2:-1.2,mapBlock:false});}
+}
+function v040dRoomPattern(room){return V040D_POINTS[room.v040dType]||V040D_POINTS.standard;}
+function v040dBuildEncounterPlan(room){
+ const source=v040dRoomPattern(room),floorIndex=Math.max(1,Math.min(7,structureFloor||1)),baseCount=Math.min(source.length,5+Math.floor((floorIndex-1)/2)+(room.v040dType==='isolation'?1:0)+(room.v040dBug?2:0));
+ const rotated=source.map(point=>{const placed=v040dTransform(room,point[0],point[1],0,0);return{x:placed.x,y:placed.y};});const positions=v040dShuffle(rotated).slice(0,baseCount).map(point=>({type:'patient',x:point.x,y:point.y}));
+ const plan={roomId:room.id,templateIndex:room.v040dType,positions,activated:false,cleared:false,roomType:room.v040dType,minor:room.v040dMinor,rare:room.v040dRare,scene:room.v040dScene,bug:room.v040dBug,startedAt:0,cycleHit:-1};
+ if(plan.rare==='contamination')plan.pools=[[-.30,-.08,.19],[.30,.18,.18],[0,.42,.15]].map(item=>{const placed=v040dTransform(room,item[0],item[1],0,0);return{x:placed.x,y:placed.y,r:item[2]*Math.min(room.w,room.h)};});
+ if(plan.rare==='sterilization')plan.stripe={vertical:Math.random()<.5,offset:(Math.random()-.5)*.28};
+ structureEncounterPlans.set(room.id,plan);structureEncounterLog.push({floor:structureFloor,roomId:room.id,roomType:plan.roomType,minor:plan.minor,rare:plan.rare,scene:plan.scene,bug:plan.bug,enemies:positions.map(entry=>({...entry}))});return plan;
+}
+v040cBuildEncounterPlan=v040dBuildEncounterPlan;
+const v040dLegacySpawnPlan=v040cSpawnPlan;
+v040cSpawnPlan=function(plan){
+ v040dLegacySpawnPlan(plan);for(const enemy of enemies)if(enemy.structureRoomId===plan.roomId){enemy.structureBugged=!!plan.bug;if(plan.bug){enemy.maxHp*=1.7;enemy.hp=enemy.maxHp;enemy.damage*=1.5;enemy.speed*=1.12;enemy.r*=1.06;}}
+};
+v040cBuildEncounters=function(){
+ structureEncounterPlans=new Map();structureEncounterActive=new Set();structureEncounterCleared=new Set();structureEncounterGates=[];structureEncounterLog=[];for(const room of STRUCTURE_ROOMS)if(room.combat){const plan=v040dBuildEncounterPlan(room);v040cSpawnPlan(plan);}
+};
+v040cInsideRoom=function(room,margin=150){return Math.abs(player.x-room.x)<=room.w*.5-margin&&Math.abs(player.y-room.y)<=room.h*.5-margin;};
+const v040dLegacyActivateEncounter=v040cActivateEncounter;
+v040cActivateEncounter=function(room){
+ v040dLegacyActivateEncounter(room);const plan=structureEncounterPlans.get(room.id);if(!plan)return;plan.startedAt=elapsed;v040dMechanicTick=0;let index=0;for(const enemy of enemies)if(enemy.structureRoomId===room.id){let delay=0;if(plan.rare==='incubation')delay=Math.floor(index/2)*1.15;else if(plan.scene)delay=(index%3)*.38;if(delay>0){enemy.structureDormant=true;enemy.structureWakeAt=elapsed+delay;enemy.clotStun=999999;}index++;}
+};
+function v040dRewardPoint(room){const points={standard:[0,.34],ward:[0,0],examination:[0,.30],isolation:[0,0],open:[0,0],storage:[0,0],collapse:[0,-.32],surgery:[0,.36],culture:[0,0]},point=points[room.v040dType]||[0,0],placed=v040dTransform(room,point[0],point[1],0,0);return{x:placed.x,y:placed.y};}
+function v040dClearNodes(){for(let i=objects.length-1;i>=0;i--)if(objects[i].structureNode)objects.splice(i,1);structureRewardNodes=[];}
+function v040dPlaceNodes(){
+ const combat=[...STRUCTURE_ROOMS].filter(room=>room.combat).sort((a,b)=>a.v040dDistance-b.v040dDistance),exit=STRUCTURE_ROOMS.find(room=>room.id==='exit');if(combat.length){const passive=combat[Math.min(2,combat.length-1)],specimen=combat[Math.min(4,combat.length-1)],p=v040dRewardPoint(passive),s=v040dRewardPoint(specimen);structureAddNode('passiveCombat','passive',passive.id,p.x,p.y,false);if(specimen!==passive)structureAddNode('specimenCombat','specimen',specimen.id,s.x,s.y,false);}if(exit)structureAddNode('exit','exit','exit',exit.x,exit.y,false);
+}
+v040cPlaceStartingWeapon=function(){
+ for(const object of structureGroundWeapons)v040cRemoveObject(object);structureGroundWeapons=[];const room=STRUCTURE_ROOMS.find(item=>item.id==='start'),pool=v040cWeaponPool();if(!room||!pool.length)return;v040cAddGroundWeapon(pool[Math.floor(Math.random()*pool.length)],room.x,room.y);
+};
+const v040dLegacyGenerateWorld=generateWorld;
+generateWorld=function(){
+ v040dErrorGuardUsed=false;v040dLayout=v040dCreateMaze();v040dApplyLayout(v040dLayout);v040dLegacyGenerateWorld();v040dClearNodes();landmarks.length=0;for(let i=objects.length-1;i>=0;i--)if(objects[i].v040dProp)objects.splice(i,1);for(const room of STRUCTURE_ROOMS)v040dDecorateRoom(room);v040dPlaceNodes();v040cPlaceStartingWeapon();structureVisitedRooms=new Set(['start']);structureLastRoom='start';rebuildObjectGrid();
+};
+const v040dLegacyNodeReady=structureNodeReady;
+structureNodeReady=function(node){if(!node||node.claimed)return false;if(node.nodeType==='exit')return structureEncounterCleared.size>=Math.min(4,STRUCTURE_ROOMS.filter(room=>room.combat).length);if(node.nodeType==='error')return !!node.ready;return v040dLegacyNodeReady(node);};
+function v040dGrantErrorItem(){const keys=Object.keys(V040D_ERROR_ITEMS);v040dErrorItem=keys[Math.floor(Math.random()*keys.length)];updateCompactHud();renderPauseSummary();sfx('growth');}
+const v040dLegacyOpenNode=structureOpenNode;
+structureOpenNode=function(node){if(node?.nodeType==='error'){if(!structureNodeReady(node))return;v040dGrantErrorItem();structureClaimNode(node);return;}v040dLegacyOpenNode(node);};
+const v040dLegacyCompleteEncounter=v040cCompleteEncounter;
+v040cCompleteEncounter=function(room){
+ const plan=structureEncounterPlans.get(room.id);v040dLegacyCompleteEncounter(room);for(const node of structureRewardNodes)if(node.roomId===room.id)node.ready=true;if(plan?.bug&&!structureNodeById('errorRoom')){const point=v040dRewardPoint(room);structureAddNode('errorRoom','error',room.id,point.x,point.y,true);}renderMinimap();syncActionButton();
+};
